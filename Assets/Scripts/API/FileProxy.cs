@@ -525,7 +525,7 @@ namespace DaggerfallConnect.Utility
         private bool LoadMemory(string filePath, FileAccess fileAccess, FileShare fileShare)
         {
 #if (UNITY_WEBGL && !UNITY_EDITOR)
-#elif (UNITY_ANDROID && !UNITY_EDITOR) || true
+#elif (UNITY_ANDROID && !UNITY_EDITOR)
             string fileName = Path.GetFileName(filePath);
             TextAsset asset = Resources.Load<TextAsset>(fileName);
             if (asset != null)
