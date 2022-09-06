@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -13,6 +13,8 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using DaggerfallWorkshop.Utility;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -20,6 +22,7 @@ using Wenzil.Console;
 using DaggerfallWorkshop.Game.UserInterface;
 using DaggerfallWorkshop.Game.Entity;
 using UnityEngine.Localization.Tables;
+using UnityEngine.Networking;
 
 namespace DaggerfallWorkshop.Game
 {
@@ -83,7 +86,7 @@ namespace DaggerfallWorkshop.Game
 
         private void Awake()
         {
-            EnumerateTextDatabases();    
+            EnumerateTextDatabases();
         }
 
         private void Start()
@@ -489,22 +492,45 @@ namespace DaggerfallWorkshop.Game
         {
             // Get all text files in target path
             Debug.Log("TextManager enumerating text databases.");
-            string path = Path.Combine(Application.streamingAssetsPath, textFolderName);
-            string[] files = Directory.GetFiles(path, "*.txt");
+            List<string> files = new List<string>();
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                TextAsset paths = Resources.Load<TextAsset>("StreamingAssetPaths");
+                if (paths == null)
+                    return;
+                string fs = paths.text;
+                string[] fLines = Regex.Split(fs, "\n|\r|\r\n");
+                foreach (string line in fLines)
+                    if (line.Length > 0 && line.ToLower().TrimEnd().EndsWith(".txt"))
+                        files.Add(line.Replace('\\', '/'));
+            }
+            else
+            {
+                string path = Path.Combine(Application.streamingAssetsPath, textFolderName);
+                foreach (string file in Directory.GetFiles(path, "*.txt"))
+                    files.Add(file);
+            }
 
             // Attempt to read each file as a table with a text schema
             foreach (string file in files)
             {
                 try
                 {
+                    Debug.Log("1");
                     // Create table from text file
-                    Table table = new Table(File.ReadAllLines(file));
+                    Table table = null;
+                    if (Application.platform == RuntimePlatform.Android)
+                        table = ReadTableOnAndroid(file);
+                    else
+                        table = new Table(File.ReadAllLines(file));
 
+                    Debug.Log("2");
                     // Get database key from filename
                     string databaseName = Path.GetFileNameWithoutExtension(file);
                     if (HasDatabase(databaseName))
                         throw new Exception(string.Format("TextManager database name {0} already exists.", databaseName));
 
+                    Debug.Log("3");
                     // Assign database to collection
                     textDatabases.Add(databaseName, table);
                     Debug.LogFormat("TextManager read text database table {0} with {1} rows", databaseName, table.RowCount);
@@ -515,6 +541,32 @@ namespace DaggerfallWorkshop.Game
                     continue;
                 }
             }
+        }
+
+        /// <summary>
+        /// Reads a table from a text file on Android using WWW
+        /// <param name="file">The filename without the full APK path, e.g. Quests\QUEST1.TXT</param>
+        /// <returns> Table object, null if failure </returns>
+        /// </summary>
+        private Table ReadTableOnAndroid(string file)
+        {
+            Table result = null;
+            file = Path.Combine(Application.streamingAssetsPath, file);
+            Debug.Log($"Attempting to load {file}");
+            UnityWebRequest loadingRequest = UnityWebRequest.Get(file);
+            loadingRequest.SendWebRequest();
+            while (!loadingRequest.isDone)
+                if (loadingRequest.isNetworkError || loadingRequest.isHttpError) break;
+
+            if (loadingRequest.isNetworkError || loadingRequest.isHttpError)
+            {
+                Debug.LogError($"TextManager unable to read text database table {file} with error {loadingRequest.error}");
+                return result;
+            }
+
+            string[] lines = loadingRequest.downloadHandler.text.Split('\n');
+            result = new Table(lines);
+            return result;
         }
 
         #endregion

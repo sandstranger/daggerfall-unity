@@ -154,7 +154,7 @@ namespace DaggerfallWorkshop.Game
         public static DaggerfallFont TitleFont { get { return Instance.GetFont(DaggerfallFont.FontName.FONT0001); } }
         public static DaggerfallFont SmallFont { get { return Instance.GetFont(DaggerfallFont.FontName.FONT0002); } }
         public static DaggerfallFont DefaultFont { get { return Instance.GetFont(DaggerfallFont.FontName.FONT0003); } }
-        
+
         public static IUserInterfaceManager UIManager { get { return Instance.uiManager; } }
 
         public Material PixelFontMaterial { get { return pixelFontMaterial; } set { pixelFontMaterial = value; } }
@@ -444,7 +444,7 @@ namespace DaggerfallWorkshop.Game
             // Possible to get multiple keydown events per frame, one with character, one with keycode
             // Only accept character or keycode if valid
             lastKeyModifiers = HotkeySequence.GetKeyboardKeyModifiers();
-            
+
             if (Event.current.type == EventType.KeyDown)
             {
                 if (Event.current.character != (char)0)
@@ -859,7 +859,7 @@ namespace DaggerfallWorkshop.Game
 
             // Attempt to use StreamingAssets for FNT files
             string path = FontsFolder;
-            if (!Directory.Exists(path))
+            if (Application.platform != RuntimePlatform.Android && !Directory.Exists(path))
             {
                 Debug.LogErrorFormat("Fonts directory path {0} not found. Falling back to Arena2 folder.", path);
 
@@ -1229,7 +1229,7 @@ namespace DaggerfallWorkshop.Game
                 imgFile.LoadPalette(Path.Combine(dfUnity.Arena2Path, imgFile.PaletteName));
                 texture = GetTextureFromImg(imgFile, format, readOnly);
             }
-                
+
             texture.filterMode = DaggerfallUI.Instance.GlobalFilterMode;
             offset = imgFile.ImageOffset;
 

@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -14,6 +14,8 @@ using UnityEngine;
 using System;
 using System.Text;
 using System.IO;
+using UnityEngine.Networking;
+
 #endregion
 
 namespace DaggerfallConnect
@@ -229,6 +231,7 @@ namespace DaggerfallConnect.Utility
                     return LoadMemory(filePath, fileAccess, fileShare);
                 case FileUsage.UseDisk:
                 default:
+                    Debug.Log($"Loading file {filePath} from disk.");
                     return LoadDisk(filePath, fileAccess, fileShare);
             }
         }
@@ -521,10 +524,56 @@ namespace DaggerfallConnect.Utility
         /// <returns>True if successful, otherwise false.</returns>
         private bool LoadMemory(string filePath, FileAccess fileAccess, FileShare fileShare)
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            // Unity cannot use Resources.Load in WebGL
-            // TODO: Implement WWW resource loading
-            return false;
+#if (UNITY_WEBGL && !UNITY_EDITOR)
+#elif (UNITY_ANDROID && !UNITY_EDITOR) || true
+            string fileName = Path.GetFileName(filePath);
+            TextAsset asset = Resources.Load<TextAsset>(fileName);
+            if (asset != null)
+                fileBuffer = asset.bytes;
+            else
+            {
+                try
+                {
+                    // if base.apk is in the filePath
+                    if (filePath.Contains("base.apk"))
+                    {
+                        var loadingRequest = UnityWebRequest.Get(filePath);
+                        loadingRequest.SendWebRequest();
+                        while (!loadingRequest.isDone)
+                            if (loadingRequest.isNetworkError || loadingRequest.isHttpError) break;
+
+                        if (loadingRequest.isNetworkError || loadingRequest.isHttpError)
+                        {
+                                Debug.LogError($"Loading error on {filePath}: {loadingRequest.error}");
+                                return false;
+                        }
+                        fileBuffer = new byte[loadingRequest.downloadHandler.data.Length];
+                        Array.Copy(loadingRequest.downloadHandler.data, fileBuffer, fileBuffer.Length);
+                        loadingRequest.Dispose();
+                    } else {
+                        if (!File.Exists(filePath))
+                            return false;
+                        FileStream file = File.Open(filePath, FileMode.Open, fileAccess, fileShare);
+                        fileBuffer = new byte[file.Length];
+                        if (file.Length != file.Read(fileBuffer, 0, (int)file.Length))
+                            return false;
+                        file.Close();
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    myLastException = e;
+                    Console.WriteLine(e.Message);
+                    Debug.LogError($"Exception while trying to load {fileName}. {e.Message}");
+                    return false;
+
+                }
+            }
+
+            managedFilePath = filePath;
+            fileUsage = FileUsage.UseMemory;
+            return true;
 #else
 
             // Attempt to locate in Unity Resources folder first
@@ -578,6 +627,9 @@ namespace DaggerfallConnect.Utility
         /// <returns>True if successful, otherwise false.</returns>
         private bool LoadDisk(string filePath, FileAccess fileAccess, FileShare fileShare)
         {
+            // if (Application.platform == RuntimePlatform.Android) {
+                // return LoadDiskAndroid(filePath, fileAccess, fileShare);
+            // }
             // File must exist
             if (!File.Exists(filePath))
                 return false;
