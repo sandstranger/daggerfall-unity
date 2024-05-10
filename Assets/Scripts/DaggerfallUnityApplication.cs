@@ -24,12 +24,16 @@ public static class DaggerfallUnityApplication
     {
         get
         {
+#if UNITY_ANDROID
+            return false;
+#else
             if (isPortableInstall == null)
             {
                 isPortableInstall = !Application.isEditor && File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Portable.txt"));
             }
 
             return isPortableInstall.Value;
+#endif
         }
     }
 
