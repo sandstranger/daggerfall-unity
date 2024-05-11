@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: kaboissonneault
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -24,7 +24,7 @@ public static class DaggerfallUnityApplication
     {
         get
         {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
             return false;
 #else
             if (isPortableInstall == null)
@@ -101,7 +101,7 @@ public static class DaggerfallUnityApplication
             {
                 errorMessage = $"Could not preserve previous log: {e.Message}";
             }
-                        
+
             streamWriter = File.CreateText(filePath);
             streamWriter.AutoFlush = true;
 

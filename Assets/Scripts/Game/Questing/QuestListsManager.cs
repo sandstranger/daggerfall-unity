@@ -4,7 +4,7 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Hazelnut
-// Contributors:    
+// Contributors:
 
 using System.Collections.Generic;
 using System;
@@ -45,11 +45,11 @@ namespace DaggerfallWorkshop.Game.Questing
 
     /// <summary>
     /// Manager class for Quest Lists and Quest scripts
-    /// 
+    ///
     /// Quest lists are tables of quest names and metadata.
     /// They are discovered and loaded at startup time. (although loaded at runtime in editor)
     /// The files must be named: QuestList-{name}.txt
-    /// 
+    ///
     /// Quest scripts sit alongside list and must be uniquely named. They are loaded at runtime.
     ///
     /// Get quests by calling one of these methods:
@@ -101,7 +101,11 @@ namespace DaggerfallWorkshop.Game.Questing
         /// </summary>
         public string QuestPacksFolder
         {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            get { return Path.Combine(Application.persistentDataPath, QuestPacksFolderName); }
+#else
             get { return Path.Combine(Application.streamingAssetsPath, QuestPacksFolderName); }
+#endif
         }
 
         public void DiscoverQuestPackLists()
@@ -283,7 +287,7 @@ namespace DaggerfallWorkshop.Game.Questing
             string questFile = Path.Combine(QuestMachine.QuestSourceFolder, questFileName);
             if (File.Exists(questFile))
                 return LoadQuest(questName, QuestMachine.QuestSourceFolder, factionId);
-            
+
             // Then check if we can override or load this quest from any mod.
             if (ModManager.Instance.AnyModContainsQuest(questName))
             {

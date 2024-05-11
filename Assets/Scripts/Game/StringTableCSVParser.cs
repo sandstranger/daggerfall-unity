@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -52,7 +52,11 @@ public class StringTableCSVParser
                 filename += csvExt;
 
             // Load patch file if present
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string path = Path.Combine(Application.persistentDataPath, textString, filename);
+#else
             string path = Path.Combine(Application.streamingAssetsPath, textString, filename);
+#endif
             if (File.Exists(path))
                 csvText = ReadAllText(path);
             else

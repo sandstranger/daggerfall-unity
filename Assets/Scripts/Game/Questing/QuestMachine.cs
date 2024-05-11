@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
 // Contributors:    Hazelnut
-// 
+//
 // Notes:
 //
 
@@ -123,7 +123,11 @@ namespace DaggerfallWorkshop.Game.Questing
         /// </summary>
         public static string QuestSourceFolder
         {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            get { return Path.Combine(Application.persistentDataPath, questSourceFolderName); }
+#else
             get { return Path.Combine(Application.streamingAssetsPath, questSourceFolderName); }
+#endif
         }
 
         /// <summary>
@@ -132,7 +136,11 @@ namespace DaggerfallWorkshop.Game.Questing
         /// </summary>
         public string TablesSourceFolder
         {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            get { return Path.Combine(Application.persistentDataPath, questTablesFolderName); }
+#else
             get { return Path.Combine(Application.streamingAssetsPath, questTablesFolderName); }
+#endif
         }
 
         /// <summary>
@@ -719,10 +727,10 @@ namespace DaggerfallWorkshop.Game.Questing
         public void StartQuest(Quest quest)
         {
             quest.Start();
-            
+
             GameManager.Instance.TalkManager.AddQuestTopicWithInfoAndRumors(quest);
-            
-            quests.Add(quest.UID, quest);            
+
+            quests.Add(quest.UID, quest);
 
             RaiseOnQuestStartedEvent(quest);
 
@@ -1579,7 +1587,7 @@ namespace DaggerfallWorkshop.Game.Questing
         /// Gets array of stored exceptions.
         /// </summary>
         public StoredException[] GetStoredExceptions()
-        {   
+        {
             return storedExceptions.ToArray();
         }
 
@@ -1670,7 +1678,11 @@ namespace DaggerfallWorkshop.Game.Questing
             if (lines == null)
             {
                 // Get path to localized quest file and check it exists
+#if UNITY_ANDROID && !UNITY_EDITOR
+                string path = Path.Combine(Application.persistentDataPath, textFolderName, questsFolderName, filename);
+#else
                 string path = Path.Combine(Application.streamingAssetsPath, textFolderName, questsFolderName, filename);
+#endif
                 if (!File.Exists(path))
                     return false;
 

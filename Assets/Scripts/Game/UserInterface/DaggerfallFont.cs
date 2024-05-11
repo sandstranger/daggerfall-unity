@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -653,7 +653,11 @@ namespace DaggerfallWorkshop.Game.UserInterface
             const string otfExt = ".otf";
 
             // Compose path to font file
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string path = Path.Combine(Application.persistentDataPath, "Fonts", filename);
+#else
             string path = Path.Combine(Application.streamingAssetsPath, "Fonts", filename);
+#endif
 
             // Check file exists
             replacement = null;
@@ -714,8 +718,11 @@ namespace DaggerfallWorkshop.Game.UserInterface
         void LoadCustomFontChars(string filename, TMP_FontAsset replacement)
         {
             // Compose path to character file
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string path = Path.Combine(Application.persistentDataPath, "Fonts", filename);
+#else
             string path = Path.Combine(Application.streamingAssetsPath, "Fonts", filename);
-
+#endif
             // Check file exists
             if (!File.Exists(path))
                 return;

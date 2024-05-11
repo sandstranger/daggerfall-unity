@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Lypyl (Lypyl@dfworkshop.net), Gavin Clayton (interkarma@dfworkshop.net)
 // Contributors:    Numidium
-// 
+//
 // Notes:
 //
 
@@ -30,7 +30,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
         public bool Loop { get; set; }
 
         public bool TransparencyEnabled { get; set; }
-        
+
         public FlcFile FLCFile { get { return flcFile; } }
 
         public FLCPlayer()
@@ -49,7 +49,11 @@ namespace DaggerfallWorkshop.Game.UserInterface
             flcFile.TransparentBlue = tBlue;
 
             // Seek from loose files Movies or Arena2 path
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string moviePath = Path.Combine(Application.persistentDataPath, "Movies");
+#else
             string moviePath = Path.Combine(Application.streamingAssetsPath, "Movies");
+#endif
             string path = Path.Combine(moviePath, filename);
             if (!File.Exists(path))
                 path = Path.Combine(DaggerfallUnity.Instance.Arena2Path, filename);

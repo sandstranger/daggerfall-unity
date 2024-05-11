@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: TheLacus
 // Contributors:
-// 
+//
 // Notes:
 //
 
@@ -36,8 +36,11 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
         {
             if (relativePath == null)
                 throw new ArgumentNullException("relativePath");
-
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string path = Path.Combine(Application.persistentDataPath, relativePath);
+#else
             string path = Path.Combine(Application.streamingAssetsPath, relativePath);
+#endif
             if (File.Exists(path))
             {
                 content = File.ReadAllText(path);
@@ -88,8 +91,11 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
                 throw new ArgumentNullException("relativeDirectory");
 
             var content = new List<string>();
-
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string dirPath = Path.Combine(Application.persistentDataPath, relativeDirectory);
+#else
             string dirPath = Path.Combine(Application.streamingAssetsPath, relativeDirectory);
+#endif
             if (Directory.Exists(dirPath))
             {
                 foreach (string path in extension != null ? Directory.GetFiles(dirPath, string.Format("*.{0}", extension)) : Directory.GetFiles(dirPath))
@@ -133,7 +139,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
         {
             if (items == null)
                 throw new ArgumentNullException("items");
-            
+
             if (name == null)
                 throw new ArgumentNullException("name");
 

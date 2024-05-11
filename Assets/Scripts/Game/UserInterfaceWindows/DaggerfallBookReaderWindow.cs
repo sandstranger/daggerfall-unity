@@ -140,7 +140,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         }
 
         public void OpenBook(int id)
-        {   
+        {
             OpenBook(DaggerfallUnity.Instance.ItemHelper.GetBookFileName(id));
         }
 
@@ -254,7 +254,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                                 bookLabels.Add(CreateLabel(currentFont, currentAlignment, currentColor, token.text, currentScale));
                                 break;
                         }
-                        
+
                     }
                 }
             }
@@ -290,7 +290,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 return label;
 
             // Get path to localized book file and check it exists
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string path = Path.Combine(Application.persistentDataPath, textFolderName, bookImagesPath, filename);
+#else
             string path = Path.Combine(Application.streamingAssetsPath, textFolderName, bookImagesPath, filename);
+#endif
             if (!File.Exists(path))
                 return label;
 
@@ -357,7 +361,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 return output;
 
             // Fallback to 1.0 if parse failed
-            return 1.0f;            
+            return 1.0f;
         }
 
         #endregion

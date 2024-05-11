@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
 // Contributors:    Alyndiar
-// 
+//
 // Notes:
 //
 
@@ -228,7 +228,11 @@ namespace DaggerfallWorkshop.Game.UserInterface
         void LoadSpellIconPacks()
         {
             // Start with all the atlases in the spell icons streaming assets path
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string sourcePath = Path.Combine(Application.persistentDataPath, sourceFolderName);
+#else
             string sourcePath = Path.Combine(Application.streamingAssetsPath, sourceFolderName);
+#endif
             string[] atlasPaths = Directory.GetFiles(sourcePath, "*.png");
             if (atlasPaths != null && atlasPaths.Length != 0)
             {
@@ -261,7 +265,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
                         pack = CreateIconPackEmptyMetadata(atlasTexture, metadataPath);
                     }
                 }
-            }    
+            }
 
             // Import icon packs from mods with load order
             if (ModManager.Instance)

@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -100,7 +100,7 @@ namespace DaggerfallWorkshop.Game
 
         private void Awake()
         {
-            EnumerateTextDatabases();    
+            EnumerateTextDatabases();
         }
 
         private void Start()
@@ -689,7 +689,11 @@ namespace DaggerfallWorkshop.Game
         {
             // Get all text files in target path
             Debug.Log("TextManager enumerating text databases.");
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string path = Path.Combine(Application.persistentDataPath, textFolderName);
+#else
             string path = Path.Combine(Application.streamingAssetsPath, textFolderName);
+#endif
             string[] files = Directory.GetFiles(path, "*.txt");
 
             // Attempt to read each file as a table with a text schema

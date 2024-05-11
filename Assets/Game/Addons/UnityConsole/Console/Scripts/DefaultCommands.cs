@@ -714,7 +714,7 @@ namespace Wenzil.Console
                 else if (speed == -2)
                 {
                     speedChanger.ResetSpeed(true, false);
-                    return string.Format("Walk speed modifiers cleared. Walk speed is " + speedChanger.RefreshWalkSpeed().ToString()); 
+                    return string.Format("Walk speed modifiers cleared. Walk speed is " + speedChanger.RefreshWalkSpeed().ToString());
                 }
                 else
                 {
@@ -2415,8 +2415,11 @@ namespace Wenzil.Console
                     if (string.IsNullOrEmpty(args[i]))
                         continue;
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+                    string fullName = Path.Combine(Application.persistentDataPath, args[i]);
+#else
                     string fullName = Path.Combine(Application.streamingAssetsPath, args[i]);
-
+#endif
                     if (!fullName.EndsWith(".cs"))   //limiting to only .cs files isn't really necessary - any text file should work fine
                         return error;
 

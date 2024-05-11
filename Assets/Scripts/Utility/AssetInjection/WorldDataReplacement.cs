@@ -44,8 +44,11 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
 
         const int noReplacementIndicator = -1;
         const string worldData = "WorldData";
+#if UNITY_ANDROID && !UNITY_EDITOR
+        static readonly string worldDataPath = Path.Combine(Application.persistentDataPath, worldData);
+#else
         static readonly string worldDataPath = Path.Combine(Application.streamingAssetsPath, worldData);
-
+#endif
         // No replacement found indicator structures.
         static readonly DFRegion noReplacementRegion = new DFRegion() { LocationCount = 0 };    // Use 0 as it's a uint, and loc count should always be > 0
         static readonly DFLocation noReplacementLocation = new DFLocation() { LocationIndex = noReplacementIndicator };
@@ -214,7 +217,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
                     if (!LoadNewDFLocationVariant(regionIndex, locationIndex, variant))
                         locationVariantKey = locationKey.ToString();    // Fall back to non-variant if load fails
 
-                // If found, return a previously cached DFLocation 
+                // If found, return a previously cached DFLocation
                 if (locations.ContainsKey(locationVariantKey))
                 {
                     dfLocation = locations[locationVariantKey];

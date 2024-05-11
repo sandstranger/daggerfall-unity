@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -99,8 +99,13 @@ namespace DaggerfallWorkshop.Game
                 return true;
             }
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+            // Get path to localized book file and check it exists
+            string path = Path.Combine( Application.persistentDataPath, textFolderName, booksFolderName, filename);
+#else
             // Get path to localized book file and check it exists
             string path = Path.Combine(Application.streamingAssetsPath, textFolderName, booksFolderName, filename);
+#endif
             return File.Exists(path);
         }
 
@@ -177,14 +182,18 @@ namespace DaggerfallWorkshop.Game
             if (lines == null)
             {
                 // Get path to localized book file and check it exists
+#if UNITY_ANDROID && !UNITY_EDITOR
+                string path = Path.Combine(Application.persistentDataPath, textFolderName, booksFolderName, filename);
+#else
                 string path = Path.Combine(Application.streamingAssetsPath, textFolderName, booksFolderName, filename);
+#endif
                 if (!File.Exists(path))
                     return false;
 
                 // Attempt to load file from StreamingAssets/Text/Books
                 lines = File.ReadAllLines(path);
                 if (lines == null || lines.Length == 0)
-                    return false;   
+                    return false;
             }
 
             // Read file

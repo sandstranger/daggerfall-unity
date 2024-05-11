@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: TheLacus
 // Contributors:
-// 
+//
 // Notes:
 //
 
@@ -23,8 +23,11 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     /// </summary>
     public static class VideoReplacement
     {
+#if UNITY_ANDROID && !UNITY_EDITOR
+        static readonly string moviePath = Path.Combine(Application.persistentDataPath, "Movies");
+#else
         static readonly string moviePath = Path.Combine(Application.streamingAssetsPath, "Movies");
-
+#endif
 // https://docs.unity3d.com/Manual/VideoSources-FileCompatibility.html
 #if !UNITY_STANDALONE_LINUX
         static readonly string videoExtension = ".mp4";

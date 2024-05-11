@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: TheLacus
 // Contributors:
-// 
+//
 // Notes:
 //
 
@@ -89,7 +89,11 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
         const string extension = ".png";
 
         // Paths
+#if UNITY_ANDROID && !UNITY_EDITOR
+        static readonly string texturesPath = Path.Combine(Application.persistentDataPath, "Textures");
+#else
         static readonly string texturesPath = Path.Combine(Application.streamingAssetsPath, "Textures");
+#endif
         static readonly string imgPath = Path.Combine(texturesPath, "Img");
         static readonly string cifRciPath = Path.Combine(texturesPath, "CifRci");
 
@@ -362,7 +366,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
         /// <param name="tex">Imported texture.</param>
         /// <returns>True if texture imported.</returns>
         public static bool TryImportTextureFromLooseFiles(int archive, int record, int frame, TextureMap textureMap, bool readOnly, out Texture2D tex)
-        { 
+        {
             if (DaggerfallUnity.Settings.AssetInjection)
             {
                 string path = Path.Combine(texturesPath, GetName(archive, record, frame, textureMap));
@@ -370,7 +374,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
             }
 
             tex = null;
-            return false;           
+            return false;
         }
 
         /// <summary>
@@ -1323,4 +1327,3 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
         #endregion
     }
 }
- 

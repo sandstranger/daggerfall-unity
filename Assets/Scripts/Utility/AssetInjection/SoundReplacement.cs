@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: TheLacus
 // Contributors:
-// 
+//
 // Notes:
 //
 
@@ -23,9 +23,11 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     public static class SoundReplacement
     {
         #region Fields & Properties
-
+#if UNITY_ANDROID && !UNITY_EDITOR
+        static readonly string soundPath = Path.Combine(Application.persistentDataPath, "Sound");
+#else
         static readonly string soundPath = Path.Combine(Application.streamingAssetsPath, "Sound");
-
+#endif
         /// <summary>
         /// Path to custom sounds and songs on disk.
         /// </summary>

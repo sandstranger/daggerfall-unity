@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -383,8 +383,12 @@ namespace DaggerfallWorkshop
 
             // Finally, look for arena2 folder in StreamingAssets/GameFiles
             if (Application.isPlaying && !found)
-            { 
+            {
+#if UNITY_ANDROID && !UNITY_EDITOR
+                path = TestArena2Exists(Path.Combine(Application.persistentDataPath, "GameFiles"));
+#else
                 path = TestArena2Exists(Path.Combine(Application.streamingAssetsPath, "GameFiles"));
+#endif
                 if (!string.IsNullOrEmpty(path))
                     found = true;
             }

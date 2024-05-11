@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: TheLacus
 // Contributors:
-// 
+//
 // Notes:
 //
 
@@ -64,8 +64,11 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     public static class BookReplacement
     {
         #region Fields & Properties
-
+#if UNITY_ANDROID && !UNITY_EDITOR
+        static readonly string booksPath = Path.Combine(Application.persistentDataPath, "Books");
+#else
         static readonly string booksPath = Path.Combine(Application.streamingAssetsPath, "Books");
+#endif
         static readonly string mappingPath = Path.Combine(booksPath, "Mapping");
 
         internal static readonly Dictionary<int, BookMappingEntry> BookMappingEntries = new Dictionary<int, BookMappingEntry>();
@@ -133,7 +136,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
             }
 
             foreach (var entry in BookMappingEntries)
-                bookIDNameMapping.Add(entry.Key, entry.Value.Title); 
+                bookIDNameMapping.Add(entry.Key, entry.Value.Title);
         }
 
         /// <summary>

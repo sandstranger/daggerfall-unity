@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -378,7 +378,11 @@ namespace DaggerfallWorkshop.Game.Utility
                 string nameGenText = nameGenAsset.text;
 
                 // Look for a replacement NameGen file from StreamingAssets/Text
+#if UNITY_EDITOR && !UNITY_ANDROID
+                string streamingPath = Path.Combine(Application.persistentDataPath, textString, nameGenFilename + txtExt);
+#else
                 string streamingPath = Path.Combine(Application.streamingAssetsPath, textString, nameGenFilename + txtExt);
+#endif
                 if (File.Exists(streamingPath))
                     nameGenText = File.ReadAllText(streamingPath);
 

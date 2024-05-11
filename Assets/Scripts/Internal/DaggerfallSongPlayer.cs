@@ -59,7 +59,7 @@ namespace DaggerfallWorkshop
         float oldGain;
 
         bool isImported;
-        bool isLoading;     
+        bool isLoading;
 
         /// <summary>
         /// Gets peer AudioSource component.
@@ -285,7 +285,11 @@ namespace DaggerfallWorkshop
                 return null;
 
             // Check file exists
+#if UNITY_ANDROID && !UNITY_EDITOR
+            string path = Path.Combine(Application.persistentDataPath, sourceFolderName);
+#else
             string path = Path.Combine(Application.streamingAssetsPath, sourceFolderName);
+#endif
             string filePath = Path.Combine(path, filename);
             if (!File.Exists(filePath))
             {
