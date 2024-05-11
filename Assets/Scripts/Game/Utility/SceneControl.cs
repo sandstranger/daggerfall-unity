@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -20,8 +20,8 @@ namespace DaggerfallWorkshop.Game.Utility
     /// </summary>
     public class SceneControl : MonoBehaviour
     {
-        public const int StartupSceneIndex = 0;
-        public const int GameSceneIndex = 1;
+        public const int StartupSceneIndex = 1;
+        public const int GameSceneIndex = 2;
         public GameObject defaultSky = null;
 
         void Start()
