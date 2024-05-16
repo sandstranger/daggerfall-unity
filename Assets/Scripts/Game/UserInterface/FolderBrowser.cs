@@ -186,6 +186,9 @@ namespace DaggerfallWorkshop.Game.UserInterface
         {
             // Unix has no concept of logical drives, root is always the correct filesystem root
             drives.Clear();
+#if UNITY_ANDROID && !UNITY_EDITOR
+            drives.Add("/storage/emulated/0/");
+#else
             switch (SystemInfo.operatingSystemFamily)
             {
                 case OperatingSystemFamily.MacOSX:
@@ -196,7 +199,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
                     drives.AddRange(Directory.GetLogicalDrives());
                     break;
             }
-
+#endif
             if (drives.Count == 0)
                 return;
 
