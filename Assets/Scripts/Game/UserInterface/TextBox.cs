@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -48,7 +48,9 @@ namespace DaggerfallWorkshop.Game.UserInterface
         Vector2 cursorControlPos;
         Panel compositionPanel = new Panel();
         bool prevIMESelected;
-
+#if UNITY_ANDROID && !UNITY_EDITOR
+        private TouchScreenKeyboard _touchScreenKeyboard;
+#endif
         // Are those guaranteed to be strings of one character?
         readonly static char minus = CultureInfo.CurrentCulture.NumberFormat.NegativeSign[0];
         readonly static char dot = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
@@ -168,6 +170,16 @@ namespace DaggerfallWorkshop.Game.UserInterface
             // Panel drawn behind IME composition in progress
             compositionPanel.BackgroundColor = Color.blue;
             Components.Add(compositionPanel);
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+            OnMouseClick += (sender, vector2) =>
+            {
+                if ( !readOnly && (_touchScreenKeyboard == null || _touchScreenKeyboard.status != TouchScreenKeyboard.Status.Visible))
+                {
+                    _touchScreenKeyboard = TouchScreenKeyboard.Open(Text, TouchScreenKeyboardType.Default);
+                }
+            };
+#endif
         }
 
         public override void Update()
@@ -178,6 +190,12 @@ namespace DaggerfallWorkshop.Game.UserInterface
             if (readOnly || (UseFocus && !HasFocus()))
                 return;
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+            if (_touchScreenKeyboard != null && _touchScreenKeyboard.status == TouchScreenKeyboard.Status.Visible)
+            {
+                Text = _touchScreenKeyboard.text;
+            }
+#endif
             // SDF fonts can have different widths to classic so need to recalc cursor position any time this changes
             bool sdfState = font.IsSDFCapable;
             if (sdfState != previousSDFState)
