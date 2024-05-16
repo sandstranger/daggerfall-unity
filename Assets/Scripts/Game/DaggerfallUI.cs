@@ -1388,6 +1388,16 @@ namespace DaggerfallWorkshop.Game
         /// <returns>All supported distinct resolutions.</returns>
         public static Resolution[] GetDistinctResolutions()
         {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            return new Resolution[]
+            {
+                new Resolution()
+                {
+                    width = Screen.width,
+                    height = Screen.height
+                }
+            };
+#else
             Resolution[] resolutions = Screen.resolutions;
             var distinctResolutions = new List<Resolution>(resolutions.Length);
 
@@ -1406,6 +1416,7 @@ namespace DaggerfallWorkshop.Game
             }
 
             return distinctResolutions.ToArray();
+#endif
         }
 
         /// <summary>
