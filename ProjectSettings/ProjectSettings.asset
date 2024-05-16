@@ -132,7 +132,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 1.1.0
+  bundleVersion: 1.1.1
   preloadedAssets:
   - {fileID: 11400000, guid: b7df2f040b496394c82fa580d167aeb2, type: 2}
   metroInputSource: 0
@@ -185,7 +185,7 @@ PlayerSettings:
   buildNumber:
     iPhone: 0
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 20
+  AndroidMinSdkVersion: 19
   AndroidTargetSdkVersion: 29
   AndroidPreferredInstallLocation: 0
   aotOptions: 
