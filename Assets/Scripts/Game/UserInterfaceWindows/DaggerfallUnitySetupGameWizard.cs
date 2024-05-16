@@ -848,6 +848,13 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         private void ResolutionTestOrConfirmButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
         {
+            //there is no resolution selection for Android
+#if UNITY_ANDROID && !UNITY_EDITOR
+            QualitySettings.SetQualityLevel(qualityList.SelectedIndex);
+            DaggerfallUnity.Settings.Fullscreen = fullscreenCheckbox.IsChecked;
+            DaggerfallUnity.Settings.QualityLevel = qualityList.SelectedIndex;
+            moveNextStage = true;
+#else
             Resolution selectedResolution = availableResolutions[resolutionList.SelectedIndex];
             if (!resolutionConfirmed)
             {
@@ -864,6 +871,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 DaggerfallUnity.Settings.QualityLevel = qualityList.SelectedIndex;
                 moveNextStage = true;
             }
+#endif
         }
 
         private void OptionsConfirmButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
