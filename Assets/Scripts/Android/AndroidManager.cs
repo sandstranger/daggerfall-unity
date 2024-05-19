@@ -1,5 +1,9 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.IO;
 using UnityEngine;
+#if UNITY_ANDROID && !UNITY_EDITOR
+using UnityEngine.Networking;
+#endif
 using UnityEngine.SceneManagement;
 
 namespace DaggerfallWorkshop
@@ -9,15 +13,13 @@ namespace DaggerfallWorkshop
         private void Start()
         {
             RequestManageAllFilesAccess();
-
-            CopyStreamingAssetsToInternalMemory();
-
-            SceneManager.LoadScene(1);
+            StartCoroutine(CopyStreamingAssetsToInternalMemory());
         }
 
         //https://stackoverflow.com/a/76256946
         private void RequestManageAllFilesAccess()
         {
+#if UNITY_ANDROID && !UNITY_EDITOR
             using (var buildVersion = new AndroidJavaClass("android.os.Build$VERSION"))
             {
                 using (var buildCodes = new AndroidJavaClass("android.os.Build$VERSION_CODES"))
@@ -60,38 +62,52 @@ namespace DaggerfallWorkshop
                     }
                 }
             }
+#endif
         }
 
-        private void CopyStreamingAssetsToInternalMemory()
+        private IEnumerator CopyStreamingAssetsToInternalMemory()
         {
             const string assetsCopiedToInternalMemoryKey = "assets_were_copied_to_internal_memory";
 
             if (PlayerPrefs.GetInt(assetsCopiedToInternalMemoryKey, 0) != 0)
             {
-                return;
+                LoadGameScene();
+                yield break;
             }
-
-            BetterStreamingAssets.Initialize();
-
-            string[] paths = BetterStreamingAssets.GetFiles("\\", "*", SearchOption.AllDirectories);
-
-            foreach (var path in paths)
+#if UNITY_ANDROID && !UNITY_EDITOR
+            var paths = Resources.Load<TextAsset>("StreamingAssetsPaths");
+            foreach (var path in paths.text.Split('\n'))
             {
-                var directoryPath = Path.Combine(Application.persistentDataPath,Path.GetDirectoryName(path));
-
-                if (!Directory.Exists(directoryPath))
+                if (string.IsNullOrEmpty(path))
                 {
-                    Directory.CreateDirectory(directoryPath);
+                    continue;
                 }
 
-                var finalPathToAsset = Path.Combine(directoryPath, Path.GetFileName(path));
+                using (var loadingRequest = UnityWebRequest.Get(Path.Combine(Application.streamingAssetsPath, path)))
+                {
+                    var asyncOperation = loadingRequest.SendWebRequest();
 
-                var bytes = BetterStreamingAssets.ReadAllBytes(path);
+                    yield return asyncOperation;
 
-                File.WriteAllBytes(finalPathToAsset,bytes);
+                    var directoryPath = Path.Combine(Application.persistentDataPath,Path.GetDirectoryName(path));
+
+                    if (!Directory.Exists(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
+                    }
+
+                    var finalPathToAsset = Path.Combine(directoryPath, Path.GetFileName(path));
+                    File.WriteAllBytes(finalPathToAsset,loadingRequest.downloadHandler.data);
+                }
             }
-
+#endif
             PlayerPrefs.SetInt(assetsCopiedToInternalMemoryKey, 1);
+            LoadGameScene();
+        }
+
+        private void LoadGameScene()
+        {
+            SceneManager.LoadScene(1);
         }
     }
 }
