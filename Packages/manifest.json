@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.gwiazdorrr.betterstreamingassets": "https://github.com/gwiazdorrr/BetterStreamingAssets.git",
     "com.unity.addressables": "1.21.1",
     "com.unity.burst": "1.7.1",
     "com.unity.collab-proxy": "1.14.18",
