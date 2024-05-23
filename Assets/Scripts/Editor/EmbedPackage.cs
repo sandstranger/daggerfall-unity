@@ -40,6 +40,7 @@ namespace UnityEditor.Extensions
 
             string clickedAssetGuid = Selection.assetGUIDs[0];
             string clickedPath = AssetDatabase.GUIDToAssetPath(clickedAssetGuid);
+            Debug.Log(clickedPath);
             return clickedPath;
         }
     }
