@@ -8,7 +8,7 @@ PlayerSettings:
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
-  defaultScreenOrientation: 4
+  defaultScreenOrientation: 3
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
@@ -78,7 +78,6 @@ PlayerSettings:
   androidMinimumWindowWidth: 400
   androidMinimumWindowHeight: 300
   androidFullscreenMode: 1
-  androidAutoRotationBehavior: 1
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
   runInBackground: 1
@@ -164,7 +163,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.Company.ProductName
+    Android: net.dfworkshop.dfu
     Standalone: unity.Daggerfall Workshop.Daggerfall Unity
     Tizen: com.Company.ProductName
     iPhone: com.Company.ProductName
@@ -176,9 +175,9 @@ PlayerSettings:
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 22
+  AndroidMinSdkVersion: 23
   AndroidTargetSdkVersion: 0
-  AndroidPreferredInstallLocation: 1
+  AndroidPreferredInstallLocation: 0
   aotOptions: 
   stripEngineCode: 1
   iPhoneStrippingLevel: 0
@@ -746,6 +745,32 @@ PlayerSettings:
   ps4attribEyeToEyeDistanceSettingVR: 0
   ps4IncludedModules: []
   ps4attribVROutputEnabled: 0
+  ps5ParamFilePath: 
+  ps5VideoOutPixelFormat: 0
+  ps5VideoOutInitialWidth: 1920
+  ps5VideoOutOutputMode: 1
+  ps5BackgroundImagePath: 
+  ps5StartupImagePath: 
+  ps5Pic2Path: 
+  ps5StartupImagesFolder: 
+  ps5IconImagesFolder: 
+  ps5SaveDataImagePath: 
+  ps5SdkOverride: 
+  ps5BGMPath: 
+  ps5ShareOverlayImagePath: 
+  ps5NPConfigZipPath: 
+  ps5Passcode: frAQBc8Wsa1xVPfvJcrgRYwTiizs2trQ
+  ps5UseResolutionFallback: 0
+  ps5UseAudio3dBackend: 0
+  ps5ScriptOptimizationLevel: 2
+  ps5Audio3dVirtualSpeakerCount: 14
+  ps5VrrSupport: 0
+  ps5UpdateReferencePackage: 
+  ps5disableAutoHideSplash: 0
+  ps5OperatingSystemCanDisableSplashScreen: 0
+  ps5IncludedModules: []
+  ps5SharedBinaryContentLabels: []
+  ps5SharedBinarySystemFolders: []
   monoEnv: 
   splashScreenBackgroundSourceLandscape: {fileID: 21300000, guid: d483b68b21c8b9c4384cf358063d11c4,
     type: 3}
@@ -828,6 +853,7 @@ PlayerSettings:
   gcIncremental: 1
   gcWBarrierValidation: 0
   apiCompatibilityLevelPerPlatform:
+    Android: 3
     Standalone: 3
   m_RenderingPath: 3
   m_MobileRenderingPath: 1
