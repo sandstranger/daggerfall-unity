@@ -10,7 +10,7 @@ using System.IO;
 using System.Threading.Tasks;
 using DaggerfallConnect;
 using DaggerfallWorkshop.Utility.AssetInjection;
-using Unity.Plastic.Newtonsoft.Json;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
