@@ -186,15 +186,25 @@ namespace DaggerfallWorkshop.Game.UserInterface
         {
             // Unix has no concept of logical drives, root is always the correct filesystem root
             drives.Clear();
-            switch (SystemInfo.operatingSystemFamily)
+            if (Application.isMobilePlatform)
             {
-                case OperatingSystemFamily.MacOSX:
-                case OperatingSystemFamily.Linux:
-                    drives.Add("/");
-                    break;
-                default:
-                    drives.AddRange(Directory.GetLogicalDrives());
-                    break;
+                drives.Add(Application.dataPath);
+                drives.Add(Application.streamingAssetsPath);
+                drives.Add(Application.persistentDataPath);
+                drives.Add(Application.temporaryCachePath);
+            }
+            else
+            {
+                switch (SystemInfo.operatingSystemFamily)
+                {
+                    case OperatingSystemFamily.MacOSX:
+                    case OperatingSystemFamily.Linux:
+                        drives.Add("/");
+                        break;
+                    default:
+                        drives.AddRange(Directory.GetLogicalDrives());
+                        break;
+                }
             }
 
             if (drives.Count == 0)

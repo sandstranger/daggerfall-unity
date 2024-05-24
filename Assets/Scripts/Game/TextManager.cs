@@ -79,6 +79,8 @@ namespace DaggerfallWorkshop.Game
 
         #region Properties
 
+        private static TextManager _instance;
+
         /// <summary>
         /// Gets or sets name of StringTable collection to use in place of Internal_Strings.
         /// </summary>
@@ -103,14 +105,31 @@ namespace DaggerfallWorkshop.Game
 
         private void Awake()
         {
-            EnumerateTextDatabases();
+            // singleton pattern
+            if (_instance)
+            {
+                Destroy(this);
+                return;
+            }
+            else
+            {
+                _instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
         }
 
-        private void Start()
+        private System.Collections.IEnumerator Start()
         {
+            // register commands
             ConsoleCommandsDatabase.RegisterCommand(Locale_Print.name, Locale_Print.description, Locale_Print.usage, Locale_Print.Execute);
             ConsoleCommandsDatabase.RegisterCommand(Locale_Set.name, Locale_Set.description, Locale_Set.usage, Locale_Set.Execute);
             ConsoleCommandsDatabase.RegisterCommand(Locale_Debug.name, Locale_Debug.description, Locale_Debug.usage, Locale_Debug.Execute);
+
+            // enumerate databases
+            yield return EnumerateTextDatabases();
+
+            // continue to next scene
+            UnityEngine.SceneManagement.SceneManager.LoadScene(Utility.SceneControl.StartupSceneIndex);
         }
 
         #endregion
@@ -688,16 +707,19 @@ namespace DaggerfallWorkshop.Game
         /// <summary>
         /// Enumerate all available text databases.
         /// </summary>
-        protected void EnumerateTextDatabases()
+        protected System.Collections.IEnumerator EnumerateTextDatabases()
         {
             // Get all text files in target path
             Debug.Log("TextManager enumerating text databases.");
             List<string> files = new List<string>();
             if (Application.platform == RuntimePlatform.Android)
             {
-                TextAsset paths = Resources.Load<TextAsset>("StreamingAssetPaths");
+                TextAsset paths = Resources.Load<TextAsset>("StreamingAssetsPaths");
                 if (paths == null)
-                    return;
+                {
+                    Debug.LogError("StreamingAssetsPaths not found");
+                    yield break;
+                }
                 string fs = paths.text;
                 string[] fLines = Regex.Split(fs, "\n|\r|\r\n");
                 foreach (string line in fLines)
@@ -712,61 +734,78 @@ namespace DaggerfallWorkshop.Game
             }
 
             // Attempt to read each file as a table with a text schema
+            IEnumerable<string> databaseNames = files.Select(s => Path.GetFileNameWithoutExtension(s));
             foreach (string file in files)
             {
-                try
-                {
-                    Debug.Log("1");
-                    // Create table from text file
-                    Table table = null;
-                    if (Application.platform == RuntimePlatform.Android)
-                        table = ReadTableOnAndroid(file);
-                    else
-                        table = new Table(File.ReadAllLines(file));
+                StartCoroutine(AddTableFromFileCoroutine(file));
+            }
 
-                    Debug.Log("2");
-                    // Get database key from filename
-                    string databaseName = Path.GetFileNameWithoutExtension(file);
-                    if (HasDatabase(databaseName))
-                        throw new Exception(string.Format("TextManager database name {0} already exists.", databaseName));
+            // wait until all tables are added (or a 5 second timeout elapses) before continuing
+            float startTime = Time.time;
+            yield return new WaitUntil(() => Time.time - startTime > 5 || databaseNames.All(p => textDatabases.ContainsKey(p)));
+        }
 
-                    Debug.Log("3");
-                    // Assign database to collection
-                    textDatabases.Add(databaseName, table);
-                    Debug.LogFormat("TextManager read text database table {0} with {1} rows", databaseName, table.RowCount);
-                }
-                catch (Exception ex)
+        System.Collections.IEnumerator ReadTextFromFileAsset(string fileName, System.Action<string> onGotData)
+        {
+            string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
+
+            string data = null;
+            if (filePath.Contains("://") || filePath.Contains(":///"))
+            {
+                // Use UnityWebRequest for Android or WebGL where file:// access is not supported
+                UnityWebRequest request = UnityWebRequest.Get(filePath);
+                yield return request.SendWebRequest();
+                if (request.result != UnityWebRequest.Result.Success)
                 {
-                    Debug.LogFormat("TextManager unable to parse text database table {0} with exception message {1}", file, ex.Message);
-                    continue;
+                    Debug.LogError("Error reading file: " + request.error);
                 }
+                else
+                {
+                    data = request.downloadHandler.text;
+                }
+            }
+            else
+            {
+                // Use System.IO for platforms that support direct file access
+                if (File.Exists(filePath))
+                {
+                    data = File.ReadAllText(filePath);
+                }
+                else
+                {
+                    Debug.LogError("File not found: " + filePath);
+                }
+            }
+
+            if (data != null)
+            {
+                Debug.Log("File content:\n" + data);
+                onGotData?.Invoke(data);
             }
         }
 
-        /// <summary>
-        /// Reads a table from a text file on Android using WWW
-        /// <param name="file">The filename without the full APK path, e.g. Quests\QUEST1.TXT</param>
-        /// <returns> Table object, null if failure </returns>
-        /// </summary>
-        private Table ReadTableOnAndroid(string file)
+        private System.Collections.IEnumerator AddTableFromFileCoroutine(string file)
         {
-            Table result = null;
-            file = Path.Combine(Application.streamingAssetsPath, file);
-            Debug.Log($"Attempting to load {file}");
-            UnityWebRequest loadingRequest = UnityWebRequest.Get(file);
-            loadingRequest.SendWebRequest();
-            while (!loadingRequest.isDone)
-                if (loadingRequest.isNetworkError || loadingRequest.isHttpError) break;
+            Table table = null;
+            yield return ReadTextFromFileAsset(file, delegate (string txt) { table = new Table(txt.Split('\n')); });
 
-            if (loadingRequest.isNetworkError || loadingRequest.isHttpError)
+            try
             {
-                Debug.LogError($"TextManager unable to read text database table {file} with error {loadingRequest.error}");
-                return result;
-            }
+                Debug.Log("2");
+                // Get database key from filename
+                string databaseName = Path.GetFileNameWithoutExtension(file);
+                if (HasDatabase(databaseName))
+                    throw new Exception(string.Format("TextManager database name {0} already exists.", databaseName));
 
-            string[] lines = loadingRequest.downloadHandler.text.Split('\n');
-            result = new Table(lines);
-            return result;
+                Debug.Log("3");
+                // Assign database to collection
+                textDatabases.Add(databaseName, table);
+                Debug.LogFormat("TextManager read text database table {0} with {1} rows", databaseName, table.RowCount);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogFormat("TextManager unable to parse text database table {0} with exception message {1}", file, ex.Message);
+            }
         }
 
         #endregion

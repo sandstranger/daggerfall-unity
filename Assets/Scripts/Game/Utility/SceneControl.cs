@@ -20,8 +20,9 @@ namespace DaggerfallWorkshop.Game.Utility
     /// </summary>
     public class SceneControl : MonoBehaviour
     {
-        public const int StartupSceneIndex = 0;
-        public const int GameSceneIndex = 1;
+        public const int InitializationSceneIndex = 0;
+        public const int StartupSceneIndex = 1;
+        public const int GameSceneIndex = 2;
         public GameObject defaultSky = null;
 
         void Start()

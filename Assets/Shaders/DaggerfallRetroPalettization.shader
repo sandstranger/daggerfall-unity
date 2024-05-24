@@ -44,7 +44,7 @@
 			}
 			
 			sampler2D _MainTex;
-            sampler2D _CameraDepthTexture;
+            UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
             sampler3D _Lut;
             
 	        fixed4 frag (v2f i) : SV_Target
