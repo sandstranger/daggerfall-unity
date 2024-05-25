@@ -417,3 +417,6 @@ MonoBehaviour:
   - {fileID: 4900000, guid: 7c3b9cf9938cb457ea5681a254d3bfe1, type: 3}
   - {fileID: 4900000, guid: 01e8e39aa1e4443f28e3448424124840, type: 3}
   - {fileID: 4900000, guid: 4fd69d8102c1e49e8a1dbe16c40f8db7, type: 3}
+  spellIcons:
+  - spellIcons: {fileID: 2800000, guid: 4bec3ac7da08b4c52af086778d2c002c, type: 3}
+    metadata: {fileID: 4900000, guid: 260c78c31ea2c46198f68f46e4f52536, type: 3}

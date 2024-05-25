@@ -227,6 +227,29 @@ namespace DaggerfallWorkshop.Game.UserInterface
         /// </summary>
         void LoadSpellIconPacks()
         {
+            if (Application.isMobilePlatform)
+            {
+                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
+                foreach (GameDataAssetsSO.SpellIconData spellIconData in gameData.spellIcons)
+                {
+                    TextAsset metadata = spellIconData.metadata;
+                    Texture2D atlas = spellIconData.spellIcons;
+
+                    SpellIconPack pack = SaveLoadManager.Deserialize(typeof(SpellIconPack), metadata.text) as SpellIconPack;
+
+                    // Might need to generate empty icon settings
+                    if (pack.icons == null)
+                    {
+                        Debug.LogWarning($"LoadSpellIconPacks(): Generating empty icon settings for pack {metadata.name}");
+                        CreateEmptyIconSettings(pack);
+                    }
+
+                    string packKey = metadata.name;
+                    if(TryLoadPackIcons(pack, atlas))
+                        spellIconPacks.Add(packKey, pack);
+                }
+                return; // early termination. TODO: remove this when we add mod support to Android
+            }
             // Start with all the atlases in the spell icons streaming assets path
             string sourcePath = Path.Combine(Application.streamingAssetsPath, sourceFolderName);
             string[] atlasPaths = Directory.GetFiles(sourcePath, "*.png");

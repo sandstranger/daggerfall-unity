@@ -11,5 +11,12 @@ public class GameDataAssetsSO : ScriptableObject
     public List<TextAsset> tables = new List<TextAsset>();
     public List<TextAsset> text = new List<TextAsset>();
     public List<TextAsset> books = new List<TextAsset>();
-    //public TextAsset[] spellIcons;
+    public List<SpellIconData> spellIcons = new List<SpellIconData>();
+
+    [System.Serializable]
+    public struct SpellIconData
+    {
+        public Texture2D spellIcons;
+        public TextAsset metadata;
+    }
 }
