@@ -675,25 +675,39 @@ namespace DaggerfallWorkshop.Game.UserInterface
                 replacement = TMP_FontAsset.CreateFontAsset(ttfFontFromMods, 45, 6, UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA, 4096, 4096, AtlasPopulationMode.Dynamic);
             }
 
-            // Compose path to font file
-            var path = Path.Combine(Application.streamingAssetsPath, "Fonts", filename);
-
-            if (replacement == null)
+            if (Application.isMobilePlatform)
             {
-                // Check file exists
-                replacement = null;
-                if (File.Exists(path + ttfExt))
-                    path += ttfExt;
-                else if (File.Exists(path + otfExt))
-                    path += otfExt;
-                else
+                // get font from game data assets scriptable object
+                string fileNoExt = Path.GetFileNameWithoutExtension(filename);
+                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
+                if (!gameData.fonts.Exists(p => p.name == fileNoExt))
                     return false;
-
+                TextAsset fontAsset = gameData.fonts.Find(p => p.name == fileNoExt);
                 // Create replacement TMP font asset from path
-                Font replacementFont = new Font(path);
+                Font replacementFont = new Font(fontAsset.text);
                 replacement = TMP_FontAsset.CreateFontAsset(replacementFont, 45, 6, UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA, 4096, 4096, AtlasPopulationMode.Dynamic);
             }
+            else
+            {
+                // Compose path to font file
+                var path = Path.Combine(Application.streamingAssetsPath, "Fonts", filename);
 
+                if (replacement == null)
+                {
+                    // Check file exists
+                    replacement = null;
+                    if (File.Exists(path + ttfExt))
+                        path += ttfExt;
+                    else if (File.Exists(path + otfExt))
+                        path += otfExt;
+                    else
+                        return false;
+
+                    // Create replacement TMP font asset from path
+                    Font replacementFont = new Font(path);
+                    replacement = TMP_FontAsset.CreateFontAsset(replacementFont, 45, 6, UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA, 4096, 4096, AtlasPopulationMode.Dynamic);
+                }
+            }
             if (replacement == null)
                 return false;
 
@@ -723,7 +737,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
             }
 
             // Attempt to add user-specified unicode characters from a source file
-            LoadCustomFontChars(Path.GetFileNameWithoutExtension(path) + ".txt", replacement);
+            LoadCustomFontChars(Path.GetFileNameWithoutExtension(filename) + ".txt", replacement);
 
             return true;
         }
@@ -740,15 +754,31 @@ namespace DaggerfallWorkshop.Game.UserInterface
         /// <param name="replacement"></param>
         void LoadCustomFontChars(string filename, TMP_FontAsset replacement)
         {
-            // Compose path to character file
-            string path = Path.Combine(Application.streamingAssetsPath, "Fonts", filename);
+            string text;
 
-            // Check file exists
-            if (!File.Exists(path))
-                return;
+            if (Application.isMobilePlatform)
+            {
+                // get font from game data assets scriptable object
+                string fileNoExt = Path.GetFileNameWithoutExtension(filename);
+                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
+                if (!gameData.fonts.Exists(p => p.name == fileNoExt))
+                    return;
+                TextAsset fontAsset = gameData.fonts.Find(p => p.name == fileNoExt);
+                text = fontAsset.text;
+            }
+            else
+            {
+                // Compose path to character file
+                string path = Path.Combine(Application.streamingAssetsPath, "Fonts", filename);
 
-            // Attempt to add unicode characters from source file
-            string text = File.ReadAllText(path);
+                // Check file exists
+                if (!File.Exists(path))
+                    return;
+
+                // Attempt to add unicode characters from source file
+                text = File.ReadAllText(path);
+            }
+
             if (!string.IsNullOrEmpty(text))
             {
                 // Read unicodes from source file

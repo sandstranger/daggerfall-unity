@@ -106,6 +106,9 @@ namespace DaggerfallWorkshop.Game.Questing
 
         public void DiscoverQuestPackLists()
         {
+            if (Application.isMobilePlatform)
+                return;
+
             string[] listFiles = Directory.GetFiles(QuestPacksFolder, QuestListPattern, SearchOption.AllDirectories);
             foreach (string listFile in listFiles)
                 if (!RegisterQuestList(listFile))

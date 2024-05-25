@@ -13,8 +13,6 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using DaggerfallWorkshop.Utility;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -23,7 +21,7 @@ using DaggerfallWorkshop.Game.UserInterface;
 using DaggerfallWorkshop.Game.Entity;
 using UnityEngine.Localization.Tables;
 using DaggerfallWorkshop.Game.MagicAndEffects;
-using UnityEngine.Networking;
+using System.Linq;
 
 namespace DaggerfallWorkshop.Game
 {
@@ -79,8 +77,6 @@ namespace DaggerfallWorkshop.Game
 
         #region Properties
 
-        private static TextManager _instance;
-
         /// <summary>
         /// Gets or sets name of StringTable collection to use in place of Internal_Strings.
         /// </summary>
@@ -105,31 +101,16 @@ namespace DaggerfallWorkshop.Game
 
         private void Awake()
         {
-            // singleton pattern
-            if (_instance)
-            {
-                Destroy(this);
-                return;
-            }
-            else
-            {
-                _instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
+            EnumerateTextDatabases();
         }
 
-        private System.Collections.IEnumerator Start()
+        private void Start()
         {
             // register commands
             ConsoleCommandsDatabase.RegisterCommand(Locale_Print.name, Locale_Print.description, Locale_Print.usage, Locale_Print.Execute);
             ConsoleCommandsDatabase.RegisterCommand(Locale_Set.name, Locale_Set.description, Locale_Set.usage, Locale_Set.Execute);
             ConsoleCommandsDatabase.RegisterCommand(Locale_Debug.name, Locale_Debug.description, Locale_Debug.usage, Locale_Debug.Execute);
 
-            // enumerate databases
-            yield return EnumerateTextDatabases();
-
-            // continue to next scene
-            UnityEngine.SceneManagement.SceneManager.LoadScene(Utility.SceneControl.StartupSceneIndex);
         }
 
         #endregion
@@ -707,104 +688,46 @@ namespace DaggerfallWorkshop.Game
         /// <summary>
         /// Enumerate all available text databases.
         /// </summary>
-        protected System.Collections.IEnumerator EnumerateTextDatabases()
+        protected void EnumerateTextDatabases()
         {
             // Get all text files in target path
             Debug.Log("TextManager enumerating text databases.");
-            List<string> files = new List<string>();
-            if (Application.platform == RuntimePlatform.Android)
+
+            IEnumerable<KeyValuePair<string, string>> databases;
+            if (Application.isMobilePlatform)
             {
-                TextAsset paths = Resources.Load<TextAsset>("StreamingAssetsPaths");
-                if (paths == null)
-                {
-                    Debug.LogError("StreamingAssetsPaths not found");
-                    yield break;
-                }
-                string fs = paths.text;
-                string[] fLines = Regex.Split(fs, "\n|\r|\r\n");
-                foreach (string line in fLines)
-                    if (line.Length > 0 && line.ToLower().TrimEnd().EndsWith(".txt"))
-                        files.Add(line.Replace('\\', '/'));
+                // Load game data assets
+                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
+                databases = gameData.text.Select(asset => new KeyValuePair<string, string>(asset.name, asset.text));
             }
             else
             {
+                // Load files
                 string path = Path.Combine(Application.streamingAssetsPath, textFolderName);
-                foreach (string file in Directory.GetFiles(path, "*.txt"))
-                    files.Add(file);
+                databases = Directory.GetFiles(path, "*.txt")
+                                     .Select(file => new KeyValuePair<string, string>(Path.GetFileNameWithoutExtension(file), File.ReadAllText(file)));
             }
 
-            // Attempt to read each file as a table with a text schema
-            IEnumerable<string> databaseNames = files.Select(s => Path.GetFileNameWithoutExtension(s));
-            foreach (string file in files)
+            foreach (var db in databases)
             {
-                StartCoroutine(AddTableFromFileCoroutine(file));
-            }
-
-            // wait until all tables are added (or a 5 second timeout elapses) before continuing
-            float startTime = Time.time;
-            yield return new WaitUntil(() => Time.time - startTime > 5 || databaseNames.All(p => textDatabases.ContainsKey(p)));
-        }
-
-        System.Collections.IEnumerator ReadTextFromFileAsset(string fileName, System.Action<string> onGotData)
-        {
-            string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
-
-            string data = null;
-            if (filePath.Contains("://") || filePath.Contains(":///"))
-            {
-                // Use UnityWebRequest for Android or WebGL where file:// access is not supported
-                UnityWebRequest request = UnityWebRequest.Get(filePath);
-                yield return request.SendWebRequest();
-                if (request.result != UnityWebRequest.Result.Success)
+                try
                 {
-                    Debug.LogError("Error reading file: " + request.error);
+                    // Create table from text file
+                    Table table = new Table(db.Value.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries));
+
+                    // Check for existing database name
+                    if (HasDatabase(db.Key))
+                        throw new Exception($"TextManager database name {db.Key} already exists.");
+
+                    // Assign database to collection
+                    textDatabases.Add(db.Key, table);
+                    Debug.LogFormat("TextManager read text database table {0} with {1} rows", db.Key, table.RowCount);
                 }
-                else
+                catch (Exception ex)
                 {
-                    data = request.downloadHandler.text;
+                    Debug.LogFormat("TextManager unable to parse text database table {0} with exception message {1}", db.Key, ex.Message);
+                    continue;
                 }
-            }
-            else
-            {
-                // Use System.IO for platforms that support direct file access
-                if (File.Exists(filePath))
-                {
-                    data = File.ReadAllText(filePath);
-                }
-                else
-                {
-                    Debug.LogError("File not found: " + filePath);
-                }
-            }
-
-            if (data != null)
-            {
-                Debug.Log("File content:\n" + data);
-                onGotData?.Invoke(data);
-            }
-        }
-
-        private System.Collections.IEnumerator AddTableFromFileCoroutine(string file)
-        {
-            Table table = null;
-            yield return ReadTextFromFileAsset(file, delegate (string txt) { table = new Table(txt.Split('\n')); });
-
-            try
-            {
-                Debug.Log("2");
-                // Get database key from filename
-                string databaseName = Path.GetFileNameWithoutExtension(file);
-                if (HasDatabase(databaseName))
-                    throw new Exception(string.Format("TextManager database name {0} already exists.", databaseName));
-
-                Debug.Log("3");
-                // Assign database to collection
-                textDatabases.Add(databaseName, table);
-                Debug.LogFormat("TextManager read text database table {0} with {1} rows", databaseName, table.RowCount);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogFormat("TextManager unable to parse text database table {0} with exception message {1}", file, ex.Message);
             }
         }
 

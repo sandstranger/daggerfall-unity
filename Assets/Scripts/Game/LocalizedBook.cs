@@ -88,8 +88,15 @@ namespace DaggerfallWorkshop.Game
         /// <returns>True if localized book file exists for this filename.</returns>
         public static bool Exists(string filename)
         {
-            // Append -LOC if missing from filename
             string fileNoExt = Path.GetFileNameWithoutExtension(filename);
+
+            if (Application.isMobilePlatform)
+            {
+                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
+                return gameData.books.Exists(p => p.name == fileNoExt);
+            }
+
+            // Append -LOC if missing from filename
             if (!fileNoExt.EndsWith(localizedFilenameSuffix))
                 filename = fileNoExt + localizedFilenameSuffix + fileExtension;
 

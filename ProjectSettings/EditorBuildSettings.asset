@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/DaggerfallInitialization.unity
-    guid: d65022070cbf54824a43b992a0de0494
-  - enabled: 1
     path: Assets/Scenes/DaggerfallUnityStartup.unity
     guid: 168aaa8ff9c904c27b84ddc0074a28b1
   - enabled: 1
