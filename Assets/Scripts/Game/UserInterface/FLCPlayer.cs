@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -49,7 +49,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
             flcFile.TransparentBlue = tBlue;
 
             // Seek from loose files Movies or Arena2 path
-            string moviePath = Path.Combine(Application.streamingAssetsPath, "Movies");
+            string moviePath = Path.Combine(Paths.StreamingAssetsPath, "Movies");
             string path = Path.Combine(moviePath, filename);
             if (!File.Exists(path))
                 path = Path.Combine(DaggerfallUnity.Instance.Arena2Path, filename);

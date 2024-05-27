@@ -41,7 +41,7 @@ namespace DaggerfallConnect.Arena2
 
         public static string BIOGSourceFolder
         {
-            get { return Path.Combine(Application.streamingAssetsPath, biogSourceFolderName); }
+            get { return Path.Combine(Paths.StreamingAssetsPath, biogSourceFolderName); }
         }
 
         public BiogFile(CharacterDocument characterDocument)
@@ -50,17 +50,9 @@ namespace DaggerfallConnect.Arena2
             this.characterDocument = characterDocument;
 
             // Load text file
-            string fileName = $"BIOG{characterDocument.classIndex:D2}T{characterDocument.biographyIndex}";
-            if (Application.isMobilePlatform)
-            {
-                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
-                questionsStr = gameData.biogs.Find(p => p.name == fileName).text;
-            }
-            else
-            {
-                FileProxy txtFile = new FileProxy(Path.Combine(BiogFile.BIOGSourceFolder, $"{fileName}.TXT"), FileUsage.UseDisk, true);
-                questionsStr = System.Text.Encoding.UTF8.GetString(txtFile.GetBytes());
-            }
+            string fileName = $"BIOG{characterDocument.classIndex:D2}T{characterDocument.biographyIndex}.TXT";
+            FileProxy txtFile = new FileProxy(Path.Combine(BiogFile.BIOGSourceFolder, fileName), FileUsage.UseDisk, true);
+            questionsStr = System.Text.Encoding.UTF8.GetString(txtFile.GetBytes());
 
             // Parse text into questions
             StringReader reader = new StringReader(questionsStr);

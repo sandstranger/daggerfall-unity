@@ -27,7 +27,7 @@ namespace DaggerfallWorkshop.Game.Addons.RmbBlockEditor
         // Make this a singleton class
         private PersistedSettings()
         {
-            directoryPath = Application.dataPath + SettingsDirectory;
+            directoryPath = Paths.DataPath + SettingsDirectory;
             filePath = directoryPath + SettingsFileName;
         }
 

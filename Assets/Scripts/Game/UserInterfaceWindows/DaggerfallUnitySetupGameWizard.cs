@@ -268,6 +268,13 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             // Disable previous stage
             browserPanel.Enabled = false;
 
+            if (Application.isMobilePlatform)
+            {
+                // changing resolution breaks android
+                ShowNextStage();
+                return;
+            }
+
             // Get resolutions
             initialResolution = Screen.currentResolution;
             availableResolutions = DaggerfallUI.GetDistinctResolutions();

@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -378,7 +378,7 @@ namespace DaggerfallWorkshop.Game.Utility
                 string nameGenText = nameGenAsset.text;
 
                 // Look for a replacement NameGen file from StreamingAssets/Text
-                string streamingPath = Path.Combine(Application.streamingAssetsPath, textString, nameGenFilename + txtExt);
+                string streamingPath = Path.Combine(Paths.StreamingAssetsPath, textString, nameGenFilename + txtExt);
                 if (File.Exists(streamingPath))
                     nameGenText = File.ReadAllText(streamingPath);
 

@@ -18,9 +18,9 @@ namespace DaggerfallWorkshop.Game.Addons.RmbBlockEditor
 {
     public class PersistedBuildingsCatalog
     {
-        private string SettingsDirectory = $"{Application.dataPath}/Editor/Settings/RmbBlockEditor/";
+        private string SettingsDirectory = $"{Paths.DataPath}/Editor/Settings/RmbBlockEditor/";
         private string CatalogFile =
-            $"{Application.dataPath}/Editor/Settings/RmbBlockEditor/buildings-catalog.json";
+            $"{Paths.DataPath}/Editor/Settings/RmbBlockEditor/buildings-catalog.json";
         private string DefaultCatalog =
             $"{Environment.CurrentDirectory}/Assets/Game/Addons/RmbBlockEditor/Persisted/DefaultBuildingsCatalog.json";
 

@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -95,9 +95,9 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings
             minSize = new Vector2(1000, 500);
 
             saveOnExit = EditorPrefs.GetBool(Prefs.SaveOnExit, true);
-            rootPath = Path.Combine(Path.Combine(Application.dataPath, "Game"), "Mods");
+            rootPath = Path.Combine(Path.Combine(Paths.DataPath, "Game"), "Mods");
             targetPath = EditorPrefs.GetString(Prefs.CurrentTarget, rootPath);
-            textPath = Path.Combine(Path.Combine(Application.dataPath, "StreamingAssets"), "Text");
+            textPath = Path.Combine(Path.Combine(Paths.DataPath, "StreamingAssets"), "Text");
 
             if (!string.IsNullOrEmpty(targetPath) && targetPath != rootPath)
                 Load();

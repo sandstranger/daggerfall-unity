@@ -290,7 +290,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 return label;
 
             // Get path to localized book file and check it exists
-            string path = Path.Combine(Application.streamingAssetsPath, textFolderName, bookImagesPath, filename);
+            string path = Path.Combine(Paths.StreamingAssetsPath, textFolderName, bookImagesPath, filename);
             if (!File.Exists(path))
                 return label;
 

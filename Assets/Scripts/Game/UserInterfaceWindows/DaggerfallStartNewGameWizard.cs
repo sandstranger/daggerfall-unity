@@ -412,22 +412,10 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             {
                 // Pick a biography template, 0 by default
                 // Classic only has a T0 template for each class, but mods can add more
-                IEnumerable<Match> biogMatches;
-                if (Application.isMobilePlatform)
-                {
-                    Regex reg = new Regex($"BIOG{characterDocument.classIndex:D2}T([0-9]+)");
-                    GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
-                    biogMatches = gameData.biogs
-                        .Select(textAsset => reg.Match(textAsset.name))
-                        .Where(FileMatch => FileMatch.Success);
-                }
-                else
-                {
-                    Regex reg = new Regex($"BIOG{characterDocument.classIndex:D2}T([0-9]+).TXT");
-                    biogMatches = Directory.EnumerateFiles(BiogFile.BIOGSourceFolder, "*.TXT")
-                        .Select(FilePath => reg.Match(FilePath))
-                        .Where(FileMatch => FileMatch.Success);
-                }
+                Regex reg = new Regex($"BIOG{characterDocument.classIndex:D2}T([0-9]+).TXT");
+                IEnumerable<Match> biogMatches = Directory.EnumerateFiles(BiogFile.BIOGSourceFolder, "*.TXT")
+                    .Select(FilePath => reg.Match(FilePath))
+                    .Where(FileMatch => FileMatch.Success);
 
                 // For now, we choose at random between all available ones
                 // Maybe eventually, have a window for selecting a biography template when more than 1 is available?

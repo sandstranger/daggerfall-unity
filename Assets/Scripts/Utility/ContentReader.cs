@@ -272,7 +272,7 @@ namespace DaggerfallWorkshop.Utility
         /// <returns>Full path to file.</returns>
         public string GetFactionFilePath()
         {
-            string path = Path.Combine(Application.streamingAssetsPath, "Factions");
+            string path = Path.Combine(Paths.StreamingAssetsPath, "Factions");
             return Path.Combine(path, FactionFile.Filename);
         }
 

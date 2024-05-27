@@ -191,9 +191,9 @@ namespace DaggerfallWorkshop.Game.UserInterface
             drives.Clear();
             if (Application.isMobilePlatform)
             {
-                drives.Add(Application.dataPath);
-                drives.Add(Application.streamingAssetsPath);
-                drives.Add(Application.persistentDataPath);
+                drives.Add(Paths.DataPath);
+                drives.Add(Paths.StreamingAssetsPath);
+                drives.Add(Paths.PersistentDataPath);
                 drives.Add(Application.temporaryCachePath);
             }
             else
@@ -223,7 +223,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
         private void OnFilePicked(string filePath)
         {
             // extract zip and load the files
-            string outputPath = Path.Combine(Application.persistentDataPath, daggerfallDataDirName);
+            string outputPath = Path.Combine(Paths.PersistentDataPath, daggerfallDataDirName);
             UnzipFile(filePath, outputPath);
             currentPath = outputPath;
             RaisePathChangedEvent();
@@ -288,7 +288,9 @@ namespace DaggerfallWorkshop.Game.UserInterface
 
             if (!hasPickedFile && Application.isMobilePlatform)
             {
-                string dataPath = Path.Combine(Application.persistentDataPath, daggerfallDataDirName);
+                // initiate file picker for user-supplied daggerfall arena2 zip folder
+                // TODO: Edit the UI to indicate to the user this is happening, have them press a button to initiate it.
+                string dataPath = Path.Combine(Paths.PersistentDataPath, daggerfallDataDirName);
                 string pathResult = DaggerfallUnity.TestArena2Exists(dataPath);
                 DaggerfallConnect.Utility.DFValidator.ValidationResults validationResults;
                 DaggerfallConnect.Utility.DFValidator.ValidateArena2Folder(pathResult, out validationResults, true);

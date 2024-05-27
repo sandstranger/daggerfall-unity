@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -127,7 +127,7 @@ namespace DaggerfallWorkshop
             try
             {
                 // Attempt to load distribution name file
-                string distributionFilePath = Path.Combine(Application.dataPath, "dist.suf");
+                string distributionFilePath = Path.Combine(Paths.DataPath, "dist.suf");
                 if (File.Exists(distributionFilePath))
                 {
                     distributionSuffix = File.ReadAllText(distributionFilePath);

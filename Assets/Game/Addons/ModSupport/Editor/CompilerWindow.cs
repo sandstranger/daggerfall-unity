@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -63,7 +63,7 @@ namespace DaggerfallWorkshop.Game.Utility
 
             if (GUILayout.Button("Add File"))
             {
-                path = EditorUtility.OpenFilePanelWithFilters("", Application.dataPath, new string[] { "CSharp", "cs" });
+                path = EditorUtility.OpenFilePanelWithFilters("", Paths.DataPath, new string[] { "CSharp", "cs" });
                 if (filesToCompile.Contains(path))
                 {
                     Debug.Log("This file is already selected");
@@ -82,7 +82,7 @@ namespace DaggerfallWorkshop.Game.Utility
             {
                 EditorGUILayout.LabelField("Output Path:");
                 if (GUILayout.Button(outputPathIsSet ? outputPath : "<select>"))
-                    outputPath = EditorUtility.SaveFilePanel("Output Path", Application.dataPath, "Assembly", "dll");
+                    outputPath = EditorUtility.SaveFilePanel("Output Path", Paths.DataPath, "Assembly", "dll");
 
                 EditorGUILayout.Space();
             }

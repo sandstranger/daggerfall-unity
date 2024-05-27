@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -52,7 +52,7 @@ public class StringTableCSVParser
                 filename += csvExt;
 
             // Load patch file if present
-            string path = Path.Combine(Application.streamingAssetsPath, textString, filename);
+            string path = Path.Combine(DaggerfallWorkshop.Paths.StreamingAssetsPath, textString, filename);
             if (File.Exists(path))
                 csvText = ReadAllText(path);
             else

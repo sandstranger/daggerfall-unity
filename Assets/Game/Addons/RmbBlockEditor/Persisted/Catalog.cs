@@ -31,7 +31,7 @@ namespace DaggerfallWorkshop.Game.Addons.RmbBlockEditor
             SettingsDirectory = settingsDirectory;
             SettingsFileName = settingsFileName;
             DefaultCatalogPath = defaultCatalogPath;
-            directoryPath = Application.dataPath + SettingsDirectory;
+            directoryPath = Paths.DataPath + SettingsDirectory;
             filePath = directoryPath + SettingsFileName;
         }
 

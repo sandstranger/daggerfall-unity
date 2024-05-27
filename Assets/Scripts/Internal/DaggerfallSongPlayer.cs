@@ -285,7 +285,7 @@ namespace DaggerfallWorkshop
                 return null;
 
             // Check file exists
-            string path = Path.Combine(Application.streamingAssetsPath, sourceFolderName);
+            string path = Path.Combine(Paths.StreamingAssetsPath, sourceFolderName);
             string filePath = Path.Combine(path, filename);
             if (!File.Exists(filePath))
             {

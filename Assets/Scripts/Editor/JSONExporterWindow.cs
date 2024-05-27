@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -62,21 +62,21 @@ namespace DaggerfallWorkshop
             if (GUILayout.Button("Generate 'ItemTemplates.txt'"))
             {
                 string fallExePath = Path.Combine(Path.GetDirectoryName(dfUnity.Arena2Path), fallExe);
-                string outputPath = Path.Combine(Application.dataPath, itemTemplatesFilename);
+                string outputPath = Path.Combine(Paths.DataPath, itemTemplatesFilename);
                 CreateItemTemplatesJSON(fallExePath, outputPath);
             }
 
             if (GUILayout.Button("Generate 'MagicItemTemplates.txt'"))
             {
                 string magicDefPath = Path.Combine(dfUnity.Arena2Path, magicDef);
-                string outputPath = Path.Combine(Application.dataPath, magicItemTemplatesFilename);
+                string outputPath = Path.Combine(Paths.DataPath, magicItemTemplatesFilename);
                 CreateMagicItemTemplatesJSON(magicDefPath, outputPath);
             }
 
             if (GUILayout.Button("Generate 'StartingSpells.txt'"))
             {
                 string fallExePath = Path.Combine(Path.GetDirectoryName(dfUnity.Arena2Path), fallExe);
-                string outputPath = Path.Combine(Application.dataPath, startingSpellsFilename);
+                string outputPath = Path.Combine(Paths.DataPath, startingSpellsFilename);
                 CreateStartingSpellsJSON(fallExePath, outputPath);
             }
         }

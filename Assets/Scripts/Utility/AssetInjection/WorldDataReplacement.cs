@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -44,7 +44,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
 
         const int noReplacementIndicator = -1;
         const string worldData = "WorldData";
-        static readonly string worldDataPath = Path.Combine(Application.streamingAssetsPath, worldData);
+        static readonly string worldDataPath = Path.Combine(Paths.StreamingAssetsPath, worldData);
 
         // No replacement found indicator structures.
         static readonly DFRegion noReplacementRegion = new DFRegion() { LocationCount = 0 };    // Use 0 as it's a uint, and loc count should always be > 0
@@ -144,16 +144,13 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
                 bool locationAssignmentSuccess = true;
 
                 // Seek from loose files
-                if (!Application.isMobilePlatform)
+                string locationPattern = string.Format("locationnew-*-{0}.json", regionIndex);
+                string[] fileNames = Directory.GetFiles(worldDataPath, locationPattern);
+                foreach (string fileName in fileNames)
                 {
-                    string locationPattern = string.Format("locationnew-*-{0}.json", regionIndex);
-                    string[] fileNames = Directory.GetFiles(worldDataPath, locationPattern);
-                    foreach (string fileName in fileNames)
-                    {
-                        string locationReplacementJson = File.ReadAllText(Path.Combine(worldDataPath, fileName));
-                        DFLocation dfLocation = (DFLocation)SaveLoadManager.Deserialize(typeof(DFLocation), locationReplacementJson);
-                        locationAssignmentSuccess &= AddLocationToRegion(regionIndex, ref dfRegion, ref mapNames, ref mapTable, ref dfLocation);
-                    }
+                    string locationReplacementJson = File.ReadAllText(Path.Combine(worldDataPath, fileName));
+                    DFLocation dfLocation = (DFLocation)SaveLoadManager.Deserialize(typeof(DFLocation), locationReplacementJson);
+                    locationAssignmentSuccess &= AddLocationToRegion(regionIndex, ref dfRegion, ref mapNames, ref mapTable, ref dfLocation);
                 }
 
                 // Seek from mods
@@ -271,18 +268,15 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
                 string locationVariantKey = locationKey.ToString() + variant;
                 if (!locations.ContainsKey(locationVariantKey))
                 {
-                    if (!Application.isMobilePlatform)
+                    // Seek from loose files
+                    string locationPattern = string.Format("locationnew-*-{0}{1}.json", regionIndex, variant);
+                    string[] fileNames = Directory.GetFiles(worldDataPath, locationPattern);
+                    foreach (string fileName in fileNames)
                     {
-                        // Seek from loose files
-                        string locationPattern = string.Format("locationnew-*-{0}{1}.json", regionIndex, variant);
-                        string[] fileNames = Directory.GetFiles(worldDataPath, locationPattern);
-                        foreach (string fileName in fileNames)
-                        {
-                            string locationReplacementJson = File.ReadAllText(Path.Combine(worldDataPath, fileName));
-                            DFLocation variantLocation = (DFLocation)SaveLoadManager.Deserialize(typeof(DFLocation), locationReplacementJson);
-                            AddNewDFLocationVariant(locationIndex, locationVariantKey, ref variantLocation);
-                            return true;
-                        }
+                        string locationReplacementJson = File.ReadAllText(Path.Combine(worldDataPath, fileName));
+                        DFLocation variantLocation = (DFLocation)SaveLoadManager.Deserialize(typeof(DFLocation), locationReplacementJson);
+                        AddNewDFLocationVariant(locationIndex, locationVariantKey, ref variantLocation);
+                        return true;
                     }
                     // Seek from mods
                     string locationExtension = string.Format("-{0}{1}.json", regionIndex, variant);

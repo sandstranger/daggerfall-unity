@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Wenzil.Console.Commands;
 using DaggerfallWorkshop.Game;
 using System.Linq;
@@ -2415,7 +2415,7 @@ namespace Wenzil.Console
                     if (string.IsNullOrEmpty(args[i]))
                         continue;
 
-                    string fullName = Path.Combine(Application.streamingAssetsPath, args[i]);
+                    string fullName = Path.Combine(Paths.StreamingAssetsPath, args[i]);
 
                     if (!fullName.EndsWith(".cs"))   //limiting to only .cs files isn't really necessary - any text file should work fine
                         return error;

@@ -47,7 +47,7 @@ namespace DaggerfallWorkshop.Game.Addons.RmbBlockEditor
         {
             InstantiateDevModDictionaries();
 
-            string modsfolder = Path.Combine(Application.dataPath, "Game", "Mods");
+            string modsfolder = Path.Combine(Paths.DataPath, "Game", "Mods");
             foreach (var directory in Directory.EnumerateDirectories(modsfolder))
             {
                 string foundFile = Directory.EnumerateFiles(directory)
@@ -107,7 +107,7 @@ namespace DaggerfallWorkshop.Game.Addons.RmbBlockEditor
             InstantiatePackagedModsDictionaries();
 
             foreach (string file in Directory.EnumerateFiles(
-                         Path.Combine(Application.dataPath, "StreamingAssets", "Mods"), "*.dfmod"))
+                         Path.Combine(Paths.DataPath, "StreamingAssets", "Mods"), "*.dfmod"))
             {
                 AssetBundle bundle = null;
                 try

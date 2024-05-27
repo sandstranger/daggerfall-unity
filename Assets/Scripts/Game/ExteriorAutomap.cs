@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -1652,8 +1652,8 @@ namespace DaggerfallWorkshop.Game
             UpdatePlayerMarker();
 
             //byte[] png = exteriorLayoutTexture.EncodeToPNG();
-            //Debug.Log(String.Format("writing to folder {0}", Application.dataPath));
-            //File.WriteAllBytes(Application.dataPath + "/test.png", png);
+            //Debug.Log(String.Format("writing to folder {0}", Paths.DataPath));
+            //File.WriteAllBytes(Paths.DataPath + "/test.png", png);
 
             CreateCustomCanvasForExteriorAutomap();
 

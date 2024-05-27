@@ -146,7 +146,7 @@ namespace DaggerfallWorkshop.Utility
         //    bool mipmapEnabled = (texture.mipmapCount > 0) ? true : false;
 
         //    // Compose paths based on user-specified Resources folder
-        //    string assetFolderPath = Path.Combine(Application.dataPath, resourcesPath);
+        //    string assetFolderPath = Path.Combine(Paths.DataPath, resourcesPath);
         //    assetFolderPath = Path.Combine(assetFolderPath, subFolder);
         //    string filePath = Path.Combine(assetFolderPath, filename + ".png");
 

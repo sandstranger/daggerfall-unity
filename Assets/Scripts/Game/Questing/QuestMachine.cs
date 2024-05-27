@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -22,7 +22,6 @@ using DaggerfallWorkshop.Game.Serialization;
 using DaggerfallWorkshop.Game.Utility.ModSupport;
 using UnityEngine.Localization.Settings;
 using System.Globalization;
-using UnityEngine.Networking;
 
 namespace DaggerfallWorkshop.Game.Questing
 {
@@ -124,7 +123,7 @@ namespace DaggerfallWorkshop.Game.Questing
         /// </summary>
         public static string QuestSourceFolder
         {
-            get { return Path.Combine(Application.streamingAssetsPath, questSourceFolderName); }
+            get { return Path.Combine(Paths.StreamingAssetsPath, questSourceFolderName); }
         }
 
         /// <summary>
@@ -133,7 +132,7 @@ namespace DaggerfallWorkshop.Game.Questing
         /// </summary>
         public string TablesSourceFolder
         {
-            get { return Path.Combine(Application.streamingAssetsPath, questTablesFolderName); }
+            get { return Path.Combine(Paths.StreamingAssetsPath, questTablesFolderName); }
         }
 
         /// <summary>
@@ -562,12 +561,6 @@ namespace DaggerfallWorkshop.Game.Questing
         /// <returns>Array of lines in quest text, or empty array.</returns>
         public string[] GetQuestSourceText(string questName)
         {
-            if (Application.isMobilePlatform)
-            {
-                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
-                return gameData.quests.Find(p => p.name == questName).text.Split('\n', '\r');
-            }
-
             string[] source = new string[0];
 
             // Append extension if not present
@@ -596,12 +589,6 @@ namespace DaggerfallWorkshop.Game.Questing
         /// <returns>Array of lines in table text, or empty array.</returns>
         public string[] GetTableSourceText(string tableName)
         {
-            if (Application.isMobilePlatform)
-            {
-                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
-                return gameData.tables.Find(p => p.name == tableName).text.Split('\n', '\r');
-            }
-
             string[] table = new string[0];
 
             // Append extension if not present
@@ -1682,21 +1669,13 @@ namespace DaggerfallWorkshop.Game.Questing
 
             if (lines == null)
             {
-                if (Application.isMobilePlatform)
-                {
-                    GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
-                    lines = gameData.quests.Find(p => p.name == fileNoExt).text.Split('\n', '\r');
-                }
-                else
-                {
-                    // Get path to localized quest file and check it exists
-                    string path = Path.Combine(Application.streamingAssetsPath, textFolderName, questsFolderName, filename);
-                    if (!File.Exists(path))
-                        return false;
+                // Get path to localized quest file and check it exists
+                string path = Path.Combine(Paths.StreamingAssetsPath, textFolderName, questsFolderName, filename);
+                if (!File.Exists(path))
+                    return false;
 
-                    // Attempt to load file from StreamingAssets/Text/Quests
-                    lines = File.ReadAllLines(path);
-                }
+                // Attempt to load file from StreamingAssets/Text/Quests
+                lines = File.ReadAllLines(path);
                 if (lines == null || lines.Length == 0)
                     return false;
             }

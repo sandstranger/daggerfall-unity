@@ -27,7 +27,7 @@ namespace DaggerfallWorkshop.Game.Addons.RmbBlockEditor
         {
             SettingsDirectory = settingsDirectory;
             DefaultTemplatesPath = defaultTemplatesPath;
-            directoryPath = Application.dataPath + SettingsDirectory;
+            directoryPath = Paths.DataPath + SettingsDirectory;
             filePath = directoryPath + templatesFileName;
         }
 

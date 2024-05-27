@@ -373,10 +373,10 @@ namespace DaggerfallWorkshop
                     LogMessage("Daggerfall path not found.", true);
             }
 
-            // Otherwise, look for arena2 folder in Application.dataPath at runtime
+            // Otherwise, look for arena2 folder in Paths.DataPath at runtime
             if (Application.isPlaying && !found)
             {
-                path = TestArena2Exists(Application.dataPath);
+                path = TestArena2Exists(Paths.DataPath);
                 if (!string.IsNullOrEmpty(path))
                     found = true;
             }
@@ -384,7 +384,7 @@ namespace DaggerfallWorkshop
             // Finally, look for arena2 folder in StreamingAssets/GameFiles
             if (Application.isPlaying && !found)
             { 
-                path = TestArena2Exists(Path.Combine(Application.streamingAssetsPath, "GameFiles"));
+                path = TestArena2Exists(Path.Combine(Paths.StreamingAssetsPath, "GameFiles"));
                 if (!string.IsNullOrEmpty(path))
                     found = true;
             }

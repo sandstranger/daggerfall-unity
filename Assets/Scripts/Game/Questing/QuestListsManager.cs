@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -101,14 +101,11 @@ namespace DaggerfallWorkshop.Game.Questing
         /// </summary>
         public string QuestPacksFolder
         {
-            get { return Path.Combine(Application.streamingAssetsPath, QuestPacksFolderName); }
+            get { return Path.Combine(Paths.StreamingAssetsPath, QuestPacksFolderName); }
         }
 
         public void DiscoverQuestPackLists()
         {
-            if (Application.isMobilePlatform)
-                return;
-
             string[] listFiles = Directory.GetFiles(QuestPacksFolder, QuestListPattern, SearchOption.AllDirectories);
             foreach (string listFile in listFiles)
                 if (!RegisterQuestList(listFile))

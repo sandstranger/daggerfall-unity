@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -121,7 +121,7 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
         /// </summary>
         public static string EditorModsDirectory
         {
-            get { return Application.dataPath + "/Game/Mods"; }
+            get { return Paths.DataPath + "/Game/Mods"; }
         }
 #endif
 
@@ -132,7 +132,7 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
         void Awake()
         {
             if (string.IsNullOrEmpty(ModDirectory))
-                ModDirectory = Path.Combine(Application.streamingAssetsPath, "Mods");
+                ModDirectory = Path.Combine(Paths.StreamingAssetsPath, "Mods");
 
             SetupSingleton();
 
@@ -1035,7 +1035,7 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
         /// <param name="importAssetOptions">Import asset options.</param>
         public static void ImportAsset(string path, ImportAssetOptions importAssetOptions = ImportAssetOptions.Default)
         {
-            string relPath = MakeRelativePath(Application.dataPath, path);
+            string relPath = MakeRelativePath(Paths.DataPath, path);
             if (relPath != null)
                 AssetDatabase.ImportAsset(relPath, importAssetOptions);
         }

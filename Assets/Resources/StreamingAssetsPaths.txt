@@ -1,4 +1,0 @@
-Text/GameSettings.txt
-Text/MainMenu.txt
-Text/DialogShortcuts.txt
-Text/ModSystem.txt

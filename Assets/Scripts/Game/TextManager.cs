@@ -1,11 +1,11 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:
-//
+// Contributors:    
+// 
 // Notes:
 //
 
@@ -21,7 +21,6 @@ using DaggerfallWorkshop.Game.UserInterface;
 using DaggerfallWorkshop.Game.Entity;
 using UnityEngine.Localization.Tables;
 using DaggerfallWorkshop.Game.MagicAndEffects;
-using System.Linq;
 
 namespace DaggerfallWorkshop.Game
 {
@@ -101,16 +100,14 @@ namespace DaggerfallWorkshop.Game
 
         private void Awake()
         {
-            EnumerateTextDatabases();
+            EnumerateTextDatabases();    
         }
 
         private void Start()
         {
-            // register commands
             ConsoleCommandsDatabase.RegisterCommand(Locale_Print.name, Locale_Print.description, Locale_Print.usage, Locale_Print.Execute);
             ConsoleCommandsDatabase.RegisterCommand(Locale_Set.name, Locale_Set.description, Locale_Set.usage, Locale_Set.Execute);
             ConsoleCommandsDatabase.RegisterCommand(Locale_Debug.name, Locale_Debug.description, Locale_Debug.usage, Locale_Debug.Execute);
-
         }
 
         #endregion
@@ -692,40 +689,29 @@ namespace DaggerfallWorkshop.Game
         {
             // Get all text files in target path
             Debug.Log("TextManager enumerating text databases.");
+            string path = Path.Combine(Paths.StreamingAssetsPath, textFolderName);
+            string[] files = Directory.GetFiles(path, "*.txt");
 
-            IEnumerable<KeyValuePair<string, string>> databases;
-            if (Application.isMobilePlatform)
-            {
-                // Load game data assets
-                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
-                databases = gameData.text.Select(asset => new KeyValuePair<string, string>(asset.name, asset.text));
-            }
-            else
-            {
-                // Load files
-                string path = Path.Combine(Application.streamingAssetsPath, textFolderName);
-                databases = Directory.GetFiles(path, "*.txt")
-                                     .Select(file => new KeyValuePair<string, string>(Path.GetFileNameWithoutExtension(file), File.ReadAllText(file)));
-            }
-
-            foreach (var db in databases)
+            // Attempt to read each file as a table with a text schema
+            foreach (string file in files)
             {
                 try
                 {
                     // Create table from text file
-                    Table table = new Table(db.Value.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries));
+                    Table table = new Table(File.ReadAllLines(file));
 
-                    // Check for existing database name
-                    if (HasDatabase(db.Key))
-                        throw new Exception($"TextManager database name {db.Key} already exists.");
+                    // Get database key from filename
+                    string databaseName = Path.GetFileNameWithoutExtension(file);
+                    if (HasDatabase(databaseName))
+                        throw new Exception(string.Format("TextManager database name {0} already exists.", databaseName));
 
                     // Assign database to collection
-                    textDatabases.Add(db.Key, table);
-                    Debug.LogFormat("TextManager read text database table {0} with {1} rows", db.Key, table.RowCount);
+                    textDatabases.Add(databaseName, table);
+                    Debug.LogFormat("TextManager read text database table {0} with {1} rows", databaseName, table.RowCount);
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogFormat("TextManager unable to parse text database table {0} with exception message {1}", db.Key, ex.Message);
+                    Debug.LogFormat("TextManager unable to parse text database table {0} with exception message {1}", file, ex.Message);
                     continue;
                 }
             }

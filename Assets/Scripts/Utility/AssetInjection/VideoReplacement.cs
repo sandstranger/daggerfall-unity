@@ -23,7 +23,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     /// </summary>
     public static class VideoReplacement
     {
-        static readonly string moviePath = Path.Combine(Application.streamingAssetsPath, "Movies");
+        static readonly string moviePath = Path.Combine(Paths.StreamingAssetsPath, "Movies");
 
 // https://docs.unity3d.com/Manual/VideoSources-FileCompatibility.html
 #if !UNITY_STANDALONE_LINUX

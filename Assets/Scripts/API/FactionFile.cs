@@ -737,27 +737,17 @@ namespace DaggerfallConnect.Arena2
         /// <param name="readOnly">File will be read-only if true, read-write if false.</param>
         public void Load(string filePath, FileUsage usage, bool readOnly)
         {
-            string txt;
+            // Validate filename
+            if (!filePath.EndsWith(Filename, StringComparison.InvariantCultureIgnoreCase))
+                return;
 
-            if (UnityEngine.Application.isMobilePlatform)
-            {
-                GameDataAssetsSO gameData = UnityEngine.Resources.Load<GameDataAssetsSO>("GameDataAssets");
-                txt = gameData.factions[0].text;
-            }
-            else
-            {
-                // Validate filename
-                if (!filePath.EndsWith(Filename, StringComparison.InvariantCultureIgnoreCase))
-                    return;
+            // Load file
+            if (!factionFile.Load(filePath, usage, readOnly))
+                return;
 
-                // Load file
-                if (!factionFile.Load(filePath, usage, readOnly))
-                    return;
-
-                // Parse faction file
-                byte[] buffer = factionFile.Buffer;
-                txt = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
-            }
+            // Parse faction file
+            byte[] buffer = factionFile.Buffer;
+            string txt = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
             ParseFactions(txt);
             RelinkChildren(factionDict);
         }

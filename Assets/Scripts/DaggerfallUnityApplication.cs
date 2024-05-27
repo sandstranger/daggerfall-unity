@@ -49,7 +49,7 @@ public static class DaggerfallUnityApplication
     private static void InitializePersistentPath()
     {
 #if UNITY_EDITOR && SEPARATE_DEV_PERSISTENT_PATH
-        persistentDataPath = String.Concat(Application.persistentDataPath, ".devenv");
+        persistentDataPath = String.Concat(DaggerfallWorkshop.Paths.PersistentDataPath, ".devenv");
         Directory.CreateDirectory(persistentDataPath);
 #else
         if (IsPortableInstall)
@@ -59,7 +59,7 @@ public static class DaggerfallUnityApplication
         }
         else
         {
-            persistentDataPath = Application.persistentDataPath;
+            persistentDataPath = DaggerfallWorkshop.Paths.PersistentDataPath;
         }
 #endif
     }

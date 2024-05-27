@@ -65,7 +65,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     {
         #region Fields & Properties
 
-        static readonly string booksPath = Path.Combine(Application.streamingAssetsPath, "Books");
+        static readonly string booksPath = Path.Combine(Paths.StreamingAssetsPath, "Books");
         static readonly string mappingPath = Path.Combine(booksPath, "Mapping");
 
         internal static readonly Dictionary<int, BookMappingEntry> BookMappingEntries = new Dictionary<int, BookMappingEntry>();

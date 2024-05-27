@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -408,7 +408,7 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
                 EditorGUILayout.LabelField(modOutPutPath, fieldStyle);
                 if (GUILayout.Button("Set", GUILayout.Width(50)))
                 {
-                    modOutPutPath = EditorUtility.SaveFolderPanel("Select Destination,", Application.dataPath, "");
+                    modOutPutPath = EditorUtility.SaveFolderPanel("Select Destination,", Paths.DataPath, "");
                     Debug.Log("build path: " + modOutPutPath);
                 }
             });
@@ -559,7 +559,7 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
             }
 
             //get destination for mod
-            modOutPutPath = (Directory.Exists(modOutPutPath) ? modOutPutPath : Application.dataPath);
+            modOutPutPath = (Directory.Exists(modOutPutPath) ? modOutPutPath : Paths.DataPath);
             string modFilePath = EditorUtility.SaveFilePanel("Save", modOutPutPath, modInfo.ModTitle, "dfmod");
 
             if (!Directory.Exists(modOutPutPath) || string.IsNullOrEmpty(modFilePath))
@@ -585,7 +585,7 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
 
             if (precompiledMod)
             {
-                string dataPath = Application.dataPath;
+                string dataPath = Paths.DataPath;
                 var scriptPaths = new List<string>();
                 var otherAssets = new List<string>();
 
@@ -732,7 +732,7 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
         /// <returns></returns>
         static string GetTempModDirPath(string name = "")
         {
-            string path = Path.Combine(Application.dataPath, "Untracked");
+            string path = Path.Combine(Paths.DataPath, "Untracked");
             path = Path.Combine(path, "ModBuilder");
             path = Path.Combine(path, name);
 

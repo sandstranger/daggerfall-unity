@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -24,7 +24,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     {
         #region Fields & Properties
 
-        static readonly string soundPath = Path.Combine(Application.streamingAssetsPath, "Sound");
+        static readonly string soundPath = Path.Combine(Paths.StreamingAssetsPath, "Sound");
 
         /// <summary>
         /// Path to custom sounds and songs on disk.

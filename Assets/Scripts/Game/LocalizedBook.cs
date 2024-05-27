@@ -1,4 +1,4 @@
-// Project:         Daggerfall Unity
+﻿// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -88,15 +88,8 @@ namespace DaggerfallWorkshop.Game
         /// <returns>True if localized book file exists for this filename.</returns>
         public static bool Exists(string filename)
         {
-            string fileNoExt = Path.GetFileNameWithoutExtension(filename);
-
-            if (Application.isMobilePlatform)
-            {
-                GameDataAssetsSO gameData = Resources.Load<GameDataAssetsSO>("GameDataAssets");
-                return gameData.books.Exists(p => p.name == fileNoExt);
-            }
-
             // Append -LOC if missing from filename
+            string fileNoExt = Path.GetFileNameWithoutExtension(filename);
             if (!fileNoExt.EndsWith(localizedFilenameSuffix))
                 filename = fileNoExt + localizedFilenameSuffix + fileExtension;
 
@@ -107,7 +100,7 @@ namespace DaggerfallWorkshop.Game
             }
 
             // Get path to localized book file and check it exists
-            string path = Path.Combine(Application.streamingAssetsPath, textFolderName, booksFolderName, filename);
+            string path = Path.Combine(Paths.StreamingAssetsPath, textFolderName, booksFolderName, filename);
             return File.Exists(path);
         }
 
@@ -184,7 +177,7 @@ namespace DaggerfallWorkshop.Game
             if (lines == null)
             {
                 // Get path to localized book file and check it exists
-                string path = Path.Combine(Application.streamingAssetsPath, textFolderName, booksFolderName, filename);
+                string path = Path.Combine(Paths.StreamingAssetsPath, textFolderName, booksFolderName, filename);
                 if (!File.Exists(path))
                     return false;
 
