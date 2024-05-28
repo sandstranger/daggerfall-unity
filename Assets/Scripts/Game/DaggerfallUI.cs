@@ -84,7 +84,41 @@ namespace DaggerfallWorkshop.Game
         public string startupMessage = string.Empty;
         public bool enableHUD = false;
         public bool enableVideos = true;
-
+#if UNITY_ANDROID && !UNITY_EDITOR
+        private static Resolution[] _resolutions =new Resolution[]
+        {
+            new Resolution()
+            {
+                width = Screen.width,
+                height = Screen.height
+            },
+            new Resolution()
+            {
+                width = 1920,
+                height = 1080
+            },
+            new Resolution()
+            {
+                width = (int)(Screen.width / 1.5),
+                height = (int)(Screen.height / 1.5)
+            },
+            new Resolution()
+            {
+                width = Screen.width / 2,
+                height = Screen.height / 2
+            },
+            new Resolution()
+            {
+                width = Screen.width / 3,
+                height = Screen.height / 3
+            },
+            new Resolution()
+            {
+                width = Screen.width / 4,
+                height = Screen.height / 4
+            }
+        };
+#endif
         DaggerfallUnity dfUnity;
         AudioSource audioSource;
         DaggerfallAudioSource dfAudioSource;
@@ -1389,14 +1423,7 @@ namespace DaggerfallWorkshop.Game
         public static Resolution[] GetDistinctResolutions()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            return new Resolution[]
-            {
-                new Resolution()
-                {
-                    width = Screen.width,
-                    height = Screen.height
-                }
-            };
+            return _resolutions;
 #else
             Resolution[] resolutions = Screen.resolutions;
             var distinctResolutions = new List<Resolution>(resolutions.Length);
