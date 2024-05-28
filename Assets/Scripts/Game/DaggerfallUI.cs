@@ -85,27 +85,12 @@ namespace DaggerfallWorkshop.Game
         public bool enableHUD = false;
         public bool enableVideos = true;
 #if UNITY_ANDROID && !UNITY_EDITOR
-        private static Resolution[] _resolutions =new Resolution[]
+        private static readonly Resolution[] _resolutions = new Resolution[]
         {
             new Resolution()
             {
-                width = Screen.width,
-                height = Screen.height
-            },
-            new Resolution()
-            {
-                width = 1920,
-                height = 1080
-            },
-            new Resolution()
-            {
-                width = (int)(Screen.width / 1.5),
-                height = (int)(Screen.height / 1.5)
-            },
-            new Resolution()
-            {
-                width = Screen.width / 2,
-                height = Screen.height / 2
+                width = Screen.width / 4,
+                height = Screen.height / 4
             },
             new Resolution()
             {
@@ -114,9 +99,24 @@ namespace DaggerfallWorkshop.Game
             },
             new Resolution()
             {
-                width = Screen.width / 4,
-                height = Screen.height / 4
-            }
+                width = Screen.width / 2,
+                height = Screen.height / 2
+            },
+            new Resolution()
+            {
+                width = (int)(Screen.width / 1.5),
+                height = (int)(Screen.height / 1.5)
+            },
+            new Resolution()
+            {
+                width = 1920,
+                height = 1080
+            },
+            new Resolution()
+            {
+                width = Screen.width,
+                height = Screen.height
+            },
         };
 #endif
         DaggerfallUnity dfUnity;
