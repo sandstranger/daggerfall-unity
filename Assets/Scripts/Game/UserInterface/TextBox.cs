@@ -165,6 +165,12 @@ namespace DaggerfallWorkshop.Game.UserInterface
             if (!fixedSize)
                 Size = CalculateTextSize(text);
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+                //TODO implement normal calculation of textbox size, when text is empty
+                Size = CalculateTextSize(string.IsNullOrEmpty(text) ? "empty_string" : text );
+#else
+                Size = CalculateTextSize(text );
+#endif
             previousSDFState = this.font.IsSDFCapable;
 
             // Panel drawn behind IME composition in progress
