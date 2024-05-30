@@ -5,8 +5,8 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
 // Contributors:    Avernite (avernite@gmail.com)
-// 
-// Notes:           
+//
+// Notes:
 //
 
 using UnityEngine;
@@ -14,7 +14,7 @@ using System.Collections;
 
 namespace DaggerfallWorkshop.Game
 {
-    // 
+    //
     // Adapted from the below code by FatiguedArtist.
     // http://forum.unity3d.com/threads/a-free-simple-smooth-mouselook.73117/
     //
@@ -127,7 +127,7 @@ namespace DaggerfallWorkshop.Game
                 sensitivityY = sensitivity.y * sensitivityScale;
             }
 
-            Vector2 rawMouseDelta = new Vector2(InputManager.Instance.LookX, InputManager.Instance.LookY);
+            Vector2 rawMouseDelta = TouchCamera.CurrentTouchPosition; //new Vector2(InputManager.Instance.LookX, InputManager.Instance.LookY);
 
             lookTarget += Vector2.Scale(rawMouseDelta, new Vector2(sensitivityX, sensitivityY * (invertMouseY ? -1 : 1)));
 
@@ -216,8 +216,8 @@ namespace DaggerfallWorkshop.Game
             // Ensure the cursor always locked when set
             if (lockCursor && enableMouseLook)
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                InputManager.Instance.CursorVisible = false;
+             //   Cursor.lockState = CursorLockMode.Locked;
+               // InputManager.Instance.CursorVisible = false;
             }
             else
             {
