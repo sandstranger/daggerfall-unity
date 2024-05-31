@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine.Networking;
 #endif
 using UnityEngine.SceneManagement;
+using PlayerPrefs = DaggerfallWorkshop.Game.PlayerPrefsExtensions;
 
 namespace DaggerfallWorkshop.Game
 {
@@ -44,12 +45,14 @@ namespace DaggerfallWorkshop.Game
                 }
             }
 #endif
-            PlayerPrefs.SetInt(AssetsCopiedToInternalMemoryKey, 1);
+            PlayerPrefs.SetBool(AssetsCopiedToInternalMemoryKey, true);
         }
 
         public async Task StartGame()
         {
-            if (PlayerPrefs.GetInt(AssetsCopiedToInternalMemoryKey, 0) == 0)
+            bool assetsWereCopied = PlayerPrefs.GetBool(AssetsCopiedToInternalMemoryKey);
+
+            if (!assetsWereCopied)
             {
                 await CopyStreamingAssetsToInternalMemory();
             }
