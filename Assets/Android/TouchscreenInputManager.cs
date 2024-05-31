@@ -10,10 +10,22 @@ namespace DaggerfallWorkshop.Game
     {
         #region monobehaviour
         [SerializeField] private Button toggleTouchscreenInputButton;
+        [SerializeField] private Camera renderCamera;
+        [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private bool debugInEditor = false;
+
+        private float startAlpha;
+        private RenderTexture renderTex;
         
         private void Start()
         {
+            startAlpha = canvasGroup.alpha;
+            canvasGroup.alpha = _isTouchscreenInputActive ? startAlpha : 0;
+            renderCamera.aspect = Camera.main.aspect;
+            renderTex = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+            renderTex.isPowerOfTwo = false;
+            renderCamera.targetTexture = renderTex;
+
             _debugInEditor = debugInEditor;
             if (!isMobilePlatform)
             {
@@ -22,10 +34,15 @@ namespace DaggerfallWorkshop.Game
             }
             toggleTouchscreenInputButton.onClick.AddListener(ToggleTouchscreenInput);
         }
+        private void OnGUI()
+        {
+            GUI.depth = 0;
+            DaggerfallUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), renderTex, ScaleMode.StretchToFill, true);
+        }
         private void ToggleTouchscreenInput()
         {
             _isTouchscreenInputActive = !_isTouchscreenInputActive;
-            GetComponent<CanvasGroup>().alpha = _isTouchscreenInputActive ? 1 : 0;
+            canvasGroup.alpha = _isTouchscreenInputActive ? startAlpha : 0;
         }
         #endregion
 

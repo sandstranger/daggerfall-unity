@@ -797,6 +797,10 @@ namespace DaggerfallWorkshop
             File.WriteAllBytes(userIniPath, asset.bytes);
 
             Debug.LogFormat("Creating new '{0}' at path '{1}'", SettingsName(), userIniPath);
+
+#if UNITY_ANDROID
+            SetInt(sectionControls, "WeaponSwingMode", 2);
+#endif
         }
 
         void ReadSettingsFile()

@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -20,9 +19,11 @@ namespace DaggerfallWorkshop.Game
         private Vector2 touchStartPos;
         private float joystickRadius;
         private bool isTouching = false;
+        private Camera myCam;
 
         void Start()
         {
+            myCam = GetComponentInParent<Canvas>().worldCamera;
             joystickRadius = background.sizeDelta.x / 2;
 
             // Initially invisible
@@ -34,7 +35,7 @@ namespace DaggerfallWorkshop.Game
             if (Cursor.visible)
                 return;
             touchStartPos = eventData.position;
-            background.position = touchStartPos;
+            background.position = myCam.ScreenToWorldPoint(new Vector3(touchStartPos.x, touchStartPos.y, 1.05f));
             knob.position = touchStartPos;
             SetJoystickVisibility(true);
             isTouching = true;
@@ -57,7 +58,8 @@ namespace DaggerfallWorkshop.Game
             lastDragTime = Time.time;
             Vector2 direction = eventData.position - touchStartPos;
             inputVector = Vector2.ClampMagnitude(direction / joystickRadius, 1f);
-            knob.position = touchStartPos + inputVector * joystickRadius;
+            Vector2 knobPos2D = touchStartPos + inputVector * joystickRadius;
+            knob.position = myCam.ScreenToWorldPoint(new Vector3(knobPos2D.x, knobPos2D.y, 1));
             if (Mathf.Abs(inputVector.x) < deadzone.x)
                 inputVector.x = 0;
             if (Mathf.Abs(inputVector.y) < deadzone.y)
