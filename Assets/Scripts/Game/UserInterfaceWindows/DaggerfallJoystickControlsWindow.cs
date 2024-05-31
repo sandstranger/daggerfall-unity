@@ -57,6 +57,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected HorizontalSlider joystickDeadzoneSlider = new HorizontalSlider();
 
         protected Checkbox enableControllerCheckbox = new Checkbox();
+#if UNITY_ANDROID
+        protected Checkbox enableOnScreenControlsCheckbox = new Checkbox();
+#endif
         protected Checkbox invertMovementHorizontalCheckbox = new Checkbox();
         protected Checkbox invertMovementVerticalCheckbox = new Checkbox();
         protected Checkbox invertLookHorizontalCheckbox = new Checkbox();
@@ -139,6 +142,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             enableControllerCheckbox = AddOption(20, 20, GetText("enableController"), DaggerfallUnity.Settings.EnableController);
             enableControllerCheckbox.OnToggleState += EnableControllerCheckbox_OnToggleState;
+
+#if UNITY_ANDROID
+            enableOnScreenControlsCheckbox = AddOption(80, 20, GetText("enableOnScreenControls"), TouchscreenInputManager.IsTouchscreenInputEnabled);
+            enableOnScreenControlsCheckbox.OnToggleState += EnableOnScreenControlsCheckbox_OnToggleState;
+#endif
 
             // keybind buttons
             SetupAxisKeybindButton(movementHorizontalAxisKeybindButton, InputManager.AxisActions.MovementHorizontal, 20, 40);
@@ -523,6 +531,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         {
             // Immediately toggle controller
             DaggerfallUnity.Settings.EnableController = enableControllerCheckbox.IsChecked;
+        }
+        private void EnableOnScreenControlsCheckbox_OnToggleState()
+        {
+            // Immediately toggle controller
+            TouchscreenInputManager.IsTouchscreenInputEnabled = enableOnScreenControlsCheckbox.IsChecked;
         }
 
         private void UIKeybindButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)

@@ -190,6 +190,7 @@ backString,                                         Back
 configureJoystickControls,                          Configure Joystick Controls
 continue,                                           CONTINUE
 enableController,                                   Enable Controller
+enableOnScreenControls,                             Enable On-Screen Controls
 invert,                                             Invert
 lookSensitivity,                                    Look Sensitivity
 uiMouseSensitivity,                                 UI Mouse Sensitivity
