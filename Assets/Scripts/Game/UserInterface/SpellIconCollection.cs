@@ -229,7 +229,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
         {
             // Start with all the atlases in the spell icons streaming assets path
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string sourcePath = Path.Combine(Application.persistentDataPath, sourceFolderName);
+            string sourcePath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, sourceFolderName);
 #else
             string sourcePath = Path.Combine(Application.streamingAssetsPath, sourceFolderName);
 #endif

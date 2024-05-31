@@ -133,7 +133,7 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
         {
             if (string.IsNullOrEmpty(ModDirectory))
 #if UNITY_ANDROID && !UNITY_EDITOR
-                ModDirectory = Path.Combine(Application.persistentDataPath, "Mods");
+                ModDirectory = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "Mods");
 #else
                 ModDirectory = Path.Combine(Application.streamingAssetsPath, "Mods");
 #endif

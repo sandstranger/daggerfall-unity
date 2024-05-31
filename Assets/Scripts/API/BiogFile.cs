@@ -42,7 +42,7 @@ namespace DaggerfallConnect.Arena2
         public static string BIOGSourceFolder
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            get { return Path.Combine(Application.persistentDataPath, biogSourceFolderName); }
+            get { return Path.Combine(DaggerfallUnityApplication.PersistentDataPath, biogSourceFolderName); }
 #else
             get { return Path.Combine(Application.streamingAssetsPath, biogSourceFolderName); }
 #endif

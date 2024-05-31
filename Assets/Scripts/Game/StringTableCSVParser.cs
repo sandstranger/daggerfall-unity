@@ -53,7 +53,7 @@ public class StringTableCSVParser
 
             // Load patch file if present
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string path = Path.Combine(Application.persistentDataPath, textString, filename);
+            string path = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, textString, filename);
 #else
             string path = Path.Combine(Application.streamingAssetsPath, textString, filename);
 #endif

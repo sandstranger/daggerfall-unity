@@ -24,7 +24,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     {
         #region Fields & Properties
 #if UNITY_ANDROID && !UNITY_EDITOR
-        static readonly string soundPath = Path.Combine(Application.persistentDataPath, "Sound");
+        static readonly string soundPath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "Sound");
 #else
         static readonly string soundPath = Path.Combine(Application.streamingAssetsPath, "Sound");
 #endif

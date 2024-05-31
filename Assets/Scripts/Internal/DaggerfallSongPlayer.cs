@@ -286,7 +286,7 @@ namespace DaggerfallWorkshop
 
             // Check file exists
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string path = Path.Combine(Application.persistentDataPath, sourceFolderName);
+            string path = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, sourceFolderName);
 #else
             string path = Path.Combine(Application.streamingAssetsPath, sourceFolderName);
 #endif

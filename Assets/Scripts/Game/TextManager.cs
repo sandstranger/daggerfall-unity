@@ -690,7 +690,7 @@ namespace DaggerfallWorkshop.Game
             // Get all text files in target path
             Debug.Log("TextManager enumerating text databases.");
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string path = Path.Combine(Application.persistentDataPath, textFolderName);
+            string path = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, textFolderName);
 #else
             string path = Path.Combine(Application.streamingAssetsPath, textFolderName);
 #endif

@@ -37,7 +37,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
             if (relativePath == null)
                 throw new ArgumentNullException("relativePath");
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string path = Path.Combine(Application.persistentDataPath, relativePath);
+            string path = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, relativePath);
 #else
             string path = Path.Combine(Application.streamingAssetsPath, relativePath);
 #endif
@@ -92,7 +92,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
 
             var content = new List<string>();
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string dirPath = Path.Combine(Application.persistentDataPath, relativeDirectory);
+            string dirPath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, relativeDirectory);
 #else
             string dirPath = Path.Combine(Application.streamingAssetsPath, relativeDirectory);
 #endif

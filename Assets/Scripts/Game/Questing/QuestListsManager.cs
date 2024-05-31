@@ -102,7 +102,7 @@ namespace DaggerfallWorkshop.Game.Questing
         public string QuestPacksFolder
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            get { return Path.Combine(Application.persistentDataPath, QuestPacksFolderName); }
+            get { return Path.Combine(DaggerfallUnityApplication.PersistentDataPath, QuestPacksFolderName); }
 #else
             get { return Path.Combine(Application.streamingAssetsPath, QuestPacksFolderName); }
 #endif

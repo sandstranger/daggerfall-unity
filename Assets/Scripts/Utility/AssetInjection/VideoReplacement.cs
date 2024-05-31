@@ -24,7 +24,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     public static class VideoReplacement
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        static readonly string moviePath = Path.Combine(Application.persistentDataPath, "Movies");
+        static readonly string moviePath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "Movies");
 #else
         static readonly string moviePath = Path.Combine(Application.streamingAssetsPath, "Movies");
 #endif

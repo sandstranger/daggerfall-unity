@@ -273,7 +273,7 @@ namespace DaggerfallWorkshop.Utility
         public string GetFactionFilePath()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string path = Path.Combine(Application.persistentDataPath, "Factions");
+            string path = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "Factions");
 #else
             string path = Path.Combine(Application.streamingAssetsPath, "Factions");
 #endif

@@ -187,7 +187,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
             // Unix has no concept of logical drives, root is always the correct filesystem root
             drives.Clear();
 #if UNITY_ANDROID && !UNITY_EDITOR
-            drives.Add("/storage/emulated/0/");
+            drives.Add(DaggerfallUnityApplication.AndroidRootFolder);
 #else
             switch (SystemInfo.operatingSystemFamily)
             {

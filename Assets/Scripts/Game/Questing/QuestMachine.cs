@@ -124,7 +124,7 @@ namespace DaggerfallWorkshop.Game.Questing
         public static string QuestSourceFolder
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            get { return Path.Combine(Application.persistentDataPath, questSourceFolderName); }
+            get { return Path.Combine(DaggerfallUnityApplication.PersistentDataPath, questSourceFolderName); }
 #else
             get { return Path.Combine(Application.streamingAssetsPath, questSourceFolderName); }
 #endif
@@ -137,7 +137,7 @@ namespace DaggerfallWorkshop.Game.Questing
         public string TablesSourceFolder
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            get { return Path.Combine(Application.persistentDataPath, questTablesFolderName); }
+            get { return Path.Combine(DaggerfallUnityApplication.PersistentDataPath, questTablesFolderName); }
 #else
             get { return Path.Combine(Application.streamingAssetsPath, questTablesFolderName); }
 #endif
@@ -1679,7 +1679,7 @@ namespace DaggerfallWorkshop.Game.Questing
             {
                 // Get path to localized quest file and check it exists
 #if UNITY_ANDROID && !UNITY_EDITOR
-                string path = Path.Combine(Application.persistentDataPath, textFolderName, questsFolderName, filename);
+                string path = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, textFolderName, questsFolderName, filename);
 #else
                 string path = Path.Combine(Application.streamingAssetsPath, textFolderName, questsFolderName, filename);
 #endif

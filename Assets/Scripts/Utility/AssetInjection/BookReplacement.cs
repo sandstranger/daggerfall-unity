@@ -65,7 +65,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     {
         #region Fields & Properties
 #if UNITY_ANDROID && !UNITY_EDITOR
-        static readonly string booksPath = Path.Combine(Application.persistentDataPath, "Books");
+        static readonly string booksPath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "Books");
 #else
         static readonly string booksPath = Path.Combine(Application.streamingAssetsPath, "Books");
 #endif

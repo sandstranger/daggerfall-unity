@@ -291,7 +291,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             // Get path to localized book file and check it exists
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string path = Path.Combine(Application.persistentDataPath, textFolderName, bookImagesPath, filename);
+            string path = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, textFolderName, bookImagesPath, filename);
 #else
             string path = Path.Combine(Application.streamingAssetsPath, textFolderName, bookImagesPath, filename);
 #endif

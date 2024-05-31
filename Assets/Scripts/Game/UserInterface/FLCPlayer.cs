@@ -50,7 +50,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
 
             // Seek from loose files Movies or Arena2 path
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string moviePath = Path.Combine(Application.persistentDataPath, "Movies");
+            string moviePath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "Movies");
 #else
             string moviePath = Path.Combine(Application.streamingAssetsPath, "Movies");
 #endif

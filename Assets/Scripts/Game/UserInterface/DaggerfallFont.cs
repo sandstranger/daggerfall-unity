@@ -677,7 +677,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
 
             // Compose path to font file
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string path = Path.Combine(Application.persistentDataPath, "Fonts", filename);
+            string path = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "Fonts", filename);
 #else
             string path = Path.Combine(Application.streamingAssetsPath, "Fonts", filename);
 #endif
@@ -745,7 +745,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
         {
             // Compose path to character file
 #if UNITY_ANDROID && !UNITY_EDITOR
-            string path = Path.Combine(Application.persistentDataPath, "Fonts", filename);
+            string path = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "Fonts", filename);
 #else
             string path = Path.Combine(Application.streamingAssetsPath, "Fonts", filename);
 #endif

@@ -2416,7 +2416,7 @@ namespace Wenzil.Console
                         continue;
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-                    string fullName = Path.Combine(Application.persistentDataPath, args[i]);
+                    string fullName = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, args[i]);
 #else
                     string fullName = Path.Combine(Application.streamingAssetsPath, args[i]);
 #endif

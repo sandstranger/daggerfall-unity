@@ -45,7 +45,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
         const int noReplacementIndicator = -1;
         const string worldData = "WorldData";
 #if UNITY_ANDROID && !UNITY_EDITOR
-        static readonly string worldDataPath = Path.Combine(Application.persistentDataPath, worldData);
+        static readonly string worldDataPath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, worldData);
 #else
         static readonly string worldDataPath = Path.Combine(Application.streamingAssetsPath, worldData);
 #endif

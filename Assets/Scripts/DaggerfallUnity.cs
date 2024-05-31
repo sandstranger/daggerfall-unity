@@ -385,7 +385,7 @@ namespace DaggerfallWorkshop
             if (Application.isPlaying && !found)
             {
 #if UNITY_ANDROID && !UNITY_EDITOR
-                path = TestArena2Exists(Path.Combine(Application.persistentDataPath, "GameFiles"));
+                path = TestArena2Exists(Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "GameFiles"));
 #else
                 path = TestArena2Exists(Path.Combine(Application.streamingAssetsPath, "GameFiles"));
 #endif

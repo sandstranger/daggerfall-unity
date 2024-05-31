@@ -90,7 +90,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
 
         // Paths
 #if UNITY_ANDROID && !UNITY_EDITOR
-        static readonly string texturesPath = Path.Combine(Application.persistentDataPath, "Textures");
+        static readonly string texturesPath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, "Textures");
 #else
         static readonly string texturesPath = Path.Combine(Application.streamingAssetsPath, "Textures");
 #endif

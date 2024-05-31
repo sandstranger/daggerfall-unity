@@ -352,7 +352,7 @@ namespace DaggerfallWorkshop.Game
         public string FontsFolder
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            get { return Path.Combine(Application.persistentDataPath, fontsFolderName); }
+            get { return Path.Combine(DaggerfallUnityApplication.PersistentDataPath, fontsFolderName); }
 #else
             get { return Path.Combine(Application.streamingAssetsPath, fontsFolderName); }
 #endif
