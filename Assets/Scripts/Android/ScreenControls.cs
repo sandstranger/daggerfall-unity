@@ -5,6 +5,14 @@ namespace DaggerfallWorkshop.Game
 {
     sealed class ScreenControls : MonoBehaviour
     {
+        private const string HideControlsKey = "hide_screen_controls";
+
+        public bool HideControls
+        {
+            get => PlayerPrefsExtensions.GetBool(HideControlsKey, defaultValue: false);
+            set => PlayerPrefsExtensions.SetBool(HideControlsKey, value);
+        }
+
         public static ScreenControls Instance;
 
         public TouchCamera TouchCamera => _touchCamera;
@@ -19,7 +27,7 @@ namespace DaggerfallWorkshop.Game
         {
             SceneManager.sceneLoaded += (arg0, mode) =>
             {
-                if (arg0.name == "DaggerfallUnityGame")
+                if (arg0.name == "DaggerfallUnityGame" && !HideControls)
                 {
                     _screenControlsRoot.SetActive(true);
                 }

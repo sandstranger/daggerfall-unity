@@ -14,10 +14,20 @@ namespace DaggerfallWorkshop.Game
         [SerializeField]
         private GameObject _progressBar;
 
+        [SerializeField]
+        private Toggle _hideControlsToggle;
+
         private AndroidRootController _viewController = new AndroidRootController();
 
-        private void Awake()
+        private void Start()
         {
+            _hideControlsToggle.isOn = ScreenControls.Instance.HideControls;
+
+            _hideControlsToggle.onValueChanged.AddListener(hideControls =>
+            {
+                ScreenControls.Instance.HideControls = hideControls;
+            });
+
             _startGameButton.onClick.AddListener(async ()=>
             {
                 _progressBar.SetActive(true);

@@ -42,6 +42,8 @@ namespace DaggerfallWorkshop.Game
         public bool simpleCursorLock = false;
         private bool forceHideCursor;
 
+        private bool _hideScreenControls;
+
         public const float SmoothingMax = 0.9f;
         float smoothing = 0.5f; // This value now comes from user-defined settings
 
@@ -127,7 +129,8 @@ namespace DaggerfallWorkshop.Game
                 sensitivityY = sensitivity.y * sensitivityScale;
             }
 
-            Vector2 rawMouseDelta = ScreenControls.Instance.TouchCamera.CurrentTouchDelta; //new Vector2(InputManager.Instance.LookX, InputManager.Instance.LookY);
+            Vector2 rawMouseDelta = !_hideScreenControls ?
+                ScreenControls.Instance.TouchCamera.CurrentTouchDelta : new Vector2(InputManager.Instance.LookX, InputManager.Instance.LookY);
 
             lookTarget += Vector2.Scale(rawMouseDelta, new Vector2(sensitivityX, sensitivityY * (invertMouseY ? -1 : 1)));
 
@@ -168,6 +171,7 @@ namespace DaggerfallWorkshop.Game
 
         void Start()
         {
+            _hideScreenControls = ScreenControls.Instance.HideControls;
             Init();
         }
 
@@ -213,11 +217,19 @@ namespace DaggerfallWorkshop.Game
                 return;
             }
 
-            // Ensure the cursor always locked when set
-            if (lockCursor && enableMouseLook)
+            if (_hideScreenControls)
             {
-             //   Cursor.lockState = CursorLockMode.Locked;
-               // InputManager.Instance.CursorVisible = false;
+                // Ensure the cursor always locked when set
+                if (lockCursor && enableMouseLook && !_hideScreenControls)
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    InputManager.Instance.CursorVisible = false;
+                }
+                else
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    InputManager.Instance.CursorVisible = true;
+                }
             }
             else
             {

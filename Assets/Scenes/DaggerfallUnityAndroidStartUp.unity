@@ -616,6 +616,7 @@ MonoBehaviour:
   _copyGameContentButton: {fileID: 1374359843}
   _exitGameButton: {fileID: 801245744}
   _progressBar: {fileID: 523994092}
+  _hideControlsToggle: {fileID: 346909293}
 --- !u!1 &157770099
 GameObject:
   m_ObjectHideFlags: 0
