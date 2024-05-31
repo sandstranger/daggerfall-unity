@@ -518,15 +518,14 @@ namespace DaggerfallWorkshop.Game
             wasPaused = false;
 
             // Collect mouse axes
-            mouseX = Input.GetAxisRaw("Mouse X");
-            mouseY = Input.GetAxisRaw("Mouse Y");
+            mouseX = TouchscreenInputManager.IsTouchscreenActive ? 0 : Input.GetAxisRaw("Mouse X");
+            mouseY = TouchscreenInputManager.IsTouchscreenActive ? 0 : Input.GetAxisRaw("Mouse Y");
 
 
-            if (EnableController && (mouseX == 0F || mouseY == 0F) && !String.IsNullOrEmpty(cameraAxisBindingCache[0]))
+            if ((EnableController || TouchscreenInputManager.IsTouchscreenActive) && (mouseX == 0F || mouseY == 0F) && !String.IsNullOrEmpty(cameraAxisBindingCache[0]))
             {
-                var h = Input.GetAxis(cameraAxisBindingCache[0]);
-                var v = Input.GetAxis(cameraAxisBindingCache[1]);
-
+                var h = Input.GetAxis(cameraAxisBindingCache[0]) + TouchscreenInputManager.GetAxis(AxisActions.CameraHorizontal);
+                var v = Input.GetAxis(cameraAxisBindingCache[1]) + TouchscreenInputManager.GetAxis(AxisActions.CameraVertical);
                 if (Mathf.Sqrt(h * h + v * v) > JoystickDeadzone)
                 {
                     mouseX = h;
@@ -1007,7 +1006,7 @@ namespace DaggerfallWorkshop.Game
             setBinding(KeyCode.U, Actions.UseMagicItem, true);
 
             setBinding(KeyCode.Z, Actions.ReadyWeapon, true);
-            setBinding(KeyCode.Mouse1, Actions.SwingWeapon, true);
+            setBinding(Application.isMobilePlatform ? KeyCode.Y : KeyCode.Mouse1, Actions.SwingWeapon, true);
             setBinding(KeyCode.H, Actions.SwitchHand, true);
 
             setBinding(KeyCode.I, Actions.Status, true);
@@ -1507,8 +1506,8 @@ namespace DaggerfallWorkshop.Game
         void UpdateLook()
         {
             // Assign mouse
-            lookX = (keyboardLookX == 0) ? mouseX : keyboardLookX;
-            lookY = (keyboardLookY == 0) ? mouseY : keyboardLookY;
+            lookX = keyboardLookX != 0 ? keyboardLookX : mouseX;
+            lookY = keyboardLookY != 0 ? keyboardLookY : mouseY;
 
             // Inversion
             lookX = (invertLookX) ? -lookX : lookX;
@@ -1646,10 +1645,8 @@ namespace DaggerfallWorkshop.Game
 
         bool GetPollKey(KeyCode k)
         {
-            if ((int)k < startingAxisKeyCode)
-                return Input.GetKey(k);
-            else
-                return GetAxisKey((int)k);
+            bool isDepressed = (int)k < startingAxisKeyCode ? Input.GetKey(k) : GetAxisKey((int)k);
+            return isDepressed || TouchscreenInputManager.GetPollKey(k);
         }
 
         bool GetAxisKey(int key)
@@ -1875,8 +1872,8 @@ namespace DaggerfallWorkshop.Game
             if (!EnableController || String.IsNullOrEmpty(movementAxisBindingCache[0]) || String.IsNullOrEmpty(movementAxisBindingCache[1]))
                 return;
 
-            float horiz = Input.GetAxis(movementAxisBindingCache[0]);
-            float vert = Input.GetAxis(movementAxisBindingCache[1]);
+            float horiz = Input.GetAxis(movementAxisBindingCache[0]) + TouchscreenInputManager.GetAxis(AxisActions.MovementHorizontal);
+            float vert = Input.GetAxis(movementAxisBindingCache[1]) + TouchscreenInputManager.GetAxis(AxisActions.MovementVertical);
 
             if (vert != 0 || horiz != 0)
             {

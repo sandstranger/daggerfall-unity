@@ -308,7 +308,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         {
             base.Update();
 
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKeyDown(KeyCode.Return) || TouchscreenKeyboardManager.DidSubmit)
                 SaveLoadEventHandler(null, Vector2.zero);
             if (loading && --loadingCountdown == 0) // Allow loading text to draw before loading
                 LoadGame();

@@ -187,7 +187,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         void OpenSelectedSaveGame()
         {
-            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.lockState = TouchscreenInputManager.IsTouchscreenActive ? CursorLockMode.None : CursorLockMode.Locked;
             InputManager.Instance.CursorVisible = false;
 
             // Setup start behaviour

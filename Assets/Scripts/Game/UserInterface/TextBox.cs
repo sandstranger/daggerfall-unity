@@ -168,6 +168,13 @@ namespace DaggerfallWorkshop.Game.UserInterface
             // Panel drawn behind IME composition in progress
             compositionPanel.BackgroundColor = Color.blue;
             Components.Add(compositionPanel);
+
+            // open android keyboard
+            Debug.Log("Opening android keyboard");
+            if (Application.isMobilePlatform && !readOnly)
+            {
+                TouchscreenKeyboardManager.Instance.ToggleKeyboardOn(this);
+            }
         }
 
         public override void Update()
@@ -204,7 +211,8 @@ namespace DaggerfallWorkshop.Game.UserInterface
 
             // Return/enter is not a valid input character except at the end of IME composition
             if (DaggerfallUI.Instance.LastKeyCode == KeyCode.Return ||
-                DaggerfallUI.Instance.LastKeyCode == KeyCode.KeypadEnter)
+                DaggerfallUI.Instance.LastKeyCode == KeyCode.KeypadEnter ||
+                TouchscreenKeyboardManager.DidSubmit)
             {
                 if (IMECompositionInProgress)
                     InsertIMEComposition();

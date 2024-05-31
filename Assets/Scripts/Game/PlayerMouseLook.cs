@@ -111,7 +111,7 @@ namespace DaggerfallWorkshop.Game
             float sensitivityX = 1.0f;
             float sensitivityY = 1.0f;
 
-            if (InputManager.Instance.UsingController)
+            if (InputManager.Instance.UsingController || TouchscreenInputManager.IsTouchscreenActive)
             {
                 // Make sure it keeps consistent speed regardless of framerate
                 // Speed = speed * 60 frames / (1 / unscaledDeltaTime) or speed * 60 * unscaledDeltaTime
@@ -175,7 +175,7 @@ namespace DaggerfallWorkshop.Game
         {
             if (forceHideCursor)
             {
-                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.lockState = TouchscreenInputManager.IsTouchscreenActive ? CursorLockMode.None : CursorLockMode.Locked;
                 InputManager.Instance.CursorVisible = false;
                 return;
             }
@@ -216,7 +216,7 @@ namespace DaggerfallWorkshop.Game
             // Ensure the cursor always locked when set
             if (lockCursor && enableMouseLook)
             {
-                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.lockState = TouchscreenInputManager.IsTouchscreenActive ? CursorLockMode.None : CursorLockMode.Locked;
                 InputManager.Instance.CursorVisible = false;
             }
             else
