@@ -1,6 +1,4 @@
-﻿using System;
-using Mono.CSharp;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace DaggerfallWorkshop.Game

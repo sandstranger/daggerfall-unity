@@ -5,7 +5,7 @@ namespace DaggerfallWorkshop.Game
 {
     sealed class TouchCamera : EventTrigger
     {
-        public static Vector2 CurrentTouchDelta { get; private set; }
+        public Vector2 CurrentTouchDelta { get; private set; }
 
         private const float Smoothness = 5.0f;
 

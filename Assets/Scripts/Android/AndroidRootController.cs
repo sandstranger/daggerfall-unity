@@ -11,6 +11,7 @@ namespace DaggerfallWorkshop.Game
     sealed class AndroidRootController
     {
         const string AssetsCopiedToInternalMemoryKey = "assets_were_copied_to_internal_memory";
+
         public async Task CopyStreamingAssetsToInternalMemory()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR

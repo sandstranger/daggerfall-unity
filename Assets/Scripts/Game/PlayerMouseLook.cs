@@ -127,7 +127,7 @@ namespace DaggerfallWorkshop.Game
                 sensitivityY = sensitivity.y * sensitivityScale;
             }
 
-            Vector2 rawMouseDelta = TouchCamera.CurrentTouchDelta; //new Vector2(InputManager.Instance.LookX, InputManager.Instance.LookY);
+            Vector2 rawMouseDelta = ScreenControls.Instance.TouchCamera.CurrentTouchDelta; //new Vector2(InputManager.Instance.LookX, InputManager.Instance.LookY);
 
             lookTarget += Vector2.Scale(rawMouseDelta, new Vector2(sensitivityX, sensitivityY * (invertMouseY ? -1 : 1)));
 
