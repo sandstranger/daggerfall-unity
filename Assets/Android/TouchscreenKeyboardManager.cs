@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DaggerfallWorkshop.Game.UserInterface;
+using System.Linq;
 
 namespace DaggerfallWorkshop.Game
 {
@@ -12,6 +13,7 @@ namespace DaggerfallWorkshop.Game
         
         [SerializeField] private TMPro.TMP_InputField dummyInputField;
         private TextBox currentTextbox;
+        private HashSet<TextBox> registeredTextboxes = new HashSet<TextBox>();
 
         private void Awake()
         {
@@ -32,8 +34,38 @@ namespace DaggerfallWorkshop.Game
             dummyInputField.onSubmit.AddListener(OnDummyInputFieldSubmit);
             dummyInputField.onEndEdit.AddListener((string str) => ToggleKeyboardOff());
         }
+        private bool IsTextboxVisible(TextBox textbox)
+        {
+            // checks if textbox is visible on the screen
+            BaseScreenComponent cur = textbox;
+            while(cur != null)
+            {
+                if (cur.Parent != null && DaggerfallUI.UIManager.TopWindow.ParentPanel == cur.Parent)
+                    return true;
+                cur = cur.Parent;
+            }
+            return false;
+        }
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                // check if mouse clicked within a valid textbox
+                Vector2 mousePos = Input.mousePosition;
+                mousePos.y = Screen.height - mousePos.y;
+                var activeTextboxes = registeredTextboxes.Where(p => IsTextboxVisible(p) && !p.ReadOnly);
+                Debug.Log("Checking " + activeTextboxes.Count() + " textboxes if " + mousePos + " is contained within " + (activeTextboxes.Count() > 0 ? activeTextboxes.Take(1).Single().Rectangle.ToString() : "n/a"));
+                TextBox textBox = activeTextboxes.Where(p => { Rect rect = p.Rectangle; rect.width = rect.width == 0 ? 1000 : rect.width; return rect.Contains(mousePos); }).Take(1).SingleOrDefault();
+                if (textBox != default(TextBox))
+                    // it did! Open the keyboard.
+                    ToggleKeyboardOn(textBox);
+            }
+        }
+        public void RegisterTextbox(TextBox textBox) => registeredTextboxes.Add(textBox);
+        public void UnregisterTextbox(TextBox textBox) => registeredTextboxes.Remove(textBox);
         public void ToggleKeyboardOn(TextBox textBox)
         {
+            Debug.Log("Opening android keyboard");
             this.currentTextbox = textBox;
             dummyInputField.text = textBox.Text;
             dummyInputField.gameObject.SetActive(true);

@@ -168,8 +168,23 @@ namespace DaggerfallWorkshop.Game.UserInterface
             // Panel drawn behind IME composition in progress
             compositionPanel.BackgroundColor = Color.blue;
             Components.Add(compositionPanel);
-        }
 
+#if UNITY_ANDROID
+            if (!readOnly)
+            {
+                TouchscreenKeyboardManager.Instance.RegisterTextbox(this);
+                Debug.Log("Registering Textbox " + Name);
+            }
+#endif
+        }
+#if UNITY_ANDROID
+        public override void Dispose()
+        {
+            base.Dispose();
+            TouchscreenKeyboardManager.Instance.UnregisterTextbox(this);
+            Debug.Log("Unregistering Textbox " + Name);
+        }
+#endif
         public override void Update()
         {
             base.Update();
@@ -536,21 +551,6 @@ namespace DaggerfallWorkshop.Game.UserInterface
             if (OnType != null)
                 OnType();
         }
-
-
-#if UNITY_ANDROID
-        protected override void MouseClick(Vector2 clickPosition)
-        {
-            base.MouseClick(clickPosition);
-
-            // open android keyboard
-            Debug.Log("Opening android keyboard");
-            if (Application.isMobilePlatform && !readOnly)
-            {
-                TouchscreenKeyboardManager.Instance.ToggleKeyboardOn(this);
-            }
-        }
-#endif
         #endregion
     }
 }
