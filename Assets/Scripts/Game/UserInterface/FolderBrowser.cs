@@ -21,8 +21,6 @@ using DaggerfallWorkshop.Utility;
 using DaggerfallWorkshop.Game.Entity;
 using DaggerfallWorkshop.Game.Player;
 
-using ICSharpCode.SharpZipLib.Zip;
-
 namespace DaggerfallWorkshop.Game.UserInterface
 {
     /// <summary>
@@ -31,7 +29,6 @@ namespace DaggerfallWorkshop.Game.UserInterface
     public class FolderBrowser : Panel
     {
         private const string parentDirectory = "..";
-        private const string daggerfallDataDirName = "Daggerfall";
 
         int confirmButtonWidth = 35;
         int drivePanelWidth = 40;
@@ -210,93 +207,10 @@ namespace DaggerfallWorkshop.Game.UserInterface
             currentPath = drives[driveList.SelectedIndex];
         }
 
-        private void OnFilePicked(string filePath)
-        {
-            // extract zip and load the files
-            string outputPath = Path.Combine(Paths.PersistentDataPath, daggerfallDataDirName);
-            UnzipFile(filePath, outputPath);
-            currentPath = outputPath;
-            RaisePathChangedEvent();
-            RaiseOnConfirmPathEvent();
-        }
-
-        // Call this method with the path to the zip file and the output folder.
-        public static string UnzipFile(string zipFilePath, string outputFolderPath)
-        {
-            // Ensure the output directory exists
-            if (!Directory.Exists(outputFolderPath))
-                Directory.CreateDirectory(outputFolderPath);
-
-            // Initialize the Zip input stream
-            using (FileStream fileStream = new FileStream(zipFilePath, FileMode.Open, FileAccess.Read))
-            using (ZipInputStream zipInputStream = new ZipInputStream(fileStream))
-            {
-                ZipEntry entry;
-                while ((entry = zipInputStream.GetNextEntry()) != null)
-                {
-                    // Create directory for the entry if it does not exist
-                    string directoryName = Path.GetDirectoryName(entry.Name);
-                    string fileName = Path.GetFileName(entry.Name);
-                    string directoryPath = Path.Combine(outputFolderPath, directoryName);
-
-                    if (!Directory.Exists(directoryPath))
-                        Directory.CreateDirectory(directoryPath);
-
-                    // If the entry is a file, extract it
-                    if (!string.IsNullOrEmpty(fileName))
-                    {
-                        string filePath = Path.Combine(directoryPath, fileName);
-                        using (FileStream streamWriter = File.Create(filePath))
-                        {
-                            int size = 2048;
-                            byte[] buffer = new byte[size];
-
-                            try
-                            {
-                                while ((size = zipInputStream.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    streamWriter.Write(buffer, 0, size);
-                                }
-                            }
-                            catch
-                            {
-                                Debug.LogWarning("Couldn't extract " + filePath + " from zip archive");
-                            }
-                        }
-                    }
-                }
-            }
-
-            return outputFolderPath;
-        }
-        private bool hasPickedFile = false;
-
         void RefreshFolders()
         {
             folders.Clear();
             folderList.ClearItems();
-
-            if (!hasPickedFile && Application.isMobilePlatform)
-            {
-                // initiate file picker for user-supplied daggerfall arena2 zip folder
-                // TODO: Edit the UI to indicate to the user this is happening, have them press a button to initiate it.
-                string dataPath = Path.Combine(Paths.PersistentDataPath, daggerfallDataDirName);
-                string pathResult = DaggerfallUnity.TestArena2Exists(dataPath);
-                DaggerfallConnect.Utility.DFValidator.ValidationResults validationResults;
-                DaggerfallConnect.Utility.DFValidator.ValidateArena2Folder(pathResult, out validationResults, true);
-                if (!validationResults.AppearsValid)
-                {
-                    NativeFilePicker.FilePickedCallback filePickedCallback = new NativeFilePicker.FilePickedCallback(OnFilePicked);
-                    NativeFilePicker.PickFile(filePickedCallback);
-                }
-                else
-                {
-                    currentPath = dataPath;
-                    RaisePathChangedEvent();
-                    RaiseOnConfirmPathEvent();
-                }
-                hasPickedFile = true;
-            }
 
             // Add return path
             if (currentPath != drives[driveList.SelectedIndex])

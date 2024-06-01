@@ -51,7 +51,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         Panel optionsPanel = new Panel();
         //Panel summaryPanel = new Panel();
         VerticalScrollBar resolutionScroller = new VerticalScrollBar();
+#if UNITY_ANDROID
+        FolderBrowserAndroid browser = new FolderBrowserAndroid();
+#else
         FolderBrowser browser = new FolderBrowser();
+#endif
         TextLabel helpLabel = new TextLabel();
         Checkbox fullscreenCheckbox = new Checkbox();
         Button testOrConfirmButton = new Button();
@@ -74,15 +78,15 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         Color selectedTextColor = new Color(0.0f, 0.8f, 0.0f, 1.0f);
         Color secondaryTextColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
 
-        #endregion
+#endregion
 
-        #region UI Textures
+#region UI Textures
 
         Texture2D titleTexture;
 
-        #endregion
+#endregion
 
-        #region Fields
+#region Fields
 
         const string titleScreenFilename = "StartupBackground2";
         const float panelSwipeTime = 1;
@@ -105,9 +109,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         string arena2Path = string.Empty;
         bool moveNextStage = false;
 
-        #endregion
+#endregion
 
-        #region Enums
+#region Enums
 
         public enum SetupStages
         {
@@ -119,18 +123,18 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             LaunchGame,
         }
 
-        #endregion
+#endregion
 
-        #region Constructors
+#region Constructors
 
         public DaggerfallUnitySetupGameWizard(IUserInterfaceManager uiManager)
             : base(uiManager)
         {
         }
 
-        #endregion
+#endregion
 
-        #region Setup Methods
+#region Setup Methods
 
         protected override void Setup()
         {
@@ -220,7 +224,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             screen.HorizontalAlignment = HorizontalAlignment.Center;
             screen.Position = new Vector2(0, 10);
             screen.TextAlignment = HorizontalAlignment.Center;
+#if UNITY_ANDROID
+            screen.SetText(Resources.Load<TextAsset>("Screens/WelcomeScreenAndroid"));
+#else
             screen.SetText(Resources.Load<TextAsset>("Screens/WelcomeScreen"));
+#endif
             browserPanel.Components.Add(screen);
 
             // Setup folder browser
@@ -688,9 +696,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         //}
 
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
 
         void LoadResources()
         {
@@ -777,9 +785,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 StateManager.OnStateChange += StateManager_OnStateChange;
         }
 
-        #endregion
+#endregion
 
-        #region Event Handlers
+#region Event Handlers
 
         private void ExitButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
         {
@@ -983,6 +991,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             }
         }
 
-        #endregion
+#endregion
     }
 }

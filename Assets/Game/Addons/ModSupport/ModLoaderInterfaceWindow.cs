@@ -704,7 +704,7 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
             // Extract zip and copy any .dfmod files contained to mods folder
             string cachePath = Path.Combine(Application.temporaryCachePath, "Mods");
             Directory.CreateDirectory(cachePath);
-            FolderBrowser.UnzipFile(filePath, cachePath);
+            DaggerfallWorkshop.Utility.Unzip.UnzipFile(filePath, cachePath);
 
             // Find any .dfmod files within the unzipped path, and move them to mods folder path
             foreach (string file in Directory.GetFiles(cachePath, "*.dfmod", SearchOption.AllDirectories))

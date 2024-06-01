@@ -1,0 +1,262 @@
+// Project:         Daggerfall Unity
+// Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
+// Web Site:        http://www.dfworkshop.net
+// License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
+// Source Code:     https://github.com/Interkarma/daggerfall-unity
+// Original Author: Gavin Clayton (interkarma@dfworkshop.net)
+// Contributors:
+//
+// Notes:
+//
+
+using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO;
+using DaggerfallWorkshop.Utility;
+using System.Linq;
+
+
+namespace DaggerfallWorkshop.Game.UserInterface
+{
+    /// <summary>
+    /// Simple cross-platform folder browser.
+    /// </summary>
+    public class FolderBrowserAndroid : Panel
+    {
+        private const string daggerfallDataDirName = "Daggerfall";
+
+        int confirmButtonWidth = 35;
+        int maxChars = 43;
+        string confirmButtonText = "OK";
+        string importDataText = "Import Daggerfall Game Data";
+
+        int minWidth = 200;
+        int minHeight = 100;
+        TextLabel pathLabel = new TextLabel();
+        Button importDataButton = new Button();
+        Button confirmButton = new Button();
+
+        Color confirmEnabledButtonColor = new Color(0.0f, 0.5f, 0.0f, 0.4f);
+        Color confirmDisabledButtonColor = new Color(0.5f, 0.0f, 0.0f, 0.4f);
+
+        string currentPath;
+        bool confirmEnabled = true;
+        int importDataButtonWasClicked = 0; // hacky way to delay the native file picker so that the 'loading data...' text is drawn
+
+        public delegate void OnConfirmPathHandler();
+        public event OnConfirmPathHandler OnConfirmPath;
+
+        public delegate void OnPathChangedHandler();
+        public event OnPathChangedHandler OnPathChanged;
+
+        #region Properties
+
+        /// <summary>
+        /// Maximum right-most characters to display in path label.
+        /// </summary>
+        public int MaxPathLabelChars
+        {
+            get { return maxChars; }
+            set { maxChars = value; }
+        }
+
+        /// <summary>
+        /// Gets current path selected by browser.
+        /// </summary>
+        public string CurrentPath
+        {
+            get { return currentPath; }
+        }
+
+        /// <summary>
+        /// Enable or disable confirm button, e.g. based on path validation.
+        /// </summary>
+        public bool ConfirmEnabled
+        {
+            get { return confirmEnabled; }
+            set { confirmEnabled = value; }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public FolderBrowserAndroid()
+        {
+            Setup();
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (confirmEnabled)
+                confirmButton.BackgroundColor = confirmEnabledButtonColor;
+            else
+                confirmButton.BackgroundColor = confirmDisabledButtonColor;
+
+            if (importDataButtonWasClicked > 0)
+            {
+                importDataButtonWasClicked--;
+                if(importDataButtonWasClicked == 0)
+                    PickArena2Folder();
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        void Setup()
+        {
+            // Setup panels
+            Components.Add(confirmButton);
+            Components.Add(importDataButton);
+            Components.Add(pathLabel);
+            AdjustPanels();
+
+            // Setup events
+            confirmButton.OnMouseClick += ConfirmButton_OnMouseClick;
+            importDataButton.OnMouseClick += ImportDataButton_OnMouseClick;
+        }
+
+        private void ImportDataButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
+        {
+
+            SetPathLabelText("Loading data...");
+            importDataButtonWasClicked = 4;
+        }
+
+        private void PickArena2Folder()
+        {
+            NativeFilePicker.FilePickedCallback filePickedCallback = new NativeFilePicker.FilePickedCallback(OnFilePicked);
+            NativeFilePicker.PickFile(filePickedCallback);
+        }
+
+        private bool ValidateArena2Path(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return false;
+            string pathResult = DaggerfallUnity.TestArena2Exists(path);
+            DaggerfallConnect.Utility.DFValidator.ValidationResults validationResults;
+            DaggerfallConnect.Utility.DFValidator.ValidateArena2Folder(pathResult, out validationResults, true);
+            return validationResults.AppearsValid;
+        }
+
+        private void OnFilePicked(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath) || !filePath.ToLower().EndsWith(".zip"))
+            {
+                SetPathLabelText("");
+                return;
+            }
+
+            // extract zip and load the files
+            string outputPath = Path.Combine(Paths.PersistentDataPath, daggerfallDataDirName);
+            string cachePath = Path.Combine(Application.temporaryCachePath, "DaggerfallArena2Unzipped");
+            Unzip.UnzipFile(filePath, cachePath);
+            bool foundValidFolder = false;
+            IEnumerable<string> dirs = Directory.EnumerateDirectories(cachePath, "*", new EnumerationOptions() { RecurseSubdirectories = true });
+            dirs = dirs.Prepend(cachePath);
+            foreach (string subdirectory in dirs)
+            {
+                Debug.Log("Checking " + subdirectory);
+                if (!string.IsNullOrEmpty(DaggerfallUnity.TestArena2Exists(subdirectory)))
+                {
+                    if (Directory.Exists(outputPath))
+                        Directory.Delete(outputPath, true);
+                    Directory.Move(subdirectory, outputPath);
+                    if(Directory.Exists(cachePath))
+                        Directory.Delete(cachePath, true);
+                    foundValidFolder = true;
+                    break;
+                }
+            }
+
+            // validate path. looks good? update path text and enable confirm button
+            if (foundValidFolder && ValidateArena2Path(outputPath))
+            {
+                currentPath = outputPath;
+                pathLabel.Text = filePath;
+                confirmEnabled = true;
+            }
+            else
+            {
+                SetPathLabelText("Archive did not contain a valid Daggerfall folder", Color.red);
+                confirmEnabled = false;
+            }
+        }
+
+        void SetPathLabelText(string txt) => SetPathLabelText(txt, DaggerfallUI.DaggerfallDefaultTextColor);
+        void SetPathLabelText(string txt, Color color)
+        {
+            pathLabel.Text = txt;
+            pathLabel.TextColor = color;
+        }
+
+        void AdjustPanels()
+        {
+            // Enforce minimum size
+            Vector2 size = Size;
+            if (size.x < minWidth) size.x = minWidth;
+            if (size.y < minHeight) size.y = minHeight;
+            Size = size;
+
+            // Set path label
+            pathLabel.Position = new Vector2(2, 2);
+            pathLabel.VerticalAlignment = VerticalAlignment.Middle;
+            pathLabel.HorizontalAlignment = HorizontalAlignment.Center;
+            pathLabel.ShadowPosition = Vector2.zero;
+            pathLabel.MaxWidth = (int)Size.x - 4;
+
+            // Set confirm button
+            //confirmButton.BackgroundColor = confirmButtonColor;
+            confirmButton.Position = new Vector2(100, 100);
+            confirmButton.Size = new Vector2(confirmButtonWidth, 12);
+            confirmButton.Outline.Enabled = true;
+            confirmButton.Label.Text = confirmButtonText;
+            confirmButton.HorizontalAlignment = HorizontalAlignment.Center;
+
+            // set import data buttons
+            importDataButton.Position = new Vector2(100, 75);
+            importDataButton.Size = new Vector2(100, 12);
+            importDataButton.Outline.Enabled = true;
+            importDataButton.Label.Text = importDataText;
+            importDataButton.HorizontalAlignment = HorizontalAlignment.Center;
+        }
+
+        void RaiseOnConfirmPathEvent()
+        {
+            if (OnConfirmPath != null)
+                OnConfirmPath();
+        }
+
+        void RaisePathChangedEvent()
+        {
+            if (OnPathChanged != null)
+                OnPathChanged();
+        }
+
+        #endregion
+
+        #region Event Handlers
+
+        private void ConfirmButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
+        {
+            // validate path. looks good? use it and continue on
+            if (confirmEnabled && ValidateArena2Path(currentPath))
+            {
+                RaisePathChangedEvent();
+                RaiseOnConfirmPathEvent();
+            }
+        }
+
+        #endregion
+    }
+}
