@@ -312,7 +312,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             {
                 if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyDown(extraProceedBinding))
                     isNextMessageDeferred = true;
-                else if ((Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyUp(extraProceedBinding)) && isNextMessageDeferred || TouchscreenKeyboardManager.DidSubmit)
+                else if ((Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyUp(extraProceedBinding)) && isNextMessageDeferred || TouchscreenKeyboardManager.SubmittedInput)
                 {
                     isNextMessageDeferred = false;
                     // Special handling for message boxes with buttons

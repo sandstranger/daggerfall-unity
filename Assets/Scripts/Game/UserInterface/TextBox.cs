@@ -220,7 +220,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
             // Return/enter is not a valid input character except at the end of IME composition
             if (DaggerfallUI.Instance.LastKeyCode == KeyCode.Return ||
                 DaggerfallUI.Instance.LastKeyCode == KeyCode.KeypadEnter ||
-                TouchscreenKeyboardManager.DidSubmit)
+                TouchscreenKeyboardManager.SubmittedInput)
             {
                 if (IMECompositionInProgress)
                     InsertIMEComposition();

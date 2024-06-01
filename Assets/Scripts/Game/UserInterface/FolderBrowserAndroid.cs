@@ -27,19 +27,15 @@ namespace DaggerfallWorkshop.Game.UserInterface
     {
         private const string daggerfallDataDirName = "Daggerfall";
 
-        int confirmButtonWidth = 35;
         int maxChars = 43;
-        string confirmButtonText = "OK";
         string importDataText = "Import Daggerfall Game Data";
 
         int minWidth = 200;
         int minHeight = 100;
         TextLabel pathLabel = new TextLabel();
         Button importDataButton = new Button();
-        Button confirmButton = new Button();
 
-        Color confirmEnabledButtonColor = new Color(0.0f, 0.5f, 0.0f, 0.4f);
-        Color confirmDisabledButtonColor = new Color(0.5f, 0.0f, 0.0f, 0.4f);
+        Color importDataButtonColor = new Color(0.0f, 0.5f, 0.0f, 0.4f);
 
         string currentPath;
         bool confirmEnabled = true;
@@ -96,11 +92,6 @@ namespace DaggerfallWorkshop.Game.UserInterface
         {
             base.Update();
 
-            if (confirmEnabled)
-                confirmButton.BackgroundColor = confirmEnabledButtonColor;
-            else
-                confirmButton.BackgroundColor = confirmDisabledButtonColor;
-
             if (importDataButtonWasClicked > 0)
             {
                 importDataButtonWasClicked--;
@@ -116,21 +107,33 @@ namespace DaggerfallWorkshop.Game.UserInterface
         void Setup()
         {
             // Setup panels
-            //Components.Add(confirmButton);
             Components.Add(importDataButton);
             Components.Add(pathLabel);
-            AdjustPanels();
+
+
+            // Enforce minimum size
+            Vector2 size = Size;
+            if (size.x < minWidth) size.x = minWidth;
+            if (size.y < minHeight) size.y = minHeight;
+            Size = size;
+
+            // Set path label
+            pathLabel.Position = new Vector2(2, 2);
+            pathLabel.VerticalAlignment = VerticalAlignment.Middle;
+            pathLabel.HorizontalAlignment = HorizontalAlignment.Center;
+            pathLabel.ShadowPosition = Vector2.zero;
+            pathLabel.MaxWidth = (int)Size.x - 4;
+
+            // set import data buttons
+            importDataButton.Position = new Vector2(100, 75);
+            importDataButton.Size = new Vector2(100, 12);
+            importDataButton.Outline.Enabled = true;
+            importDataButton.Label.Text = importDataText;
+            importDataButton.HorizontalAlignment = HorizontalAlignment.Center;
+            importDataButton.BackgroundColor = importDataButtonColor;
 
             // Setup events
-            confirmButton.OnMouseClick += ConfirmButton_OnMouseClick;
             importDataButton.OnMouseClick += ImportDataButton_OnMouseClick;
-        }
-
-        private void ImportDataButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
-        {
-
-            SetPathLabelText("Loading data...");
-            importDataButtonWasClicked = 4;
         }
 
         private void PickArena2Folder()
@@ -237,37 +240,6 @@ namespace DaggerfallWorkshop.Game.UserInterface
             pathLabel.TextColor = color;
         }
 
-        void AdjustPanels()
-        {
-            // Enforce minimum size
-            Vector2 size = Size;
-            if (size.x < minWidth) size.x = minWidth;
-            if (size.y < minHeight) size.y = minHeight;
-            Size = size;
-
-            // Set path label
-            pathLabel.Position = new Vector2(2, 2);
-            pathLabel.VerticalAlignment = VerticalAlignment.Middle;
-            pathLabel.HorizontalAlignment = HorizontalAlignment.Center;
-            pathLabel.ShadowPosition = Vector2.zero;
-            pathLabel.MaxWidth = (int)Size.x - 4;
-
-            // Set confirm button
-            //confirmButton.BackgroundColor = confirmButtonColor;
-            confirmButton.Position = new Vector2(100, 100);
-            confirmButton.Size = new Vector2(confirmButtonWidth, 12);
-            confirmButton.Outline.Enabled = true;
-            confirmButton.Label.Text = confirmButtonText;
-            confirmButton.HorizontalAlignment = HorizontalAlignment.Center;
-
-            // set import data buttons
-            importDataButton.Position = new Vector2(100, 75);
-            importDataButton.Size = new Vector2(100, 12);
-            importDataButton.Outline.Enabled = true;
-            importDataButton.Label.Text = importDataText;
-            importDataButton.HorizontalAlignment = HorizontalAlignment.Center;
-        }
-
         void RaiseOnConfirmPathEvent()
         {
             if (OnConfirmPath != null)
@@ -284,14 +256,11 @@ namespace DaggerfallWorkshop.Game.UserInterface
 
         #region Event Handlers
 
-        private void ConfirmButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
+
+        private void ImportDataButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
         {
-            // validate path. looks good? use it and continue on
-            if (confirmEnabled && ValidateArena2Path(currentPath))
-            {
-                RaisePathChangedEvent();
-                RaiseOnConfirmPathEvent();
-            }
+            SetPathLabelText("Loading data...");
+            importDataButtonWasClicked = 4;
         }
 
         #endregion

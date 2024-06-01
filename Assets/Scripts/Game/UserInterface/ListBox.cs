@@ -293,7 +293,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
                     HorizontalScrollLeft();
                 else if (DaggerfallUI.Instance.LastKeyCode == KeyCode.RightArrow)
                     HorizontalScrollRight();
-                else if (DaggerfallUI.Instance.LastKeyCode == KeyCode.Return || TouchscreenKeyboardManager.DidSubmit)
+                else if (DaggerfallUI.Instance.LastKeyCode == KeyCode.Return || TouchscreenKeyboardManager.SubmittedInput)
                     UseSelectedItem();
             }
         }

@@ -130,7 +130,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         {
             base.Update();
 
-            if (Input.GetKeyDown(KeyCode.Return) || TouchscreenKeyboardManager.DidSubmit)
+            if (Input.GetKeyDown(KeyCode.Return) || TouchscreenKeyboardManager.SubmittedInput)
                 AcceptName();
         }
 

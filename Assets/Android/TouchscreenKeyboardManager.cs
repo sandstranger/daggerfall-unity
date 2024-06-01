@@ -9,7 +9,7 @@ namespace DaggerfallWorkshop.Game
     public class TouchscreenKeyboardManager : MonoBehaviour
     {
         public static TouchscreenKeyboardManager Instance { get; private set; }
-        public static bool DidSubmit { get; private set; }
+        public static bool SubmittedInput { get; private set; }
         
         [SerializeField] private TMPro.TMP_InputField dummyInputField;
         private TextBox currentTextbox;
@@ -54,11 +54,15 @@ namespace DaggerfallWorkshop.Game
                 Vector2 mousePos = Input.mousePosition;
                 mousePos.y = Screen.height - mousePos.y;
                 var activeTextboxes = registeredTextboxes.Where(p => IsTextboxVisible(p) && !p.ReadOnly);
-                Debug.Log("Checking " + activeTextboxes.Count() + " textboxes if " + mousePos + " is contained within " + (activeTextboxes.Count() > 0 ? activeTextboxes.Take(1).Single().Rectangle.ToString() : "n/a"));
-                TextBox textBox = activeTextboxes.Where(p => { Rect rect = p.Rectangle; rect.width = rect.width == 0 ? 1000 : rect.width; return rect.Contains(mousePos); }).Take(1).SingleOrDefault();
+                TextBox textBox = activeTextboxes.Where(p =>
+                    {
+                        Rect rect = p.Rectangle;
+                        rect.width = rect.width == 0 ? 1000 : rect.width;
+                        return rect.Contains(mousePos);
+                    }).Take(1).SingleOrDefault();
+
                 if (textBox != default(TextBox))
-                    // it did! Open the keyboard.
-                    ToggleKeyboardOn(textBox);
+                    ToggleKeyboardOn(textBox); // it did! Open the keyboard.
             }
         }
         public void RegisterTextbox(TextBox textBox) => registeredTextboxes.Add(textBox);
@@ -79,11 +83,11 @@ namespace DaggerfallWorkshop.Game
         }
         private IEnumerator SubmitCoroutine()
         {
-            // ensure everything sees 'didsubmit' for a single frame, regardless of script execution order
+            // ensure everything sees 'submittedinput' for a single frame, regardless of script execution order
             yield return new WaitForEndOfFrame();
-            DidSubmit = true;
+            SubmittedInput = true;
             yield return new WaitForEndOfFrame();
-            DidSubmit = false;
+            SubmittedInput = false;
         }
         private void OnDummyInputFieldSubmit(string submittedVal)
         {
