@@ -132,6 +132,8 @@ namespace DaggerfallWorkshop.Game
             Vector2 rawMouseDelta = !_hideScreenControls ?
                 ScreenControls.Instance.TouchCamera.CurrentTouchDelta : new Vector2(InputManager.Instance.LookX, InputManager.Instance.LookY);
 
+            Debug.Log("RAW MOUSE DELTA =" + rawMouseDelta);
+
             lookTarget += Vector2.Scale(rawMouseDelta, new Vector2(sensitivityX, sensitivityY * (invertMouseY ? -1 : 1)));
 
             float range = 360.0f;
@@ -256,7 +258,7 @@ namespace DaggerfallWorkshop.Game
                 return;
 
             // Suppress mouse look if player is swinging weapon
-            if (InputManager.Instance.HasAction(InputManager.Actions.SwingWeapon) && DaggerfallUnity.Settings.WeaponSwingMode == 0 && GameManager.Instance.WeaponManager.ScreenWeapon.WeaponType != WeaponTypes.Bow)
+            if (_hideScreenControls && InputManager.Instance.HasAction(InputManager.Actions.SwingWeapon) && DaggerfallUnity.Settings.WeaponSwingMode == 0 && GameManager.Instance.WeaponManager.ScreenWeapon.WeaponType != WeaponTypes.Bow)
                 applyLook = false;
 
             if (applyLook)

@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.bshsf.joystick": {
+      "version": "https://github.com/Bian-Sh/UniJoystick.git?path=Packages/Joystick",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "e53d32514d78bfc4c766efff576e1e09bb6d3644"
+    },
     "com.unity.addressables": {
       "version": "1.21.1",
       "depth": 0,

@@ -8,30 +8,26 @@ namespace DaggerfallWorkshop.Game
         public Vector2 CurrentTouchDelta { get; private set; }
 
         private const float Smoothness = 5.0f;
+        private int _pointerId;
 
         public override void OnDrag(PointerEventData data)
         {
-            if (data.pointerId > 0)
+            if (data.pointerId == _pointerId)
             {
-                return;
+                CurrentTouchDelta = data.delta / Smoothness;
+                Debug.Log(CurrentTouchDelta);
             }
-
-            CurrentTouchDelta = data.delta / Smoothness;
         }
 
         public override void OnPointerDown(PointerEventData data)
         {
-            if (data.pointerId > 0)
-            {
-                return;
-            }
-
+            _pointerId = data.pointerId;
             CurrentTouchDelta = data.delta / Smoothness;
         }
 
         public override void OnPointerUp(PointerEventData data)
         {
-            if (data.pointerId <= 0)
+            if (data.pointerId == _pointerId)
             {
                 CurrentTouchDelta = Vector2.zero;
             }

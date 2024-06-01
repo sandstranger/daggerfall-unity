@@ -109,11 +109,6 @@ namespace DaggerfallWorkshop.Game
             },
             new Resolution()
             {
-                width = 1920,
-                height = 1080
-            },
-            new Resolution()
-            {
                 width = Screen.width,
                 height = Screen.height
             },

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.bshsf.joystick": "https://github.com/Bian-Sh/UniJoystick.git?path=Packages/Joystick",
     "com.unity.addressables": "1.21.1",
     "com.unity.burst": "1.7.1",
     "com.unity.collab-proxy": "1.14.18",
