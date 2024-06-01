@@ -116,7 +116,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
         void Setup()
         {
             // Setup panels
-            Components.Add(confirmButton);
+            //Components.Add(confirmButton);
             Components.Add(importDataButton);
             Components.Add(pathLabel);
             AdjustPanels();
@@ -149,6 +149,39 @@ namespace DaggerfallWorkshop.Game.UserInterface
             return validationResults.AppearsValid;
         }
 
+        static void CopyDirectory(string sourceDir, string destinationDir, bool recursive)
+        {
+            // Get information about the source directory
+            var dir = new DirectoryInfo(sourceDir);
+
+            // Check if the source directory exists
+            if (!dir.Exists)
+                throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+
+            // Cache directories before we start copying
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // Create the destination directory
+            Directory.CreateDirectory(destinationDir);
+
+            // Get the files in the source directory and copy to the destination directory
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                string targetFilePath = Path.Combine(destinationDir, file.Name);
+                file.CopyTo(targetFilePath);
+            }
+
+            // If recursive and copying subdirectories, recursively call this method
+            if (recursive)
+            {
+                foreach (DirectoryInfo subDir in dirs)
+                {
+                    string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                    CopyDirectory(subDir.FullName, newDestinationDir, true);
+                }
+            }
+        }
+
         private void OnFilePicked(string filePath)
         {
             if (string.IsNullOrEmpty(filePath) || !filePath.ToLower().EndsWith(".zip"))
@@ -171,9 +204,8 @@ namespace DaggerfallWorkshop.Game.UserInterface
                 {
                     if (Directory.Exists(outputPath))
                         Directory.Delete(outputPath, true);
-                    Directory.Move(subdirectory, outputPath);
-                    if(Directory.Exists(cachePath))
-                        Directory.Delete(cachePath, true);
+                    CopyDirectory(subdirectory, outputPath, true);
+                    Directory.Delete(cachePath, true);
                     foundValidFolder = true;
                     break;
                 }
@@ -185,6 +217,11 @@ namespace DaggerfallWorkshop.Game.UserInterface
                 currentPath = outputPath;
                 pathLabel.Text = filePath;
                 confirmEnabled = true;
+
+                // Android likes to turn the screen black while these file operations
+                // are happening, so let's just spare people the trouble of pressing 'okay'
+                RaisePathChangedEvent();
+                RaiseOnConfirmPathEvent();
             }
             else
             {

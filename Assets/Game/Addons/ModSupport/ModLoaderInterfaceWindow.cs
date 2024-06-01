@@ -713,7 +713,10 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
                 if (File.Exists(destFile))
                     Debug.LogWarning($"DFMod file already exists: {destFile}");
                 else
-                    File.Move(file, destFile);
+                {
+                    File.Copy(file, destFile);
+                    File.Delete(file);
+                }
             }
             Directory.Delete(cachePath, true);
         }

@@ -31,7 +31,6 @@ namespace DaggerfallWorkshop.Game
         }
         public void OnPointerDown(PointerEventData eventData)
         {
-            Debug.Log("Pointer down");
             if (Cursor.visible)
                 return;
             touchStartPos = eventData.position;
@@ -54,7 +53,7 @@ namespace DaggerfallWorkshop.Game
         {
             if (!isTouching)
                 return;
-            Debug.Log($"{(Time.time - lastDragTime)}\t{Time.deltaTime}");
+            //Debug.Log($"{(Time.time - lastDragTime)}\t{Time.deltaTime}");
             lastDragTime = Time.time;
             Vector2 direction = eventData.position - touchStartPos;
             inputVector = Vector2.ClampMagnitude(direction / joystickRadius, 1f);
@@ -69,7 +68,7 @@ namespace DaggerfallWorkshop.Game
 
         private void UpdateVirtualAxes(Vector2 inputVec)
         {
-            Debug.Log($"{horizontalAxisAction}: {inputVec.x}\t{verticalAxisAction}: {inputVec.y}");
+            //Debug.Log($"{horizontalAxisAction}: {inputVec.x}\t{verticalAxisAction}: {inputVec.y}");
             TouchscreenInputManager.SetAxis(horizontalAxisAction, inputVec.x);
             TouchscreenInputManager.SetAxis(verticalAxisAction, inputVec.y);
         }
