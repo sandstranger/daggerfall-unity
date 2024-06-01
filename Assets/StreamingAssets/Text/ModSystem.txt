@@ -5,6 +5,7 @@ schema: *key,text
 modLoadPriority,            Load Priority
 modTitle,                   Selected
 modDescription,             Mod Description
+importMod,                  Import Mod
 modVersion,                 Version
 modAuthor,                  Author
 modAuthorContact,           Contact

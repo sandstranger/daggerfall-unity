@@ -56,6 +56,7 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
     readonly Button extractFilesButton       = new Button();
     readonly Button showModDescriptionButton = new Button();
     readonly Button modSettingsButton        = new Button();
+    readonly Button importModButton          = new Button();
 
     readonly Checkbox modEnabledCheckBox         = new Checkbox();
     readonly TextLabel modLoadPriorityLabel      = new TextLabel();
@@ -107,6 +108,15 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
         modsFound.Position = new Vector2(10, 20);
         modsFound.Text = string.Format("{0}: ", ModManager.GetText("modsFound"));
         ModListPanel.Components.Add(modsFound);
+
+        importModButton.Position = new Vector2(10, 2);
+        importModButton.Size = new Vector2(50, 12);
+        importModButton.HorizontalAlignment = HorizontalAlignment.Center;
+        importModButton.Label.Text = ModManager.GetText("importMod");
+        importModButton.BackgroundColor = textColor;
+        importModButton.Outline.Enabled = true;
+        importModButton.OnMouseClick += ImportMod_OnMouseClick;
+        ModListPanel.Components.Add(importModButton);
 
         modList.BackgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.5f);
         modList.Size = new Vector2(110, 115);
@@ -680,6 +690,50 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
         }
 
         UpdateModPanel();
+    }
+
+    void OnImportedModFilePicked(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+            return;
+
+        string modsFolderPath = Path.Combine(DaggerfallWorkshop.Paths.StreamingAssetsPath, "Mods");
+
+        if (filePath.ToLower().EndsWith(".zip"))
+        {
+            // Extract zip and copy any .dfmod files contained to mods folder
+            string cachePath = Path.Combine(Application.temporaryCachePath, "Mods");
+            Directory.CreateDirectory(cachePath);
+            FolderBrowser.UnzipFile(filePath, cachePath);
+
+            // Find any .dfmod files within the unzipped path, and move them to mods folder path
+            foreach (string file in Directory.GetFiles(cachePath, "*.dfmod", SearchOption.AllDirectories))
+            {
+                string destFile = Path.Combine(modsFolderPath, Path.GetFileName(file));
+                if (File.Exists(destFile))
+                    Debug.LogWarning($"DFMod file already exists: {destFile}");
+                else
+                    File.Move(file, destFile);
+            }
+            Directory.Delete(cachePath, true);
+        }
+        else if (filePath.ToLower().EndsWith(".dfmod"))
+        {
+            // Copy .dfmod to mods folder
+            string destFilePath = Path.Combine(modsFolderPath, Path.GetFileName(filePath));
+            if (File.Exists(destFilePath))
+                Console.WriteLine($"File already exists: {destFilePath}");
+            else
+                File.Copy(filePath, destFilePath);
+        }
+        RefreshButton_OnMouseClick(null, Vector2.zero);
+    }
+
+    void ImportMod_OnMouseClick(BaseScreenComponent sender, Vector2 position)
+    {
+        Debug.Log("importing mod");
+        NativeFilePicker.FilePickedCallback filePickedCallback = new NativeFilePicker.FilePickedCallback(OnImportedModFilePicked);
+        NativeFilePicker.PickFile(filePickedCallback, "zip,dfmod");
     }
 
     void ShowModDescriptionPopUp_OnMouseClick(BaseScreenComponent sender, Vector2 position)
