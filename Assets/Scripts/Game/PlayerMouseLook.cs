@@ -220,7 +220,7 @@ namespace DaggerfallWorkshop.Game
             if (_hideScreenControls)
             {
                 // Ensure the cursor always locked when set
-                if (lockCursor && enableMouseLook && !_hideScreenControls)
+                if (lockCursor && enableMouseLook)
                 {
                     Cursor.lockState = CursorLockMode.Locked;
                     InputManager.Instance.CursorVisible = false;
