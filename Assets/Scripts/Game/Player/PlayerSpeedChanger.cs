@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Interkarma
 // Contributors:    Hazelnut, Allofich, Meteoric Dragon, jefetienne
-// 
+//
 // Notes:
 //
 
@@ -54,9 +54,11 @@ namespace DaggerfallWorkshop.Game
         private float previousBaseWalkSpeed;
         private float previousBaseRunSpeed;
         private float baseSpeed = 0;
+        private bool _hideScreenControls;
 
         private void Start()
         {
+            _hideScreenControls = ScreenControls.Instance.HideControls;
             playerMotor = GameManager.Instance.PlayerMotor;
             levitateMotor = GetComponent<LevitateMotor>();
             CanRun = CanRunUnlessRiding;
@@ -80,7 +82,7 @@ namespace DaggerfallWorkshop.Game
                 sneakingMode = sneakingMode ^ InputManager.Instance.ActionStarted(InputManager.Actions.Sneak);
 
             if (InputManager.Instance.ActionStarted(InputManager.Actions.AutoRun)
-                && !InputManager.Instance.HasAction(InputManager.Actions.MoveBackwards))
+                && !InputManager.Instance.HasAction(InputManager.Actions.MoveBackwards) && _hideScreenControls)
             {
                 InputManager.Instance.ToggleAutorun = !InputManager.Instance.ToggleAutorun;
 
@@ -171,7 +173,7 @@ namespace DaggerfallWorkshop.Game
         /// <param name="speedModifier">the amount to change players base walk speed by percentages. AKA, .75 will lower player movement by 25%. Using 0 or negatives will do nothing but return null.</param>
         /// <param name="UID">The Unique Universal ID created and provided when original value was added to dictionary. Store this value to reference your speed modifier later.</param>
         /// <param name="refreshWalkSpeed">will cause routine to also update the player speed using the list to sequentially multiply the current base value by the list modifier values.</param>
-        /// <returns></returns>        
+        /// <returns></returns>
         public bool AddWalkSpeedMod(out string UID, float walkSpeedModifier = 0, bool refreshWalkSpeed = true)
         {
             bool added = false;
@@ -196,7 +198,7 @@ namespace DaggerfallWorkshop.Game
         /// <param name="speedModifier">the amount to change players base walk speed by percentages. AKA, .75 will lower player movement by 25%. Using 0 or negatives will do nothing but return null.</param>
         /// <param name="UID">The Unique Universal ID created and provided when original value was added to dictionary. Store this value to reference your speed modifier later.</param>
         /// <param name="refreshWalkSpeed">will cause routine to also update the player speed using the list to sequentially multiply the current base value by the list modifier values.</param>
-        /// <returns></returns>        
+        /// <returns></returns>
         public bool AddRunSpeedMod(out string UID, float speedModifier = 0, bool refreshRunSpeed = true)
         {
             bool added = false;
@@ -222,7 +224,7 @@ namespace DaggerfallWorkshop.Game
         /// <param name="speedModifier">the amount to change players base walk speed by percentages. AKA, .75 will lower player movement by 25%. Using 0 or negatives will do nothing but return null.</param>
         /// <param name="UID">The Unique Universal ID created and provided when original value was added to dictionary. Store this value to reference your speed modifier later.</param>
         /// <param name="refreshWalkSpeed">will cause routine to also update the player speed using the list to sequentially multiply the current base value by the list modifier values.</param>
-        /// <returns></returns>   
+        /// <returns></returns>
         public bool RemoveSpeedMod(string UID, bool removeRunSpeed = false, bool refreshSpeed = true)
         {
             //setup false bool for manipulation.

@@ -13,7 +13,7 @@ namespace DaggerfallWorkshop.Game
         [SerializeField]
         private float _forceMultiplier = 1.5f;
 
-        private void Awake()
+        private void Start()
         {
             _joystick.maxRadius = _joystickKnob.rect.width;
 
