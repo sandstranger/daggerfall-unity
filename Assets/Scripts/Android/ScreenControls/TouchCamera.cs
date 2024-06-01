@@ -15,7 +15,6 @@ namespace DaggerfallWorkshop.Game
             if (data.pointerId == _pointerId)
             {
                 CurrentTouchDelta = data.delta / Smoothness;
-                Debug.Log(CurrentTouchDelta);
             }
         }
 
