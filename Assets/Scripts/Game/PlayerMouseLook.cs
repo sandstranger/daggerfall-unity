@@ -132,8 +132,6 @@ namespace DaggerfallWorkshop.Game
             Vector2 rawMouseDelta = !_hideScreenControls ?
                 ScreenControls.Instance.TouchCamera.CurrentTouchDelta : new Vector2(InputManager.Instance.LookX, InputManager.Instance.LookY);
 
-            Debug.Log("RAW MOUSE DELTA =" + rawMouseDelta);
-
             lookTarget += Vector2.Scale(rawMouseDelta, new Vector2(sensitivityX, sensitivityY * (invertMouseY ? -1 : 1)));
 
             float range = 360.0f;
