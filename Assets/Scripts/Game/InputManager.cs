@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
 // Contributors:    jefetienne
-// 
+//
 // Notes:
 //
 
@@ -140,6 +140,7 @@ namespace DaggerfallWorkshop.Game
         Rect controllerCursorRect;
 
         bool pauseController = false;
+        private bool _hideScreenControls;
 
         #endregion
 
@@ -424,6 +425,7 @@ namespace DaggerfallWorkshop.Game
 
         void Start()
         {
+            _hideScreenControls = ScreenControls.Instance.HideControls;
             getKeyMethod = (k) => heldKeyCounter > 0 && ContainsKeyCode(heldKeys, k, true);
             getKeyDownMethod = (k) => heldKeyCounter > 0 && (previousKeyCounter <= 0 || !ContainsKeyCode(previousKeys, k, false)) && ContainsKeyCode(heldKeys, k, true);
             getKeyUpMethod = (k) => previousKeyCounter > 0 && ContainsKeyCode(previousKeys, k, false) && (heldKeyCounter <= 0 || !ContainsKeyCode(heldKeys, k, true));
@@ -1620,7 +1622,7 @@ namespace DaggerfallWorkshop.Game
         }
 
         // Checks whether the modifier is being held solely without any other keys that are combo'd to that modifier
-        // E.g. 'LeftShift' is a modifier, LeftShift+K jumps, LeftShift+L opens a menu. It checks to make sure that 
+        // E.g. 'LeftShift' is a modifier, LeftShift+K jumps, LeftShift+L opens a menu. It checks to make sure that
         // either 'K' or 'L' are not being held. It will ignore keys that are not combo'd to it, like 'W' for forward.
         // It will also check to make sure no other modifiers are being held.
         bool ModifierOnlyHeld(KeyCode modifier)
@@ -1825,6 +1827,11 @@ namespace DaggerfallWorkshop.Game
         // Enumerate all keyboard actions in progress
         void FindKeyboardActions()
         {
+            if (!_hideScreenControls)
+            {
+                return;
+            }
+
             var enumerator = existingKeyDict.GetEnumerator();
             while (enumerator.MoveNext())
             {

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace DaggerfallWorkshop.Game
 {
@@ -7,14 +8,18 @@ namespace DaggerfallWorkshop.Game
     {
         public Vector2 CurrentTouchDelta { get; private set; }
 
-        private const float Smoothness = 5.0f;
+        [SerializeField]
+        private float _smoothness = 5.0f;
+        [SerializeField]
+        private bool _resetOnLateUpdate = true;
+
         private int _pointerId = -1;
 
         public void OnDrag(PointerEventData data)
         {
             if (data.pointerId == _pointerId)
             {
-                CurrentTouchDelta = data.delta / Smoothness;
+                CurrentTouchDelta = data.delta / _smoothness;
             }
         }
 
@@ -26,7 +31,7 @@ namespace DaggerfallWorkshop.Game
             }
 
             _pointerId = data.pointerId;
-            CurrentTouchDelta = data.delta / Smoothness;
+            CurrentTouchDelta = data.delta / _smoothness;
         }
 
         public void OnPointerUp(PointerEventData data)
@@ -40,7 +45,10 @@ namespace DaggerfallWorkshop.Game
 
         private void LateUpdate()
         {
-            CurrentTouchDelta = Vector2.zero;
+            if (_resetOnLateUpdate)
+            {
+                CurrentTouchDelta = Vector2.zero;
+            }
         }
     }
 }

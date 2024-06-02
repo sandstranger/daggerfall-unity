@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace DaggerfallWorkshop.Game
 {
@@ -7,13 +8,15 @@ namespace DaggerfallWorkshop.Game
     {
         private const string HideControlsKey = "hide_screen_controls";
 
+        public static ScreenControls Instance;
+
         public bool HideControls
         {
             get => PlayerPrefsExtensions.GetBool(HideControlsKey, defaultValue: false);
             set => PlayerPrefsExtensions.SetBool(HideControlsKey, value);
         }
 
-        public static ScreenControls Instance;
+        public TouchCamera ButtonAttackSwing => _buttonAttackSwing;
 
         public TouchCamera TouchCamera => _touchCamera;
 
@@ -22,6 +25,20 @@ namespace DaggerfallWorkshop.Game
 
         [SerializeField]
         private TouchCamera _touchCamera;
+
+        [SerializeField]
+        private LongPressButton _jumpButton;
+
+        [SerializeField]
+        private LongPressButton _buttonAttack;
+        [SerializeField]
+        private TouchCamera _buttonAttackSwing;
+        [SerializeField]
+        private LongPressButton _buttonInventory;
+        [SerializeField]
+        private LongPressButton _buttonPrepareWeapon;
+        [SerializeField]
+        private LongPressButton _buttonUse;
 
         private void Awake()
         {
@@ -35,6 +52,12 @@ namespace DaggerfallWorkshop.Game
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            _jumpButton.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.Jump);
+            _buttonAttack.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.SwingWeapon);
+            _buttonPrepareWeapon.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.ReadyWeapon);
+            _buttonInventory.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.Inventory);
+            _buttonUse.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.ActivateCenterObject);
         }
     }
 }

@@ -76,6 +76,7 @@ namespace DaggerfallWorkshop.Game
         DaggerfallUnityItem currentRightHandWeapon = null;
         DaggerfallUnityItem currentLeftHandWeapon = null;
         DaggerfallUnityItem lastBowUsed = null;
+        private bool _hideScreenControls;
 
         public float EquipCountdownRightHand;
         public float EquipCountdownLeftHand;
@@ -193,6 +194,7 @@ namespace DaggerfallWorkshop.Game
 
         void Start()
         {
+            _hideScreenControls = ScreenControls.Instance.HideControls;
             //weaponSensitivity = DaggerfallUnity.Settings.WeaponSensitivity;
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             player = transform.gameObject;
@@ -783,8 +785,17 @@ namespace DaggerfallWorkshop.Game
 
         MouseDirections TrackMouseAttack()
         {
-            // Track action for idle plus all eight mouse directions
-            var sum = _gesture.Add(InputManager.Instance.MouseX, InputManager.Instance.MouseY);
+            Vector2 sum = Vector2.zero;
+
+            if (_hideScreenControls)
+            { // Track action for idle plus all eight mouse directions
+                sum = _gesture.Add(InputManager.Instance.MouseX, InputManager.Instance.MouseY);
+            }
+            else
+            {
+                sum = _gesture.Add(ScreenControls.Instance.ButtonAttackSwing.CurrentTouchDelta.x,
+                    ScreenControls.Instance.ButtonAttackSwing.CurrentTouchDelta.y);
+            }
 
             if (InputManager.Instance.UsingController)
             {
