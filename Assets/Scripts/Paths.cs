@@ -1,3 +1,14 @@
+// Project:         Daggerfall Unity
+// Copyright:       Copyright (C) 2009-2024 Daggerfall Workshop
+// Web Site:        http://www.dfworkshop.net
+// License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
+// Source Code:     https://github.com/Interkarma/daggerfall-unity
+// Original Author: marcoscampi
+// Contributors: Vincent Wing (vwing@uci.edu)
+// 
+// Notes:
+//
+
 using System;
 using System.IO;
 using System.Linq;
