@@ -53,7 +53,7 @@ namespace Wenzil.Console
 
         void Update()
         {
-            if (DaggerfallWorkshop.Game.InputManager.Instance.GetKeyDown(toggleKey))
+            if (DaggerfallWorkshop.Game.InputManager.Instance.GetKeyDown(toggleKey) || IsAndroidEscapingConsole())
                 ui.ToggleConsole();
             else if (DaggerfallWorkshop.Game.InputManager.Instance.GetBackButtonDown() && closeOnEscape)
                 ui.CloseConsole();
@@ -62,6 +62,8 @@ namespace Wenzil.Console
             else if (Input.GetKeyDown(KeyCode.DownArrow))
                 NavigateInputHistory(false);
         }
+
+        private bool IsAndroidEscapingConsole() => Application.isMobilePlatform && ui.isConsoleOpen && DaggerfallWorkshop.Game.InputManager.Instance.GetBackButtonDown();
 
         private void NavigateInputHistory(bool up)
         {

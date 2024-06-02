@@ -525,7 +525,7 @@ namespace DaggerfallWorkshop
             Handedness = GetInt(sectionControls, "Handedness", 0, 3);
             WeaponAttackThreshold = GetFloat(sectionControls, "WeaponAttackThreshold", 0.001f, 1.0f);
             //WeaponSensitivity = GetFloat(sectionControls, "WeaponSensitivity", 0.1f, 10.0f);
-            WeaponSwingMode = GetInt(sectionControls, "WeaponSwingMode", 0, 2);
+            WeaponSwingMode = GetInt(sectionControls, Application.isMobilePlatform ? "WeaponSwingModeAndroid" : "WeaponSwingMode", 0, 2);
             CameraRecoilStrength = GetInt(sectionControls, "CameraRecoilStrength", 0, 4);
             SoundVolume = GetFloat(sectionControls, "SoundVolume", 0f, 1.0f);
             MusicVolume = GetFloat(sectionControls, "MusicVolume", 0f, 1.0f);
@@ -722,7 +722,7 @@ namespace DaggerfallWorkshop
             SetInt(sectionControls, "Handedness", Handedness);
             SetFloat(sectionControls, "WeaponAttackThreshold", WeaponAttackThreshold);
             //SetFloat(sectionControls, "WeaponSensitivity", WeaponSensitivity);
-            SetInt(sectionControls, "WeaponSwingMode", WeaponSwingMode);
+            SetInt(sectionControls, Application.isMobilePlatform ? "WeaponSwingModeAndroid" : "WeaponSwingMode", WeaponSwingMode);
             SetInt(sectionControls, "CameraRecoilStrength", CameraRecoilStrength);
             SetFloat(sectionControls, "SoundVolume", SoundVolume);
             SetFloat(sectionControls, "MusicVolume", MusicVolume);

@@ -532,11 +532,13 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             // Immediately toggle controller
             DaggerfallUnity.Settings.EnableController = enableControllerCheckbox.IsChecked;
         }
+#if UNITY_ANDROID
         private void EnableOnScreenControlsCheckbox_OnToggleState()
         {
             // Immediately toggle controller
             TouchscreenInputManager.IsTouchscreenInputEnabled = enableOnScreenControlsCheckbox.IsChecked;
         }
+#endif
 
         private void UIKeybindButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
         {
@@ -619,6 +621,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             return TextManager.Instance.GetText(textTable, key);
         }
 
-        #endregion
+#endregion
     }
 }

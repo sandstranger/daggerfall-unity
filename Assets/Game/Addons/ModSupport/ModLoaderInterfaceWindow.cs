@@ -110,7 +110,7 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
         ModListPanel.Components.Add(modsFound);
 
         importModButton.Position = new Vector2(10, 2);
-        importModButton.Size = new Vector2(50, 12);
+        importModButton.Size = new Vector2(40, 12);
         importModButton.HorizontalAlignment = HorizontalAlignment.Center;
         importModButton.Label.Text = ModManager.GetText("importMod");
         importModButton.BackgroundColor = textColor;
@@ -698,11 +698,13 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
             return;
 
         string modsFolderPath = Path.Combine(DaggerfallWorkshop.Paths.StreamingAssetsPath, "Mods");
+        if (!Directory.Exists(modsFolderPath))
+            Directory.CreateDirectory(modsFolderPath);
 
         if (filePath.ToLower().EndsWith(".zip"))
         {
             // Extract zip and copy any .dfmod files contained to mods folder
-            string cachePath = Path.Combine(Application.temporaryCachePath, "Mods");
+            string cachePath = Path.Combine(Application.temporaryCachePath, "ImportedMods");
             Directory.CreateDirectory(cachePath);
             DaggerfallWorkshop.Utility.Unzip.UnzipFile(filePath, cachePath);
 
@@ -736,7 +738,7 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
     {
         Debug.Log("importing mod");
         NativeFilePicker.FilePickedCallback filePickedCallback = new NativeFilePicker.FilePickedCallback(OnImportedModFilePicked);
-        NativeFilePicker.PickFile(filePickedCallback, "zip,dfmod");
+        NativeFilePicker.PickFile(filePickedCallback);
     }
 
     void ShowModDescriptionPopUp_OnMouseClick(BaseScreenComponent sender, Vector2 position)

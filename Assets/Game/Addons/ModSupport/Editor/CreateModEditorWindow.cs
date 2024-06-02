@@ -54,8 +54,9 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
             BuildTarget.StandaloneWindows,
             BuildTarget.StandaloneOSX,
             BuildTarget.StandaloneLinux64,
+            BuildTarget.Android,
         };
-        readonly bool[] buildTargetsToggles = new bool[] { true, true, true };
+        readonly bool[] buildTargetsToggles = new bool[] { true, true, true, true };
         ModCompressionOptions compressionOption = ModCompressionOptions.LZ4;
         bool ModInfoReady { get { return ModInfoReadyTowrite(); } }
         List<string> Assets { get { return modInfo.Files; } set { modInfo.Files = value; } }         //list of assets to be added

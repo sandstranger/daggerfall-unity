@@ -118,8 +118,9 @@ namespace DaggerfallWorkshop.Game
                 // 60 frames -> speed * 60 / 60 = speed * 1.0
                 // 30 frames -> speed * 60 / 30 = speed * 2.0
                 // 120 frames -> speed * 60 / 120 = speed * 0.5
-                sensitivityX = sensitivity.x * joystickSensitivityScale * 60f * Time.unscaledDeltaTime;
-                sensitivityY = sensitivity.y * joystickSensitivityScale * 60f * Time.unscaledDeltaTime;
+                float touchscreenMultiplier = TouchscreenInputManager.IsTouchscreenActive ? 2f : 1f;
+                sensitivityX = sensitivity.x * joystickSensitivityScale * 60f * Time.unscaledDeltaTime * touchscreenMultiplier;
+                sensitivityY = sensitivity.y * joystickSensitivityScale * 60f * Time.unscaledDeltaTime * touchscreenMultiplier;
             }
             else
             {

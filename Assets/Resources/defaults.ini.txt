@@ -138,6 +138,7 @@ WeaponSensitivity=1.0
 MovementAcceleration=False
 ToggleSneak=False
 WeaponSwingMode = 0
+WeaponSwingModeAndroid = 2
 CameraRecoilStrength = 3
 SoundVolume = 0.5
 MusicVolume = 0.5
