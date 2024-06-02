@@ -54,11 +54,9 @@ namespace DaggerfallWorkshop.Game
         private float previousBaseWalkSpeed;
         private float previousBaseRunSpeed;
         private float baseSpeed = 0;
-        private bool _hideScreenControls;
 
         private void Start()
         {
-            _hideScreenControls = ScreenControls.Instance.HideControls;
             playerMotor = GameManager.Instance.PlayerMotor;
             levitateMotor = GetComponent<LevitateMotor>();
             CanRun = CanRunUnlessRiding;
@@ -82,7 +80,7 @@ namespace DaggerfallWorkshop.Game
                 sneakingMode = sneakingMode ^ InputManager.Instance.ActionStarted(InputManager.Actions.Sneak);
 
             if (InputManager.Instance.ActionStarted(InputManager.Actions.AutoRun)
-                && !InputManager.Instance.HasAction(InputManager.Actions.MoveBackwards) && _hideScreenControls)
+                && !InputManager.Instance.HasAction(InputManager.Actions.MoveBackwards))
             {
                 InputManager.Instance.ToggleAutorun = !InputManager.Instance.ToggleAutorun;
 
