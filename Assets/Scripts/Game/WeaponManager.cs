@@ -194,7 +194,7 @@ namespace DaggerfallWorkshop.Game
 
         void Start()
         {
-            _hideScreenControls = ScreenControls.Instance.HideControls;
+            _hideScreenControls = ScreenControls.HideControls;
             //weaponSensitivity = DaggerfallUnity.Settings.WeaponSensitivity;
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             player = transform.gameObject;

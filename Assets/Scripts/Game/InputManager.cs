@@ -425,7 +425,7 @@ namespace DaggerfallWorkshop.Game
 
         void Start()
         {
-            _hideScreenControls = ScreenControls.Instance.HideControls;
+            _hideScreenControls = ScreenControls.HideControls;
             getKeyMethod = (k) => heldKeyCounter > 0 && ContainsKeyCode(heldKeys, k, true);
             getKeyDownMethod = (k) => heldKeyCounter > 0 && (previousKeyCounter <= 0 || !ContainsKeyCode(previousKeys, k, false)) && ContainsKeyCode(heldKeys, k, true);
             getKeyUpMethod = (k) => previousKeyCounter > 0 && ContainsKeyCode(previousKeys, k, false) && (heldKeyCounter <= 0 || !ContainsKeyCode(heldKeys, k, true));

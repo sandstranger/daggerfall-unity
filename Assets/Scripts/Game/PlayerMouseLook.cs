@@ -171,7 +171,7 @@ namespace DaggerfallWorkshop.Game
 
         void Start()
         {
-            _hideScreenControls = ScreenControls.Instance.HideControls;
+            _hideScreenControls = ScreenControls.HideControls;
             Init();
         }
 

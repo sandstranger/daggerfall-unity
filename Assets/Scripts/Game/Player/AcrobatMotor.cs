@@ -197,10 +197,10 @@ namespace DaggerfallWorkshop.Game
                     moveDirection.y -= antiBumpFactor;
 
                 // apply normal gravity
-                moveDirection.y -= gravity * Time.deltaTime;   
+                moveDirection.y -= gravity * Time.deltaTime;
             }
-        } 
-                       
+        }
+
         /// <summary>
         /// If we were falling, and we fell a vertical distance greater than the threshold, run a falling damage routine
         /// </summary>
@@ -215,7 +215,7 @@ namespace DaggerfallWorkshop.Game
                 float fallDistance = fallStartLevel - myTransform.position.y;
 
                 if (!climbingMotor.IsClimbing || climbingMotor.IsSlipping)
-                { 
+                {
                     if (fallDistance > fallingDamageThreshold)
                         FallingDamageAlert(fallDistance);
                     else if (fallDistance > fallingDamageThreshold / 2f)

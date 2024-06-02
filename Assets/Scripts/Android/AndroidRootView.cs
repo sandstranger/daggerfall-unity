@@ -22,11 +22,11 @@ namespace DaggerfallWorkshop.Game
 
         private void Start()
         {
-            _hideControlsToggle.isOn = ScreenControls.Instance.HideControls;
+            _hideControlsToggle.isOn = ScreenControls.HideControls;
 
             _hideControlsToggle.onValueChanged.AddListener(hideControls =>
             {
-                ScreenControls.Instance.HideControls = hideControls;
+                ScreenControls.HideControls = hideControls;
             });
 
             _startGameButton.onClick.AddListener(async ()=>
