@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
-using UnityEngine;
-#if UNITY_ANDROID && !UNITY_EDITOR
+﻿#if UNITY_ANDROID && !UNITY_EDITOR
 using System.IO;
-using UnityEngine.Networking;
 #endif
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using PlayerPrefs = DaggerfallWorkshop.Game.PlayerPrefsExtensions;
 
@@ -13,56 +11,61 @@ namespace DaggerfallWorkshop.Game
     {
         const string AssetsCopiedToInternalMemoryKey = "assets_were_copied_to_internal_memory";
 
-        public async Task CopyStreamingAssetsToInternalMemory()
+        private static readonly string[] _directoriesToCopy = new string[]
+        {
+            "BIOGs",
+            "Books",
+            "Docs",
+            "Factions",
+            "Fonts",
+            "GameFiles",
+            "Mods",
+            "Movies",
+            "Presets",
+            "QuestPacks",
+            "Quests",
+            "Sound",
+            "SoundFonts",
+            "SpellIcons",
+            "Tables",
+            "Text",
+            "WorldData",
+            "Textures"
+        };
+
+        public void CopyStreamingAssetsToInternalMemory()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            var paths = Resources.Load<TextAsset>("StreamingAssetsPaths");
-            foreach (var path in paths.text.Split('\n'))
+            using (var unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
             {
-                if (string.IsNullOrEmpty(path))
+                using (var currentActivity =
+                       unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
                 {
-                    continue;
-                }
-
-                using (var loadingRequest = UnityWebRequest.Get(Path.Combine(Application.streamingAssetsPath, path)))
-                {
-                    var asyncOperation = loadingRequest.SendWebRequest();
-
-                    while (!asyncOperation.isDone)
+                    using (var assetsHelper = new AndroidJavaObject("file.utils.CopyFilesFromAssets",currentActivity))
                     {
-                        await Task.Yield();
+                        foreach (var directory in _directoriesToCopy)
+                        {
+                            assetsHelper.Call("copy",
+                                directory,Path.Combine(DaggerfallUnityApplication.PersistentDataPath, directory));
+                        }
+
                     }
-
-                    var directoryPath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath,Path.GetDirectoryName(path));
-
-                    if (!Directory.Exists(directoryPath))
-                    {
-                        Directory.CreateDirectory(directoryPath);
-                    }
-
-                    var finalPathToAsset = Path.Combine(directoryPath, Path.GetFileName(path));
-                    File.WriteAllBytes(finalPathToAsset,loadingRequest.downloadHandler.data);
                 }
             }
 #endif
             PlayerPrefs.SetBool(AssetsCopiedToInternalMemoryKey, true);
         }
 
-        public async Task StartGame()
+        public void StartGame()
         {
             bool assetsWereCopied = PlayerPrefs.GetBool(AssetsCopiedToInternalMemoryKey);
 
             if (!assetsWereCopied)
             {
-                await CopyStreamingAssetsToInternalMemory();
+                CopyStreamingAssetsToInternalMemory();
             }
 
-            var asyncOperation = SceneManager.LoadSceneAsync(1);
-
-            while (!asyncOperation.isDone)
-            {
-                await Task.Yield();
-            }
+            SceneManager.LoadScene(1);
         }
 
         public void QuitGame()

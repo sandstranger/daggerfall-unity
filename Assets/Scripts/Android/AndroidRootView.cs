@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace DaggerfallWorkshop.Game
@@ -12,9 +11,6 @@ namespace DaggerfallWorkshop.Game
         private Button _copyGameContentButton;
         [SerializeField]
         private Button _exitGameButton;
-        [SerializeField]
-        private GameObject _progressBar;
-
         [SerializeField]
         private Toggle _hideControlsToggle;
 
@@ -29,17 +25,14 @@ namespace DaggerfallWorkshop.Game
                 ScreenControls.HideControls = hideControls;
             });
 
-            _startGameButton.onClick.AddListener(async ()=>
+            _startGameButton.onClick.AddListener(()=>
             {
-                _progressBar.SetActive(true);
-                await _viewController.StartGame();
+                _viewController.StartGame();
             });
 
-            _copyGameContentButton.onClick.AddListener(async () =>
+            _copyGameContentButton.onClick.AddListener(() =>
             {
-                _progressBar.SetActive(true);
-                await _viewController.CopyStreamingAssetsToInternalMemory();
-                _progressBar.SetActive(false);
+                _viewController.CopyStreamingAssetsToInternalMemory();
             });
 
             _exitGameButton.onClick.AddListener(_viewController.QuitGame);
