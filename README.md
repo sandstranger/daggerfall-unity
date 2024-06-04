@@ -2,11 +2,11 @@
 
 # Unofficial Android Port of Daggerfall Unity
 
-This is an "android" fork of the original DFU project found at https://github.com/Interkarma/daggerfall-unity
+This is an Android port of the original DFU project found at https://github.com/Interkarma/daggerfall-unity
 
 Please visit the [releases page](https://github.com/Vwing/daggerfall-unity-android/releases) if you're looking for the APK or instructions on setting it up.
 
-Any feature requests or bugs related to android should be opened on this fork, and *not* on the main project.
+Any feature requests or bugs related to Android should be opened on this fork, and *not* on the main project.
 
 # What is Daggerfall Unity?
 
