@@ -138,14 +138,7 @@ namespace DaggerfallWorkshop.Game
                     _console = GameObject.Find("Console").GetComponent<ConsoleUI>();
                 }
 
-                if (_console.isConsoleOpen)
-                {
-                    _console.CloseConsole();
-                }
-                else
-                {
-                    _console.ToggleConsole();
-                }
+                _console.ToggleConsole();
             });
 
             _extraBtnsToggle.onClick.AddListener(()=> _extraBtnsHolder.SetActive(!_extraBtnsHolder.activeSelf));

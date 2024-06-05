@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using DaggerfallWorkshop.Game;
 
 namespace Wenzil.Console
 {
@@ -21,6 +22,8 @@ namespace Wenzil.Console
         public Text outputText;
         public ScrollRect outputArea;
         public InputField inputField;
+        [SerializeField]
+        private Button _closeConsoleButton;
 
         bool previousPauseState = false;
         CanvasGroup cg;
@@ -33,6 +36,7 @@ namespace Wenzil.Console
 
         void Awake()
         {
+            _closeConsoleButton.onClick.AddListener(()=> ToggleConsole(false));
             Show(false);
         }
 
@@ -53,7 +57,7 @@ namespace Wenzil.Console
                 return;
 
             inputField.text = string.Empty;
-            enabled = !enabled; 
+            enabled = !enabled;
             if(enabled)
             {
                 previousPauseState = DaggerfallWorkshop.Game.GameManager.IsGamePaused;
@@ -109,6 +113,7 @@ namespace Wenzil.Console
 
         private void Show(bool show)
         {
+            _closeConsoleButton.gameObject.SetActive(show);
             inputField.gameObject.SetActive(show);
             outputArea.gameObject.SetActive(show);
             scrollbar.gameObject.SetActive(show);
@@ -182,7 +187,7 @@ namespace Wenzil.Console
         /// <summary>
         /// Writes the given string into the console input, ready to be user submitted.
         /// </summary>
-        public void SetInputText(string input) 
+        public void SetInputText(string input)
         {
             inputField.MoveTextStart(false);
             inputField.text = input;
