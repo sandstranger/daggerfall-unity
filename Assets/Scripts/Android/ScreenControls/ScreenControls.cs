@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Wenzil.Console;
 
 namespace DaggerfallWorkshop.Game
 {
@@ -75,7 +76,7 @@ namespace DaggerfallWorkshop.Game
         [SerializeField]
         private LongPressButton _btnChangeWeapon;
         [SerializeField]
-        private LongPressButton _btnConsole;
+        private Button _btnConsole;
         [SerializeField]
         private LongPressButton _btnLocalMap;
         [SerializeField]
@@ -89,16 +90,16 @@ namespace DaggerfallWorkshop.Game
         [SerializeField]
         private LongPressButton _btnUseTransport;
 
+        private ConsoleUI _console;
         private GUIStyle _enterButtonStyle;
+        private bool _isGameSceneStarted = false;
+        private bool _isPlayingGame = false;
 
         private void Awake()
         {
             SceneManager.sceneLoaded += (arg0, mode) =>
             {
-                if (arg0.name == "DaggerfallUnityGame" && !HideControls)
-                {
-                    _screenControlsRoot.SetActive(true);
-                }
+                _isGameSceneStarted = arg0.name == "DaggerfallUnityGame" && !HideControls;
             };
 
             Instance = this;
@@ -130,14 +131,45 @@ namespace DaggerfallWorkshop.Game
             _btnLogBook.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.LogBook);
             _btnUseMagicItem.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.UseMagicItem);
             _btnUseTransport.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.Transport);
-            _btnConsole.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.ToggleConsole);
+            _btnConsole.onClick.AddListener(  () =>
+            {
+                if (_console == null)
+                {
+                    _console = GameObject.Find("Console").GetComponent<ConsoleUI>();
+                }
+
+                if (_console.isConsoleOpen)
+                {
+                    _console.CloseConsole();
+                }
+                else
+                {
+                    _console.ToggleConsole();
+                }
+            });
 
             _extraBtnsToggle.onClick.AddListener(()=> _extraBtnsHolder.SetActive(!_extraBtnsHolder.activeSelf));
         }
 
+        private void Update()
+        {
+            if (!_isGameSceneStarted)
+            {
+                return;
+            }
+
+            bool isPlayingGame = GameManager.Instance.IsPlayingGame();
+
+            if (_isPlayingGame != isPlayingGame)
+            {
+                _screenControlsRoot.SetActive(isPlayingGame);
+                _isPlayingGame = isPlayingGame;
+            }
+        }
+
         private void OnGUI()
         {
-            if (!_extraBtnsHolder.activeSelf || !_screenControlsRoot)
+            if (!_isGameSceneStarted || _isPlayingGame)
             {
                 return;
             }
