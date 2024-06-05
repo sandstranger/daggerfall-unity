@@ -30,8 +30,8 @@ namespace DaggerfallWorkshop.Game
         [SerializeField] private UnityUIPopup confirmChangePopup;
         [SerializeField] private Camera renderCamera;
         [SerializeField] private TouchscreenButton editTouchscreenControlsButton;
-        [SerializeField] private TouchscreenButton resetButtonTransformsButton;
-        [SerializeField] private TouchscreenButton resetButtonMappingsButton;
+        [SerializeField] private Button resetButtonTransformsButton;
+        [SerializeField] private Button resetButtonMappingsButton;
         [SerializeField] private Button editControlsBackgroundButton;
         [SerializeField] private Toggle showLabelsToggle;
         [SerializeField] private bool debugInEditor = false;
@@ -157,13 +157,13 @@ namespace DaggerfallWorkshop.Game
         }
         private void OnResetButtonTransformsButtonClicked()
         {
-            if (!resetButtonTransformsButton.WasDragging)
-                confirmChangePopup.Open("Do you want to reset the button positions, sizes, and enabled statuses to their default values?", onResetButtonTransformsToDefaultValues);
+            //if (!resetButtonTransformsButton.WasDragging)
+            confirmChangePopup.Open("Do you want to reset the button positions, sizes, and enabled statuses to their default values?", onResetButtonTransformsToDefaultValues);
         }
         private void OnResetButtonMappingsButtonClicked()
         {
-            if (!resetButtonMappingsButton.WasDragging)
-                confirmChangePopup.Open("Do you want to reset the button action mappings to their default values?", onResetButtonActionsToDefaultValues);
+            //if (!resetButtonMappingsButton.WasDragging)
+            confirmChangePopup.Open("Do you want to reset the button action mappings to their default values?", onResetButtonActionsToDefaultValues);
         }
         private void OnEditTouchscreenControlsButtonClicked()
         {

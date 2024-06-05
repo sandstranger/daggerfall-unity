@@ -3837,7 +3837,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100.8, y: 24}
+  m_SizeDelta: {x: 246.4, y: 24}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &9060051495410053155
 CanvasRenderer:
@@ -3867,7 +3867,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Button Mapping:'
+  m_text: 'Selected Button Mapping: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6105,7 +6105,7 @@ GameObject:
   - component: {fileID: 6071614175393667380}
   - component: {fileID: 4226863564490300740}
   - component: {fileID: 1934409375107924997}
-  - component: {fileID: 915919490306978568}
+  - component: {fileID: 403276337872581067}
   m_Layer: 5
   m_Name: ResetMappingsButton
   m_TagString: Untagged
@@ -6129,11 +6129,11 @@ RectTransform:
   - {fileID: 109463245393930564}
   m_Father: {fileID: 331666969234178365}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 228.00006, y: -107.900085}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -361.4999, y: -107.900085}
   m_SizeDelta: {x: 200, y: 69.099976}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &4226863564490300740
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6172,7 +6172,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &915919490306978568
+--- !u!114 &403276337872581067
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6181,7 +6181,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5107279311916521772}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6a063d690e614f9ab343d7b94e97319, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -6216,11 +6216,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
-  myAction: 44
-  canActionBeEdited: 0
-  resizeButtonPos: 0
-  label: {fileID: 6469164968759792883}
-  resizeButton: {fileID: 109463245393930564}
 --- !u!1 &5111294715206997684
 GameObject:
   m_ObjectHideFlags: 0
@@ -7678,7 +7673,7 @@ GameObject:
   - component: {fileID: 2875353379528679256}
   - component: {fileID: 8577636081142088219}
   - component: {fileID: 5765688405012643337}
-  - component: {fileID: 5402216983369029735}
+  - component: {fileID: 1312493411870456332}
   m_Layer: 5
   m_Name: ResetTransformsButton
   m_TagString: Untagged
@@ -7702,11 +7697,11 @@ RectTransform:
   - {fileID: 1870492307278342281}
   m_Father: {fileID: 331666969234178365}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20.5, y: -107.900085}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -569, y: -107.90015}
   m_SizeDelta: {x: 200, y: 69.099976}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &8577636081142088219
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7745,7 +7740,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5402216983369029735
+--- !u!114 &1312493411870456332
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7754,7 +7749,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6045608647758762474}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6a063d690e614f9ab343d7b94e97319, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -7789,11 +7784,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
-  myAction: 44
-  canActionBeEdited: 0
-  resizeButtonPos: 0
-  label: {fileID: 913806802644380717}
-  resizeButton: {fileID: 1870492307278342281}
 --- !u!1 &6057715168186992834
 GameObject:
   m_ObjectHideFlags: 0
@@ -9156,11 +9146,11 @@ RectTransform:
   - {fileID: 5530152056757830880}
   m_Father: {fileID: 331666969234178365}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 25.169922, y: -34.65103}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -456.5, y: -34.65103}
   m_SizeDelta: {x: 200, y: 30}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &8108282306495453596
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10856,7 +10846,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Disable Button
+  m_text: Remove Button
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11072,8 +11062,8 @@ MonoBehaviour:
   confirmChangePopup: {fileID: 5003767334326965334}
   renderCamera: {fileID: 2720629017955051797}
   editTouchscreenControlsButton: {fileID: 6218843937169634523}
-  resetButtonTransformsButton: {fileID: 5402216983369029735}
-  resetButtonMappingsButton: {fileID: 915919490306978568}
+  resetButtonTransformsButton: {fileID: 1312493411870456332}
+  resetButtonMappingsButton: {fileID: 403276337872581067}
   editControlsBackgroundButton: {fileID: 247350708399146264}
   showLabelsToggle: {fileID: 3941127508794393871}
   debugInEditor: 1
