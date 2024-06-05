@@ -178,7 +178,7 @@ namespace DaggerfallWorkshop.Game
 
             }
 
-            if (GUI.Button(new Rect(0, Screen.height / 3f, Screen.width / 14f, Screen.height / 10f), "ENTER", _enterButtonStyle))
+            if (GUI.Button(new Rect(0, Screen.height / 1.15f, Screen.width / 14f, Screen.height / 10f), "ENTER", _enterButtonStyle))
             {
                 EnterPressed = true;
             }
