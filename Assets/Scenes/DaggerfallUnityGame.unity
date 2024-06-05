@@ -2628,13 +2628,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1463923239}
     m_Modifications:
+    - target: {fileID: 100002, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 100006, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
       propertyPath: m_Name
       value: Console
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
-      propertyPath: m_ShouldActivateOnSelect
+      propertyPath: m_HideMobileInput
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
+      propertyPath: m_ShouldActivateOnSelect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22400006, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
       propertyPath: m_Pivot.x
@@ -2731,6 +2739,22 @@ PrefabInstance:
     - target: {fileID: 22400016, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 141894260, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
+      propertyPath: m_Name
+      value: CloseConsoleButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 141894261, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -356.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1119740016, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
+      propertyPath: m_fontSize
+      value: 38
+      objectReference: {fileID: 0}
+    - target: {fileID: 1119740016, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 38
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 312abd0527754e047a6bfbc424f09ace, type: 3}

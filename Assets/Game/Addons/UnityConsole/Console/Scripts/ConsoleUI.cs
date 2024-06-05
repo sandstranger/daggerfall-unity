@@ -36,7 +36,7 @@ namespace Wenzil.Console
 
         void Awake()
         {
-            _closeConsoleButton.onClick.AddListener(()=> ToggleConsole(false));
+            _closeConsoleButton.onClick.AddListener(()=> ToggleConsole());
             Show(false);
         }
 
@@ -102,11 +102,15 @@ namespace Wenzil.Console
         {
             Show(open);
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+            if (!open)
+                ClearOutput();
+#else
             if (open)
                 inputField.ActivateInputField();
             else
                 ClearInput();
-
+#endif
             if (onToggleConsole != null)
                 onToggleConsole(open);
         }
@@ -135,7 +139,9 @@ namespace Wenzil.Console
                 ClearInput();
             }
 
+#if !UNITY_ANDROID || UNITY_EDITOR
             inputField.ActivateInputField();
+#endif
         }
 
         /// <summary>
