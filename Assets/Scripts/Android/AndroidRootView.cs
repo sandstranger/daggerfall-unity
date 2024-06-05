@@ -8,11 +8,15 @@ namespace DaggerfallWorkshop.Game
         [SerializeField]
         private Button _startGameButton;
         [SerializeField]
+        private Button _screenControlsBtn;
+        [SerializeField]
         private Button _copyGameContentButton;
         [SerializeField]
         private Button _exitGameButton;
         [SerializeField]
         private Toggle _hideControlsToggle;
+        [SerializeField]
+        private ScreenControlsConfigurator _controlsConfigurator;
 
         private AndroidRootController _viewController = new AndroidRootController();
 
@@ -29,6 +33,8 @@ namespace DaggerfallWorkshop.Game
             {
                 _viewController.StartGame();
             });
+
+            _screenControlsBtn.onClick.AddListener(() => _controlsConfigurator.Show());
 
             _copyGameContentButton.onClick.AddListener(() =>
             {

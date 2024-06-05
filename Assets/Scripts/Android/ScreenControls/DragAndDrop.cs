@@ -1,14 +1,22 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace DaggerfallWorkshop.Game
 {
-    sealed class DragAndDrop : MonoBehaviour, IDragHandler
+    [RequireComponent(typeof(ButtonPositionHelper))]
+    sealed class DragAndDrop : MonoBehaviour, IDragHandler, IPointerDownHandler
     {
-        private RectTransform _rectTransform;
+        [SerializeField]
+        private ScreenControlsConfigurator controlsConfigurator;
 
-        private void Awake() => _rectTransform = GetComponent<RectTransform>();
+        [SerializeField]
+        private ButtonPositionHelper _buttonPositionHelper;
 
-        public void OnDrag(PointerEventData eventData) => _rectTransform.position = Input.mousePosition;
+        public void OnDrag(PointerEventData eventData) =>
+            _buttonPositionHelper.Position = Input.mousePosition;
+
+        public void OnPointerDown(PointerEventData eventData) =>
+            controlsConfigurator.CurrentButton = _buttonPositionHelper;
     }
 }
