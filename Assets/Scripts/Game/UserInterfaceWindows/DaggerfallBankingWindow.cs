@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Lypyl (lypyldf@gmail.com)
 // Contributors:    Hazelnut
-// 
+//
 // Notes:
 //
 
@@ -213,7 +213,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
         {
             base.Update();
 
-            if (Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter))
+            if (Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter) || ScreenControls.Instance.EnterPressed)
             {
                 if (transactionType != TransactionType.None && transactionInput.Enabled)
                 {

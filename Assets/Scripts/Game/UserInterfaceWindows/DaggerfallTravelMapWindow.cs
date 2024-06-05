@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Lypyl (lypyl@dfworkshop.net), Gavin Clayton (interkarma@dfworkshop.net)
 // Contributors:    Hazelnut, TheLacus
-// 
+//
 // Notes:
 //
 
@@ -429,7 +429,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             }
             else
             {
-                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || ScreenControls.Instance.EnterPressed)
                 {
                     if (identifying)
                         OpenRegionPanel(GetPlayerRegion());
@@ -779,7 +779,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             regionTextureOverlayPanel.BackgroundTextureLayout = BackgroundLayout.Cropped;
             regionTextureOverlayPanel.BackgroundCroppedRect = new Rect(startX * ratioX, startY * ratioY, width / zoomfactor * ratioX, height / zoomfactor * ratioY);
 
-            // Set cropped area in location dots panel - always at classic dimensions            
+            // Set cropped area in location dots panel - always at classic dimensions
             Rect locationDotsNewRect = new Rect(startX, startY, width / zoomfactor, height / zoomfactor);
             if (DaggerfallUnity.Settings.TravelMapLocationsOutline)
                 for (int i = 0; i < outlineDisplacements.Length; i++)

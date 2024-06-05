@@ -36,7 +36,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         private Color parentPanelColor = Color.clear;
 
         private int textPanelDistanceX = 0;             //horizontal distance between the text prompt / input & the multiline label
-        private int textPanelDistanceY = 12;            //vertical distance between the text prompt / input & the multiline label  
+        private int textPanelDistanceY = 12;            //vertical distance between the text prompt / input & the multiline label
         private int inputDistanceX = 0;                 //horizontal distance between the input label & input box
         private int inputDistanceY = 0;                 //vertical distance between the input label & input box
         private bool useParchmentStyle = true;          //if true, box will use PopupStyle Parchment background
@@ -199,7 +199,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         {
             base.Update();
 
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || ScreenControls.Instance.EnterPressed)
             {
                 ReturnPlayerInputEvent(this, textBox.Text);
             }

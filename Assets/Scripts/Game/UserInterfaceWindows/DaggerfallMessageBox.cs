@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -310,9 +310,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             if (DaggerfallUI.Instance.HotkeySequenceProcessed == HotkeySequence.HotkeySequenceProcessStatus.NotFound)
             {
-                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyDown(extraProceedBinding))
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyDown(extraProceedBinding) || ScreenControls.Instance.EnterPressed)
                     isNextMessageDeferred = true;
-                else if ((Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyUp(extraProceedBinding)) && isNextMessageDeferred)
+                else if ((Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyUp(extraProceedBinding) || !ScreenControls.Instance.EnterPressed) && isNextMessageDeferred)
                 {
                     isNextMessageDeferred = false;
                     // Special handling for message boxes with buttons
@@ -367,7 +367,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             }
 
             Texture2D background = DaggerfallUI.GetTextureFromCifRci(buttonsFilename, (int)messageBoxButton);
-            Button button = DaggerfallUI.AddButton(Vector2.zero, 
+            Button button = DaggerfallUI.AddButton(Vector2.zero,
                 TextureReplacement.GetSize(background, buttonsFilename, (int)messageBoxButton), buttonPanel);
             button.BackgroundTexture = background;
             button.BackgroundTextureLayout = BackgroundLayout.StretchToFill;

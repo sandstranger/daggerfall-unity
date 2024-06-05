@@ -17,6 +17,8 @@ namespace DaggerfallWorkshop.Game
             set => PlayerPrefsExtensions.SetBool(HideControlsKey, value);
         }
 
+        public bool EnterPressed { get; private set; }
+
         public TouchCamera ButtonAttackSwing => _buttonAttackSwing;
 
         public TouchCamera TouchCamera => _touchCamera;
@@ -87,6 +89,8 @@ namespace DaggerfallWorkshop.Game
         [SerializeField]
         private LongPressButton _btnUseTransport;
 
+        private GUIStyle _enterButtonStyle;
+
         private void Awake()
         {
             SceneManager.sceneLoaded += (arg0, mode) =>
@@ -129,6 +133,35 @@ namespace DaggerfallWorkshop.Game
             _btnConsole.OnClick += () => InputManager.Instance.AddAction(InputManager.Actions.ToggleConsole);
 
             _extraBtnsToggle.onClick.AddListener(()=> _extraBtnsHolder.SetActive(!_extraBtnsHolder.activeSelf));
+        }
+
+        private void OnGUI()
+        {
+            if (!_extraBtnsHolder.activeSelf || !_screenControlsRoot)
+            {
+                return;
+            }
+
+            GUI.depth = 0;
+
+            if (_enterButtonStyle == null)
+            {
+                _enterButtonStyle = new GUIStyle(GUI.skin.button)
+                {
+                    fontSize = Screen.width / 60
+                };
+
+            }
+
+            if (GUI.Button(new Rect(0, Screen.height / 3f, Screen.width / 14f, Screen.height / 10f), "ENTER", _enterButtonStyle))
+            {
+                EnterPressed = true;
+            }
+        }
+
+        private void LateUpdate()
+        {
+            EnterPressed = false;
         }
     }
 }
