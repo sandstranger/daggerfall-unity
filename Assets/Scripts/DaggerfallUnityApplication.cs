@@ -81,7 +81,7 @@ public static class DaggerfallUnityApplication
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void SubsystemInit()
     {
-        RequestManageAllFilesAccess();
+     //   RequestManageAllFilesAccess();
 #if UNITY_ANDROID && !UNITY_EDITOR
         if (!Directory.Exists(AndroidGameFolder))
         {
