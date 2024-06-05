@@ -9,46 +9,67 @@
 // Notes:
 //
 
-
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 
-
 namespace DaggerfallWorkshop.Game
 {
     public class TouchscreenInputManager : MonoBehaviour
     {
-        #region singleton
         public static TouchscreenInputManager Instance { get; private set; }
+
+        #region monobehaviour
+        [SerializeField] private Canvas canvas;
+        [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private Canvas editControlsCanvas;
+        [SerializeField] private TMPro.TMP_Dropdown editControlsDropdown;
+        [SerializeField] private Canvas joystickCanvas;
+        [SerializeField] private Canvas buttonsCanvas;
+        [SerializeField] private UnityUIPopup confirmChangePopup;
+        [SerializeField] private Camera renderCamera;
+        [SerializeField] private TouchscreenButton editTouchscreenControlsButton;
+        [SerializeField] private TouchscreenButton resetButtonTransformsButton;
+        [SerializeField] private TouchscreenButton resetButtonMappingsButton;
+        [SerializeField] private Button editControlsBackgroundButton;
+        [SerializeField] private Toggle showLabelsToggle;
+        [SerializeField] private bool debugInEditor = false;
+
+
+        public Camera RenderCamera { get { return renderCamera; } }
+        public bool IsEditingControls { get { return editControlsCanvas.enabled; } }
+        public bool ShouldShowLabels { get { return IsEditingControls && showLabelsToggle.isOn; } }
+        public TouchscreenButton CurrentlyEditingButton { get { return currentlyEditingButton; } }
+
+        public event System.Action<bool> onEditControlsToggled;
+        public event System.Action<TouchscreenButton> onCurrentlyEditingButtonChanged;
+        public event System.Action onResetButtonActionsToDefaultValues;
+        public event System.Action onResetButtonTransformsToDefaultValues;
+
+        private float startAlpha;
+        private RenderTexture renderTex;
+        private TouchscreenButton currentlyEditingButton;
+
         private void Awake()
         {
+            #region singleton
             if (Instance)
             {
                 Debug.LogError("Two TouchscreenInputManager singletons are present!");
                 Destroy(gameObject);
             }
             Instance = this;
+
+            #endregion
+
+            Setup();
         }
 
-
-        #endregion
-
-        #region monobehaviour
-        [SerializeField] private Button editTouchscreenControlsButton;
-        [SerializeField] private Canvas editControlsCanvas;
-        [SerializeField] private TMPro.TMP_Dropdown editControlsDropdown;
-        [SerializeField] private Camera renderCamera;
-        [SerializeField] private CanvasGroup canvasGroup;
-        [SerializeField] private bool debugInEditor = false;
-
-        private float startAlpha;
-        private RenderTexture renderTex;
-        private TouchscreenButton currentlyEditingButton;
-        
-        private void Start()
+        private void Setup()
         {
+            editControlsCanvas.enabled = false;
+
             startAlpha = canvasGroup.alpha;
             canvasGroup.alpha = IsTouchscreenInputEnabled ? startAlpha : 0;
             renderCamera.aspect = Camera.main.aspect;
@@ -71,54 +92,88 @@ namespace DaggerfallWorkshop.Game
             editControlsDropdown.AddOptions(options);
             editControlsDropdown.gameObject.SetActive(false);
             editControlsDropdown.onValueChanged.AddListener(OnEditControlsDropdownValueChanged);
-            editTouchscreenControlsButton.onClick.AddListener(ToggleEditTouchscreenControls);
+            editControlsBackgroundButton.gameObject.SetActive(false);
+
+            editTouchscreenControlsButton.onClick.AddListener(OnEditTouchscreenControlsButtonClicked);
+            resetButtonMappingsButton.onClick.AddListener(OnResetButtonMappingsButtonClicked);
+            resetButtonTransformsButton.onClick.AddListener(OnResetButtonTransformsButtonClicked);
+            editControlsBackgroundButton.onClick.AddListener(OnEditControlsBackgroundClicked);
         }
         private void Update()
         {
-            _isInDaggerfallGUI = Time.timeScale == 0;
-            canvasGroup.alpha = editControlsCanvas.enabled ? 1 : IsTouchscreenActive ? startAlpha : 0;
-            canvasGroup.interactable = IsTouchscreenActive;
+            _isInDaggerfallGUI = !IsEditingControls && GameManager.IsGamePaused;
+            canvasGroup.alpha = editControlsCanvas.enabled ? 1 : startAlpha;
+            canvas.enabled = IsTouchscreenActive;
+            buttonsCanvas.enabled = IsTouchscreenActive;
+            joystickCanvas.enabled = !IsEditingControls && IsTouchscreenActive;
+
         }
         private void OnGUI()
         {
             if (IsTouchscreenActive)
             {
                 GUI.depth = 0;
-                DaggerfallUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), renderTex, ScaleMode.StretchToFill, true);
+                DaggerfallUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), renderTex, ScaleMode.ScaleAndCrop, true);
             }
         }
 
-        public bool IsEditingControls() => editControlsCanvas.enabled;
-
         public void EditTouchscreenButton(TouchscreenButton touchscreenButton)
         {
-            if (currentlyEditingButton)
+            if(touchscreenButton == null)
             {
                 StopEditingCurrentButton();
                 return;
             }
+            if (touchscreenButton == currentlyEditingButton)
+                return;
+
+            if (currentlyEditingButton)
+            {
+                StopEditingCurrentButton();
+            }
             editControlsDropdown.gameObject.SetActive(true);
             editControlsDropdown.value = (int)touchscreenButton.myAction;
-            editControlsDropdown.Select();
             currentlyEditingButton = touchscreenButton;
+            onCurrentlyEditingButtonChanged?.Invoke(touchscreenButton);
         }
         private void StopEditingCurrentButton()
         {
             editControlsDropdown.gameObject.SetActive(false);
             currentlyEditingButton = null;
+            onCurrentlyEditingButtonChanged?.Invoke(null);
         }
         private void OnEditControlsDropdownValueChanged(int newVal)
         {
             if (currentlyEditingButton)
             {
                 currentlyEditingButton.myAction = (InputManager.Actions)newVal;
-                currentlyEditingButton = null;
-                editControlsDropdown.gameObject.SetActive(false);
             }
         }
-        private void ToggleEditTouchscreenControls()
+
+        private void OnEditControlsBackgroundClicked()
         {
-            editControlsCanvas.enabled = !editControlsCanvas.enabled;
+            if (currentlyEditingButton != null)
+                StopEditingCurrentButton();
+        }
+        private void OnResetButtonTransformsButtonClicked()
+        {
+            if (!resetButtonTransformsButton.WasDragging)
+                confirmChangePopup.Open("Do you want to reset the button positions, sizes, and enabled statuses to their default values?", onResetButtonTransformsToDefaultValues);
+        }
+        private void OnResetButtonMappingsButtonClicked()
+        {
+            if (!resetButtonMappingsButton.WasDragging)
+                confirmChangePopup.Open("Do you want to reset the button action mappings to their default values?", onResetButtonActionsToDefaultValues);
+        }
+        private void OnEditTouchscreenControlsButtonClicked()
+        {
+            if (!editTouchscreenControlsButton.WasDragging)
+            {
+                editControlsCanvas.enabled = !editControlsCanvas.enabled;
+                editControlsBackgroundButton.gameObject.SetActive(editControlsCanvas.enabled);
+                GameManager.Instance.PauseGame(editControlsCanvas.enabled, true);
+                onEditControlsToggled?.Invoke(editControlsCanvas.enabled);
+            }
         }
         #endregion
 
