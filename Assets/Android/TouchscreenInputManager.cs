@@ -33,14 +33,14 @@ namespace DaggerfallWorkshop.Game
         [SerializeField] private Button resetButtonTransformsButton;
         [SerializeField] private Button resetButtonMappingsButton;
         [SerializeField] private Button editControlsBackgroundButton;
-        [SerializeField] private Toggle showLabelsToggle;
+        [SerializeField] private Slider alphaSlider;
         [SerializeField] private bool debugInEditor = false;
 
 
         public Camera RenderCamera { get { return renderCamera; } }
         public bool IsEditingControls { get { return editControlsCanvas.enabled; } }
-        public bool ShouldShowLabels { get { return IsEditingControls && showLabelsToggle.isOn; } }
         public TouchscreenButton CurrentlyEditingButton { get { return currentlyEditingButton; } }
+        public float SavedAlpha { get { return PlayerPrefs.GetFloat("TouchscreenControlsAlpha", 1f); } private set { PlayerPrefs.SetFloat("TouchscreenControlsAlpha", value);} }
 
         public event System.Action<bool> onEditControlsToggled;
         public event System.Action<TouchscreenButton> onCurrentlyEditingButtonChanged;
@@ -70,8 +70,9 @@ namespace DaggerfallWorkshop.Game
         {
             editControlsCanvas.enabled = false;
 
-            startAlpha = canvasGroup.alpha;
-            canvasGroup.alpha = IsTouchscreenInputEnabled ? startAlpha : 0;
+            alphaSlider.maxValue = 1;
+            alphaSlider.minValue = 0.15f;
+            canvasGroup.alpha = alphaSlider.value = SavedAlpha;
             renderCamera.aspect = Camera.main.aspect;
             renderTex = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
             renderTex.isPowerOfTwo = false;
@@ -98,11 +99,12 @@ namespace DaggerfallWorkshop.Game
             resetButtonMappingsButton.onClick.AddListener(OnResetButtonMappingsButtonClicked);
             resetButtonTransformsButton.onClick.AddListener(OnResetButtonTransformsButtonClicked);
             editControlsBackgroundButton.onClick.AddListener(OnEditControlsBackgroundClicked);
+            alphaSlider.onValueChanged.AddListener(OnAlphaSliderValueChanged);
         }
+
         private void Update()
         {
             _isInDaggerfallGUI = !IsEditingControls && GameManager.IsGamePaused;
-            canvasGroup.alpha = editControlsCanvas.enabled ? 1 : startAlpha;
             canvas.enabled = IsTouchscreenActive;
             buttonsCanvas.enabled = IsTouchscreenActive;
             joystickCanvas.enabled = !IsEditingControls && IsTouchscreenActive;
@@ -174,6 +176,11 @@ namespace DaggerfallWorkshop.Game
                 GameManager.Instance.PauseGame(editControlsCanvas.enabled, true);
                 onEditControlsToggled?.Invoke(editControlsCanvas.enabled);
             }
+        }
+        private void OnAlphaSliderValueChanged(float newVal)
+        {
+            SavedAlpha = newVal;
+            canvasGroup.alpha = newVal;
         }
         #endregion
 
