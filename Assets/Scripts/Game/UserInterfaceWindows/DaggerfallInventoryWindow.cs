@@ -446,8 +446,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 Position = new Vector2(2, 0),
                 VerticalAlignment = VerticalAlignment.Middle,
                 MinTextureDimTextLabel = 16, // important to prevent scaling issues for single text lines
-                TextScale = 0.43f,
-                MaxTextWidth = 37,
+                TextScale = 0.93f,
+                MaxTextWidth = 87,
                 WrapText = true,
                 WrapWords = true,
                 ExtraLeading = 3, // spacing between info panel elements
@@ -2281,6 +2281,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             OnClose -= OnCloseWindow;
         }
 
-        #endregion  
+        #endregion
     }
 }
