@@ -249,8 +249,14 @@ namespace DaggerfallWorkshop.Game.MagicAndEffects
                     return;
                 }
 
+                bool castReadySpell = _hideScreenControls
+                    ? InputManager.Instance.ActionStarted(InputManager.Actions.ActivateCenterObject) &&
+                      readySpell != null
+                    : InputManager.Instance.ActionComplete(InputManager.Actions.ActivateCenterObject) &&
+                      readySpell != null;
+
                 // Cast spell
-                if (InputManager.Instance.ActionStarted(InputManager.Actions.ActivateCenterObject) && readySpell != null)
+                if (castReadySpell)
                 {
                     CastReadySpell();
                     return;
