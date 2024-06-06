@@ -10,7 +10,7 @@ namespace DaggerfallWorkshop.Game
     {
         private const string HideControlsKey = "hide_screen_controls";
 
-        public static ScreenControls Instance;
+        public static ScreenControls Instance { get; private set; }
 
         public static bool HideControls
         {
