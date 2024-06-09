@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace DaggerfallWorkshop.Game
 {
     sealed class AndroidRootView : MonoBehaviour
     {
+        private const string MaxFpsKey = "max_fps";
+
         [SerializeField]
         private Button _startGameButton;
         [SerializeField]
@@ -17,11 +21,26 @@ namespace DaggerfallWorkshop.Game
         private Toggle _hideControlsToggle;
         [SerializeField]
         private ScreenControlsConfigurator _controlsConfigurator;
+        [SerializeField]
+        private int _maxFps = 120;
+        [SerializeField]
+        private TMP_InputField _maxFpsInputFIeld;
 
         private AndroidRootController _viewController = new AndroidRootController();
 
         private void Start()
         {
+            _maxFpsInputFIeld.onValueChanged.AddListener(value =>
+            {
+                if (int.TryParse(value, out var maxFps))
+                {
+                    Application.targetFrameRate = maxFps;
+                    PlayerPrefs.SetInt(MaxFpsKey, maxFps);
+                }
+            });
+
+            _maxFpsInputFIeld.text = PlayerPrefs.GetInt(MaxFpsKey, _maxFps).ToString();
+
             _hideControlsToggle.isOn = ScreenControls.HideControls;
 
             _hideControlsToggle.onValueChanged.AddListener(hideControls =>
