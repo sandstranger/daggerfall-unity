@@ -31,11 +31,25 @@ namespace DaggerfallWorkshop.Game
         private float joystickRadius;
         private bool isTouching = false;
         private Camera myCam;
+        private RectTransform rootRectTF;
+        private CanvasScaler rootCanvasScaler;
 
         void Start()
         {
+            // get refs
             myCam = GetComponentInParent<Canvas>().worldCamera;
-            joystickRadius = background.sizeDelta.x / 2;
+            rootRectTF = transform as RectTransform;
+            while (rootRectTF.parent is RectTransform)
+                rootRectTF = rootRectTF.parent as RectTransform;
+            rootCanvasScaler = rootRectTF.GetComponent<CanvasScaler>();
+
+            // set size to half of the screen area
+            (transform as RectTransform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rootRectTF.rect.width / 2f);
+
+            // set vars
+            Rect joystickRect = UnityUIUtils.GetScreenspaceRect(background, myCam);
+            Rect knobRect = UnityUIUtils.GetScreenspaceRect(knob, myCam);
+            joystickRadius = joystickRect.width / 2f - knobRect.width/2f;
 
             // Initially invisible
             SetJoystickVisibility(false);
@@ -45,8 +59,12 @@ namespace DaggerfallWorkshop.Game
             if (Cursor.visible)
                 return;
             touchStartPos = eventData.position;
-            background.position = myCam.ScreenToWorldPoint(new Vector3(touchStartPos.x, touchStartPos.y, 1.05f));
-            knob.position = touchStartPos;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(background.parent as RectTransform, touchStartPos, myCam, out Vector2 backgroundPos))
+            {
+                background.localPosition = backgroundPos;
+            }
+
+            knob.position = background.position;
             SetJoystickVisibility(true);
             isTouching = true;
             OnDrag(eventData);
@@ -64,12 +82,13 @@ namespace DaggerfallWorkshop.Game
         {
             if (!isTouching)
                 return;
-            //Debug.Log($"{(Time.time - lastDragTime)}\t{Time.deltaTime}");
+
             lastDragTime = Time.time;
             Vector2 direction = eventData.position - touchStartPos;
             inputVector = Vector2.ClampMagnitude(direction / joystickRadius, 1f);
-            Vector2 knobPos2D = touchStartPos + inputVector * joystickRadius;
-            knob.position = myCam.ScreenToWorldPoint(new Vector3(knobPos2D.x, knobPos2D.y, 1));
+            Vector2 knobPosScreenSpace = touchStartPos + inputVector * joystickRadius;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(knob.parent as RectTransform, knobPosScreenSpace, myCam, out Vector2 knobPos))
+                knob.localPosition = knobPos;
             if (Mathf.Abs(inputVector.x) < deadzone.x)
                 inputVector.x = 0;
             if (Mathf.Abs(inputVector.y) < deadzone.y)
@@ -79,7 +98,6 @@ namespace DaggerfallWorkshop.Game
 
         private void UpdateVirtualAxes(Vector2 inputVec)
         {
-            //Debug.Log($"{horizontalAxisAction}: {inputVec.x}\t{verticalAxisAction}: {inputVec.y}");
             TouchscreenInputManager.SetAxis(horizontalAxisAction, inputVec.x);
             TouchscreenInputManager.SetAxis(verticalAxisAction, inputVec.y);
         }

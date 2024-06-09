@@ -180,14 +180,14 @@ namespace DaggerfallWorkshop.Game.Utility
             // Resolution
             if (DaggerfallUnity.Settings.ExclusiveFullscreen && DaggerfallUnity.Settings.Fullscreen)
             {
-                Screen.SetResolution(
+                SettingsManager.SetScreenResolution(
                     DaggerfallUnity.Settings.ResolutionWidth,
                     DaggerfallUnity.Settings.ResolutionHeight,
                     FullScreenMode.ExclusiveFullScreen);
             }
             else
             {
-                Screen.SetResolution(
+                SettingsManager.SetScreenResolution(
                     DaggerfallUnity.Settings.ResolutionWidth,
                     DaggerfallUnity.Settings.ResolutionHeight,
                     DaggerfallUnity.Settings.Fullscreen);

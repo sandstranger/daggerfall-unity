@@ -367,6 +367,17 @@ namespace DaggerfallWorkshop
             return GetMouseLookSmoothingFactors()[index];
         }
 
+        public static void SetScreenResolution(int width, int height, bool isFullscreen)
+        {
+            Screen.SetResolution(width, height, isFullscreen);
+            Camera.main.ResetAspect();
+        }
+        public static void SetScreenResolution(int width, int height, FullScreenMode fullscreenMode)
+        {
+            Screen.SetResolution(width, height, fullscreenMode);
+            Camera.main.ResetAspect();
+        }
+
         /// <summary>
         /// Load settings from settings.ini to live properties.
         /// </summary>

@@ -93,6 +93,7 @@ namespace DaggerfallWorkshop.Game
         UserInterfaceRenderTarget customRenderTarget = null;
         Vector2? customMousePosition = null;
         Rect? customScreenRect = null;
+        static Vector2Int? baseScreenResolution = null;
 
         SpellIconCollection spellIconCollection;
 
@@ -179,6 +180,15 @@ namespace DaggerfallWorkshop.Game
         {
             get { return customMousePosition; }
             set { customMousePosition = value; }
+        }
+
+        /// <summary>
+        /// The device's native resolution, gotten before we change it with resolution settings
+        /// </summary>
+        public static Vector2Int? BaseScreenResolution
+        {
+            get { return baseScreenResolution; }
+            private set { baseScreenResolution = value; }
         }
 
         /// <summary>
@@ -361,6 +371,9 @@ namespace DaggerfallWorkshop.Game
 
             // Input timer at startup
             timeClosedInputMessageBox = Time.realtimeSinceStartup;
+
+            if(baseScreenResolution == null)
+                baseScreenResolution = new Vector2Int(Screen.width, Screen.height);
 
             SetupSingleton();
         }
@@ -1377,13 +1390,30 @@ namespace DaggerfallWorkshop.Game
 
             return texture;
         }
-
+        private static Vector2Int LerpVector2Int(Vector2Int a, Vector2Int b, float t)
+        {
+            Vector2 lerped = Vector2.Lerp(a, b, t);
+            return new Vector2Int((int)lerped.x, (int)lerped.y);
+        }
         /// <summary>
         /// Gets all resolutions without duplicates; when the same resolution support different refresh rates, the highest one is chosen.
         /// </summary>
         /// <returns>All supported distinct resolutions.</returns>
         public static Resolution[] GetDistinctResolutions()
         {
+#if UNITY_ANDROID
+            Vector2Int maxRes = baseScreenResolution ?? new Vector2Int(1920, 1080);
+            Vector2Int minRes = new Vector2Int((int)(maxRes.x / (maxRes.y/360f)), 360);
+            
+            List<Resolution> resolutions = new List<Resolution>();
+            for(int i = 0; i <= 9; ++ i)
+            {
+                Vector2Int stepRes = LerpVector2Int(maxRes, minRes, i/9f);
+                resolutions.Add(new Resolution() { width = stepRes.x, height = stepRes.y });
+            }
+
+            return resolutions.ToArray();
+#else
             Resolution[] resolutions = Screen.resolutions;
             var distinctResolutions = new List<Resolution>(resolutions.Length);
 
@@ -1402,6 +1432,7 @@ namespace DaggerfallWorkshop.Game
             }
 
             return distinctResolutions.ToArray();
+#endif
         }
 
         /// <summary>
@@ -1552,9 +1583,9 @@ namespace DaggerfallWorkshop.Game
             return new Color(input.r - 0.5f, input.g - 0.5f, input.b - 0.5f, input.a - 0.5f);
         }
 
-        #endregion
+#endregion
 
-        #region Singleton
+#region Singleton
 
         static DaggerfallUI instance = null;
         public static DaggerfallUI Instance
@@ -1608,9 +1639,9 @@ namespace DaggerfallWorkshop.Game
             }
         }
 
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
 
         void DisplayStatusInfo()
         {
@@ -1726,9 +1757,9 @@ namespace DaggerfallWorkshop.Game
             return false;
         }
 
-        #endregion
+#endregion
 
-        #region Events
+#region Events
 
         private void GivePc_OnOfferPending(Questing.Actions.GivePc sender)
         {
@@ -1745,6 +1776,6 @@ namespace DaggerfallWorkshop.Game
             OnInstantiatePersistentWindowInstances?.Invoke();
         }
 
-        #endregion
+#endregion
     }
 }

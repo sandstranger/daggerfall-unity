@@ -276,13 +276,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             // Disable previous stage
             browserPanel.Enabled = false;
 
-            if (Application.isMobilePlatform)
-            {
-                // changing resolution breaks android
-                ShowNextStage();
-                return;
-            }
-
             // Get resolutions
             initialResolution = Screen.currentResolution;
             availableResolutions = DaggerfallUI.GetDistinctResolutions();
@@ -866,7 +859,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             Resolution selectedResolution = availableResolutions[resolutionList.SelectedIndex];
             if (!resolutionConfirmed)
             {
-                Screen.SetResolution(selectedResolution.width, selectedResolution.height, fullscreenCheckbox.IsChecked);
+                SettingsManager.SetScreenResolution(selectedResolution.width, selectedResolution.height, fullscreenCheckbox.IsChecked);
                 resolutionConfirmed = true;
                 testOrConfirmButton.Label.Text = okText;
                 QualitySettings.SetQualityLevel(qualityList.SelectedIndex);

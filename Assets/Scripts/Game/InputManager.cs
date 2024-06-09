@@ -117,12 +117,16 @@ namespace DaggerfallWorkshop.Game
         float posHorizontalLimit = 1f;
         float negVerticalLimit = 1f;
         float posVerticalLimit = 1f;
-        float lookX;
-        float lookY;
+        float mouseLookX;
+        float mouseLookY;
         float keyboardLookX;
         float keyboardLookY;
         float mouseX;
         float mouseY;
+        float joyLookX;
+        float joyLookY;
+        float touchJoyLookX;
+        float touchJoyLookY;
         bool invertLookX;
         bool invertLookY;
         bool posHorizontalImpulse;
@@ -191,14 +195,34 @@ namespace DaggerfallWorkshop.Game
             get { return mouseY; }
         }
 
-        public float LookX
+        public float MouseLookX
         {
-            get { return lookX; }
+            get { return mouseLookX; }
         }
 
-        public float LookY
+        public float MouseLookY
         {
-            get { return lookY; }
+            get { return mouseLookY; }
+        }
+
+        public float JoyLookX
+        {
+            get { return joyLookX; }
+        }
+
+        public float JoyLookY
+        {
+            get { return joyLookY; }
+        }
+
+        public float TouchJoyLookX
+        {
+            get { return touchJoyLookX; }
+        }
+
+        public float TouchJoyLookY
+        {
+            get { return touchJoyLookY; }
         }
 
         public bool InvertLookX
@@ -224,6 +248,8 @@ namespace DaggerfallWorkshop.Game
         }
 
         public bool ToggleAutorun { get; set; }
+
+        public bool ToggleRun { get; set; }
 
         public float NegHorizontalLimit
         {
@@ -471,10 +497,14 @@ namespace DaggerfallWorkshop.Game
             // Clear look and mouse axes
             mouseX = 0;
             mouseY = 0;
-            lookX = 0;
-            lookY = 0;
+            mouseLookX = 0;
+            mouseLookY = 0;
             keyboardLookX = 0;
             keyboardLookY = 0;
+            joyLookX = 0;
+            joyLookY = 0;
+            touchJoyLookX = 0;
+            touchJoyLookY = 0;
 
             // Clear axis impulse flags, these will be raised again on movement
             posHorizontalImpulse = false;
@@ -518,24 +548,32 @@ namespace DaggerfallWorkshop.Game
             wasPaused = false;
 
             // Collect mouse axes
-            mouseX = TouchscreenInputManager.IsTouchscreenActive ? 0 : Input.GetAxisRaw("Mouse X");
-            mouseY = TouchscreenInputManager.IsTouchscreenActive ? 0 : Input.GetAxisRaw("Mouse Y");
+            mouseX = Input.GetAxisRaw("Mouse X");
+            mouseY = Input.GetAxisRaw("Mouse Y");
 
-
-            if ((EnableController || TouchscreenInputManager.IsTouchscreenActive) && (mouseX == 0F || mouseY == 0F) && !String.IsNullOrEmpty(cameraAxisBindingCache[0]))
+            if (TouchscreenInputManager.IsTouchscreenActive)
             {
-                var h = Input.GetAxis(cameraAxisBindingCache[0]) + TouchscreenInputManager.GetAxis(AxisActions.CameraHorizontal);
-                var v = Input.GetAxis(cameraAxisBindingCache[1]) + TouchscreenInputManager.GetAxis(AxisActions.CameraVertical);
+                var h = TouchscreenInputManager.GetAxis(AxisActions.CameraHorizontal);
+                var v = TouchscreenInputManager.GetAxis(AxisActions.CameraVertical);
                 if (Mathf.Sqrt(h * h + v * v) > JoystickDeadzone)
                 {
-                    mouseX = h;
-                    mouseY = v;
+                    touchJoyLookX = h;
+                    touchJoyLookY = v;
                 }
-
+            }
+            if (EnableController && !String.IsNullOrEmpty(cameraAxisBindingCache[0]))
+            {
+                var h = Input.GetAxis(cameraAxisBindingCache[0]);
+                var v = Input.GetAxis(cameraAxisBindingCache[1]);
+                if (Mathf.Sqrt(h * h + v * v) > JoystickDeadzone)
+                {
+                    joyLookX = h;
+                    joyLookY = v;
+                }
                 if (GetAxisActionInversion(AxisActions.CameraHorizontal))
-                    mouseX *= -1;
+                    joyLookX *= -1;
                 if (GetAxisActionInversion(AxisActions.CameraVertical))
-                    mouseY *= -1;
+                    joyLookY *= -1;
             }
 
             if (ToggleAutorun)
@@ -599,8 +637,12 @@ namespace DaggerfallWorkshop.Game
             vertical = 0;
             mouseX = 0;
             mouseY = 0;
-            lookX = 0;
-            lookY = 0;
+            mouseLookX = 0;
+            mouseLookY = 0;
+            joyLookX = 0;
+            joyLookY = 0;
+            touchJoyLookX = 0;
+            touchJoyLookY = 0;
         }
 
         /// <summary>
@@ -642,7 +684,7 @@ namespace DaggerfallWorkshop.Game
         {
             if (existingKeyDict.ContainsValue(action))
             {
-                foreach (var k in existingKeyDict.Keys)
+                foreach (var k in existingKeyDict.Keys.OrderBy(ks => (int)ks))
                 {
                     if (existingKeyDict[k] == action)
                         return k;
@@ -1506,12 +1548,23 @@ namespace DaggerfallWorkshop.Game
         void UpdateLook()
         {
             // Assign mouse
-            lookX = keyboardLookX != 0 ? keyboardLookX : mouseX;
-            lookY = keyboardLookY != 0 ? keyboardLookY : mouseY;
+            bool mouseLookAllowed = !TouchscreenInputManager.IsTouchscreenActive || Input.touchCount == 0;
+            mouseLookX = keyboardLookX != 0 ? keyboardLookX : mouseLookAllowed ? mouseX : 0;
+            mouseLookY = keyboardLookY != 0 ? keyboardLookY : mouseLookAllowed ? mouseY : 0;
 
             // Inversion
-            lookX = (invertLookX) ? -lookX : lookX;
-            lookY = (invertLookY) ? -lookY : lookY;
+            if (invertLookX)
+            {
+                mouseLookX *= -1f;
+                joyLookX *= -1f;
+                touchJoyLookX *= -1f;
+            }
+            if (invertLookY)
+            {
+                mouseLookY *= -1f;
+                joyLookY *= -1f;
+                touchJoyLookY *= -1f;
+            }
         }
 
         private void UpdateControllerCursorPosition()
@@ -1723,7 +1776,7 @@ namespace DaggerfallWorkshop.Game
         //Converts all joystick KeyCodes to be controller-agnostic (e.g. "Joystick3Button0" to "JoystickButton0")
         //Sometimes, Unity will recognize input from the controller as Joystick1ButtonX, and other times as JoystickButtonX
         //This method deals with this inconsistency by converting them to JoystickButtonX
-        KeyCode ConvertJoystickButtonKeyCode(KeyCode k)
+        public static KeyCode ConvertJoystickButtonKeyCode(KeyCode k)
         {
             if (k < KeyCode.Joystick1Button0 || k > KeyCode.Joystick8Button19)
                 return k;
@@ -1872,17 +1925,14 @@ namespace DaggerfallWorkshop.Game
             if (!EnableController || String.IsNullOrEmpty(movementAxisBindingCache[0]) || String.IsNullOrEmpty(movementAxisBindingCache[1]))
                 return;
 
-            float horiz = Input.GetAxis(movementAxisBindingCache[0]) + TouchscreenInputManager.GetAxis(AxisActions.MovementHorizontal);
-            float vert = Input.GetAxis(movementAxisBindingCache[1]) + TouchscreenInputManager.GetAxis(AxisActions.MovementVertical);
+            Vector2 joyMovement = new Vector2(Input.GetAxis(movementAxisBindingCache[0]), Input.GetAxis(movementAxisBindingCache[1]));
+            joyMovement.x *= GetAxisActionInversion(AxisActions.MovementHorizontal) ? -1f : 1f;
+            joyMovement.y *= GetAxisActionInversion(AxisActions.MovementVertical) ? -1f : 1f;
+            float horiz = joyMovement.x + TouchscreenInputManager.GetAxis(AxisActions.MovementHorizontal);
+            float vert = joyMovement.y + TouchscreenInputManager.GetAxis(AxisActions.MovementVertical);
 
             if (vert != 0 || horiz != 0)
             {
-                if (GetAxisActionInversion(AxisActions.MovementHorizontal))
-                    horiz *= -1;
-
-                if (GetAxisActionInversion(AxisActions.MovementVertical))
-                    vert *= -1;
-
                 float jd = Mathf.Sqrt(horiz * horiz + vert * vert);
 
                 if (jd <= JoystickDeadzone)

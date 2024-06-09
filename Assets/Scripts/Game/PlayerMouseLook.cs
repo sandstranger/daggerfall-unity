@@ -107,30 +107,22 @@ namespace DaggerfallWorkshop.Game
         // Applies scaled raw mouse deltas to lookTarget, then calls ApplySmoothing method to update lookCurrent
         void ApplyLook()
         {
-            // Scale sensitivity
-            float sensitivityX = 1.0f;
-            float sensitivityY = 1.0f;
+            float mouseSensitivityX = sensitivity.x * sensitivityScale;
+            float mouseSensitivityY = sensitivity.y * sensitivityScale;
 
-            if (InputManager.Instance.UsingController || TouchscreenInputManager.IsTouchscreenActive)
-            {
-                // Make sure it keeps consistent speed regardless of framerate
-                // Speed = speed * 60 frames / (1 / unscaledDeltaTime) or speed * 60 * unscaledDeltaTime
-                // 60 frames -> speed * 60 / 60 = speed * 1.0
-                // 30 frames -> speed * 60 / 30 = speed * 2.0
-                // 120 frames -> speed * 60 / 120 = speed * 0.5
-                float touchscreenMultiplier = TouchscreenInputManager.IsTouchscreenActive ? 2f : 1f;
-                sensitivityX = sensitivity.x * joystickSensitivityScale * 60f * Time.unscaledDeltaTime * touchscreenMultiplier;
-                sensitivityY = sensitivity.y * joystickSensitivityScale * 60f * Time.unscaledDeltaTime * touchscreenMultiplier;
-            }
-            else
-            {
-                sensitivityX = sensitivity.x * sensitivityScale;
-                sensitivityY = sensitivity.y * sensitivityScale;
-            }
+            float joySensitivityX = sensitivity.x * joystickSensitivityScale * 60f * Time.unscaledDeltaTime;
+            float joySensitivityY = sensitivity.y * joystickSensitivityScale * 60f * Time.unscaledDeltaTime;
 
-            Vector2 rawMouseDelta = new Vector2(InputManager.Instance.LookX, InputManager.Instance.LookY);
+            float touchSensitivityX = sensitivity.x * joystickSensitivityScale * 60f * Time.unscaledDeltaTime * 2f;
+            float touchSensitivityY = sensitivity.y * joystickSensitivityScale * 60f * Time.unscaledDeltaTime * 2f;
 
-            lookTarget += Vector2.Scale(rawMouseDelta, new Vector2(sensitivityX, sensitivityY * (invertMouseY ? -1 : 1)));
+            Vector2 rawMouseDelta = new Vector2(InputManager.Instance.MouseLookX, InputManager.Instance.MouseLookY);
+            Vector2 rawJoyDelta = new Vector2(InputManager.Instance.JoyLookX, InputManager.Instance.JoyLookY);
+            Vector2 rawTouchDelta = new Vector2(InputManager.Instance.TouchJoyLookX, InputManager.Instance.TouchJoyLookY);
+
+            lookTarget += Vector2.Scale(rawMouseDelta, new Vector2(mouseSensitivityX, mouseSensitivityY * (invertMouseY ? -1 : 1)));
+            lookTarget += Vector2.Scale(rawJoyDelta, new Vector2(joySensitivityX, joySensitivityY * (invertMouseY ? -1 : 1)));
+            lookTarget += Vector2.Scale(rawTouchDelta, new Vector2(touchSensitivityX, touchSensitivityY * (invertMouseY ? -1 : 1)));
 
             float range = 360.0f;
 

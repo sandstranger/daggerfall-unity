@@ -503,14 +503,14 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
                 if (DaggerfallUnity.Settings.ExclusiveFullscreen && DaggerfallUnity.Settings.Fullscreen)
                 {
-                    Screen.SetResolution(
+                    SettingsManager.SetScreenResolution(
                         selectedResolution.width,
                         selectedResolution.height,
                         FullScreenMode.ExclusiveFullScreen);
                 }
                 else
                 {
-                    Screen.SetResolution(
+                    SettingsManager.SetScreenResolution(
                         selectedResolution.width,
                         selectedResolution.height,
                         fullscreen.IsChecked);

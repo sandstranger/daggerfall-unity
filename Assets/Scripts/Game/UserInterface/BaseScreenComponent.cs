@@ -1139,7 +1139,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
                 else
                 {
                     if (rootSize == Vector2.zero)
-                        parentRect = new Rect(0, 0, Screen.width, Screen.height);
+                        parentRect = new Rect(0, 0, Screen.currentResolution.width, Screen.currentResolution.height);
                     else
                         parentRect = new Rect(0, 0, rootSize.x, rootSize.y);
                 }

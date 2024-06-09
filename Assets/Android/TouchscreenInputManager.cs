@@ -206,7 +206,7 @@ namespace DaggerfallWorkshop.Game
                 return 0;
             return axes.ContainsKey((int)action) ? axes[(int)action] : 0;
         }
-        public static void SetKey(KeyCode k, bool value) => keys[(int)k] = value;
+        public static void SetKey(KeyCode k, bool value) => keys[(int)InputManager.ConvertJoystickButtonKeyCode(k)] = value;
         public static bool GetKey(KeyCode k)
         {
             if (!isMobilePlatform)
@@ -218,10 +218,7 @@ namespace DaggerfallWorkshop.Game
         {
             if (!isMobilePlatform)
                 return false;
-            if ((int)k < InputManager.startingAxisKeyCode)
-                return GetKey(k);
-            else
-                return false;
+            return GetKey(k);
         }
         #endregion
     }

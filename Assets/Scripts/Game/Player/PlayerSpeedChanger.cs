@@ -23,7 +23,7 @@ namespace DaggerfallWorkshop.Game
 
         // If checked, the run key toggles between running and walking. Otherwise player runs if the key is held down and walks otherwise
         // There must be a button set up in the Input Manager called "Run"
-        public bool ToggleRun { get; set; }
+        public bool ToggleAutorun { get; set; }
         public bool ToggleSneak { get; set; }
 
         // Daggerfall base speed constants. (courtesy Allofich)
@@ -69,7 +69,7 @@ namespace DaggerfallWorkshop.Game
         /// </summary>
         public void CaptureInputSpeedAdjustment()
         {
-            if (!ToggleRun)
+            if (!ToggleAutorun)
                 runningMode = InputManager.Instance.HasAction(InputManager.Actions.Run);
             else
                 runningMode = runningMode ^ InputManager.Instance.ActionStarted(InputManager.Actions.Run);
@@ -84,18 +84,18 @@ namespace DaggerfallWorkshop.Game
             {
                 InputManager.Instance.ToggleAutorun = !InputManager.Instance.ToggleAutorun;
 
-                ToggleRun = InputManager.Instance.ToggleAutorun;
+                ToggleAutorun = InputManager.Instance.ToggleAutorun;
 
                 // If we enabled autorunning, and we are currently not running, run.
                 // This allows a player already running to keep running instead of
                 // moving to "autowalking"
-                if (ToggleRun && !isRunning)
+                if (ToggleAutorun && !isRunning)
                     runningMode = runningMode ^ InputManager.Instance.ToggleAutorun;
             }
 
             if (InputManager.Instance.ActionStarted(InputManager.Actions.MoveBackwards))
             {
-                ToggleRun = false;
+                ToggleAutorun = false;
             }
         }
 
