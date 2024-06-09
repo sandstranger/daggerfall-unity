@@ -68,6 +68,21 @@ namespace DaggerfallWorkshop.Game
             SceneManager.LoadScene(1);
         }
 
+        public void ChangeFps(string maxFpsString)
+        {
+            if (int.TryParse(maxFpsString, out var maxFps))
+            {
+                bool useVsync = maxFps <= 0;
+
+                Application.targetFrameRate = maxFps;
+                QualitySettings.vSyncCount = useVsync ? 1 : 0;
+
+                DaggerfallUnity.Settings.VSync = useVsync;
+                DaggerfallUnity.Settings.TargetFrameRate = maxFps;
+                DaggerfallUnity.Settings.SaveSettings();
+            }
+        }
+
         public void QuitGame()
         {
             Application.Quit();
