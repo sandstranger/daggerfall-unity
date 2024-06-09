@@ -21,11 +21,6 @@ namespace DaggerfallWorkshop.Game
         private PlayerMotor playerMotor;
         private LevitateMotor levitateMotor;
 
-        // If checked, the run key toggles between running and walking. Otherwise player runs if the key is held down and walks otherwise
-        // There must be a button set up in the Input Manager called "Run"
-        public bool ToggleAutorun { get; set; }
-        public bool ToggleSneak { get; set; }
-
         // Daggerfall base speed constants. (courtesy Allofich)
         public const float classicToUnitySpeedUnitRatio = 39.5f; // was estimated from comparing a walk over the same distance in classic and DF Unity
         public const float dfWalkBase = 150f;
@@ -69,34 +64,31 @@ namespace DaggerfallWorkshop.Game
         /// </summary>
         public void CaptureInputSpeedAdjustment()
         {
-            if (!ToggleAutorun)
-                runningMode = InputManager.Instance.HasAction(InputManager.Actions.Run);
-            else
-                runningMode = runningMode ^ InputManager.Instance.ActionStarted(InputManager.Actions.Run);
-
-            if (!ToggleSneak)
-                sneakingMode = InputManager.Instance.HasAction(InputManager.Actions.Sneak);
-            else
-                sneakingMode = sneakingMode ^ InputManager.Instance.ActionStarted(InputManager.Actions.Sneak);
-
-            if (InputManager.Instance.ActionStarted(InputManager.Actions.AutoRun)
-                && !InputManager.Instance.HasAction(InputManager.Actions.MoveBackwards))
-            {
+            if (InputManager.Instance.ActionStarted(InputManager.Actions.AutoRun))
                 InputManager.Instance.ToggleAutorun = !InputManager.Instance.ToggleAutorun;
 
-                ToggleAutorun = InputManager.Instance.ToggleAutorun;
+            if (InputManager.Instance.ActionStarted(InputManager.Actions.ToggleRun))
+                InputManager.Instance.ToggleRun = !InputManager.Instance.ToggleRun;
 
-                // If we enabled autorunning, and we are currently not running, run.
-                // This allows a player already running to keep running instead of
-                // moving to "autowalking"
-                if (ToggleAutorun && !isRunning)
-                    runningMode = runningMode ^ InputManager.Instance.ToggleAutorun;
-            }
+            if (!InputManager.Instance.ToggleAutorun)
+                runningMode = InputManager.Instance.HasAction(InputManager.Actions.Run);
+            else
+                runningMode ^= InputManager.Instance.ActionStarted(InputManager.Actions.Run);
 
-            if (InputManager.Instance.ActionStarted(InputManager.Actions.MoveBackwards))
-            {
-                ToggleAutorun = false;
-            }
+            if (!DaggerfallUnity.Settings.ToggleSneak)
+                sneakingMode = InputManager.Instance.HasAction(InputManager.Actions.Sneak);
+            else
+                sneakingMode ^= InputManager.Instance.ActionStarted(InputManager.Actions.Sneak);
+
+            // If we enabled autorunning, and we are currently not running, run.
+            // This allows a player already running to keep running instead of
+            // moving to "autowalking"
+            if (InputManager.Instance.ToggleAutorun && !isRunning)
+                runningMode ^= InputManager.Instance.ToggleAutorun;
+
+            // If the run toggle is toggled on, then always run
+            if (InputManager.Instance.ToggleRun)
+                runningMode = !playerMotor.IsClimbing;
         }
 
         /// <summary>

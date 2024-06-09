@@ -38,6 +38,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected Button quickSaveKeybindButton = new Button();
         protected Button quickLoadKeybindButton = new Button();
         protected Button autoRunKeybindButton = new Button();
+        protected Button toggleRunKeybindButton = new Button();
         protected HorizontalSlider mouseSensitivitySlider;
         //protected HorizontalSlider weaponSensitivitySlider;
         protected Checkbox moveSpeedCheckbox;
@@ -110,12 +111,13 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             mainPanel.Components.Add(continueButton);
 
             // keybind buttons
-            SetupKeybindButton(pauseKeybindButton, InputManager.Actions.Escape, 20, 20);
-            SetupKeybindButton(autoRunKeybindButton, InputManager.Actions.AutoRun, 20, 40);
-            SetupKeybindButton(consoleKeybindButton, InputManager.Actions.ToggleConsole, 115, 20);
-            SetupKeybindButton(screenshotKeybindButton, InputManager.Actions.PrintScreen, 115, 40);
-            SetupKeybindButton(quickSaveKeybindButton, InputManager.Actions.QuickSave, 210, 20);
-            SetupKeybindButton(quickLoadKeybindButton, InputManager.Actions.QuickLoad, 210, 40);
+            SetupKeybindButton(pauseKeybindButton, InputManager.Actions.Escape, 20, 15);
+            SetupKeybindButton(autoRunKeybindButton, InputManager.Actions.AutoRun, 20, 30);
+            SetupKeybindButton(toggleRunKeybindButton, InputManager.Actions.ToggleRun, 20, 45);
+            SetupKeybindButton(consoleKeybindButton, InputManager.Actions.ToggleConsole, 115, 15);
+            SetupKeybindButton(screenshotKeybindButton, InputManager.Actions.PrintScreen, 115, 30);
+            SetupKeybindButton(quickSaveKeybindButton, InputManager.Actions.QuickSave, 210, 15);
+            SetupKeybindButton(quickLoadKeybindButton, InputManager.Actions.QuickLoad, 210, 30);
 
             mouseSmoothingSlider = CreateSlider(TextManager.Instance.GetLocalizedText("mouseLookSmoothing", TextCollections.TextSettings), 150, 70, SettingsManager.GetMouseLookSmoothingStrength(DaggerfallUnity.Settings.MouseLookSmoothingFactor), TextManager.Instance.GetLocalizedTextList("mouseLookSmoothingStrengths", TextCollections.TextSettings));
             mouseSensitivitySlider = CreateSlider(TextManager.Instance.GetLocalizedText("mouseLookSensitivity", TextCollections.TextSettings), 20, 70, 0.1f, 16.0f, DaggerfallUnity.Settings.MouseLookSensitivity);
@@ -214,6 +216,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             SetupKeybindButton(quickSaveKeybindButton, InputManager.Actions.QuickSave);
             SetupKeybindButton(quickLoadKeybindButton, InputManager.Actions.QuickLoad);
             SetupKeybindButton(autoRunKeybindButton, InputManager.Actions.AutoRun);
+            SetupKeybindButton(toggleRunKeybindButton, InputManager.Actions.ToggleRun);
         }
 
         /// <summary>

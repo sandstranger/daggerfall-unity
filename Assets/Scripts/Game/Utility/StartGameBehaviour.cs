@@ -269,9 +269,6 @@ namespace DaggerfallWorkshop.Game.Utility
             PlayerEntity playerEntity = FindPlayerEntity();
             playerEntity.GodMode = GodMode;
 
-            PlayerSpeedChanger speedChanger = FindPlayerSpeedChanger();
-            speedChanger.ToggleSneak = DaggerfallUnity.Settings.ToggleSneak;
-
             // Enable/disable videos
             DaggerfallUI.Instance.enableVideos = EnableVideos;
 
@@ -775,14 +772,6 @@ namespace DaggerfallWorkshop.Game.Utility
             PlayerEntity playerEntity = player.GetComponent<DaggerfallEntityBehaviour>().Entity as PlayerEntity;
 
             return playerEntity;
-        }
-
-        PlayerSpeedChanger FindPlayerSpeedChanger()
-        {
-            GameObject player = FindPlayer();
-            PlayerSpeedChanger speedChanger = player.GetComponent<PlayerSpeedChanger>();
-
-            return speedChanger;
         }
 
         void ResetWeaponManager()

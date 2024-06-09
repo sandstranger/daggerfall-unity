@@ -17032,7 +17032,7 @@ PrefabInstance:
     - target: {fileID: 151103141994252492, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: myAction
-      value: 13
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 151103141994252492, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
@@ -17083,7 +17083,7 @@ PrefabInstance:
     - target: {fileID: 4683232944436250778, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: m_text
-      value: Run
+      value: Jump
       objectReference: {fileID: 0}
     - target: {fileID: 4683232944436250778, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
@@ -18540,7 +18540,7 @@ PrefabInstance:
     - target: {fileID: 151103141994252492, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: myAction
-      value: 10
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 151103141994252492, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
@@ -18591,7 +18591,7 @@ PrefabInstance:
     - target: {fileID: 4683232944436250778, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: m_text
-      value: Jump
+      value: AutoRun
       objectReference: {fileID: 0}
     - target: {fileID: 4683232944436250778, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}

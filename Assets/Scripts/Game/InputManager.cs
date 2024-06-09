@@ -68,6 +68,85 @@ namespace DaggerfallWorkshop.Game
             (int)KeyCode.LeftApple,
             (int)KeyCode.RightApple,
         };
+        /// <summary>
+        /// key: Actions
+        /// value: KeyCode
+        /// </summary>
+        static readonly Dictionary<int, int> defaultActionBindings = new Dictionary<int, int>()
+        {
+            { (int)Actions.Escape, (int)KeyCode.Escape },
+            { (int)Actions.ToggleConsole, (int)KeyCode.BackQuote },
+            { (int)Actions.MoveForwards, (int)KeyCode.W },
+            { (int)Actions.MoveBackwards, (int)KeyCode.S },
+            { (int)Actions.MoveLeft, (int)KeyCode.A },
+            { (int)Actions.MoveRight, (int)KeyCode.D },
+            { (int)Actions.TurnLeft, (int)KeyCode.LeftArrow },
+            { (int)Actions.TurnRight, (int)KeyCode.RightArrow },
+            { (int)Actions.FloatUp, (int)KeyCode.PageUp },
+            { (int)Actions.FloatDown, (int)KeyCode.PageDown },
+            { (int)Actions.Jump, (int)KeyCode.Space },
+            { (int)Actions.Crouch, (int)KeyCode.C },
+            { (int)Actions.Slide, (int)KeyCode.LeftControl },
+            { (int)Actions.Run, (int)KeyCode.LeftShift },
+            { (int)Actions.AutoRun, (int)KeyCode.Mouse2 },
+            { (int)Actions.ToggleRun, (int)KeyCode.F12 },
+            { (int)Actions.Rest, (int)KeyCode.R },
+            { (int)Actions.Transport, (int)KeyCode.T },
+            { (int)Actions.StealMode, (int)KeyCode.F1 },
+            { (int)Actions.GrabMode, (int)KeyCode.F2 },
+            { (int)Actions.InfoMode, (int)KeyCode.F3 },
+            { (int)Actions.TalkMode, (int)KeyCode.F4 },
+            { (int)Actions.CastSpell, (int)KeyCode.Backspace },
+            { (int)Actions.RecastSpell, (int)KeyCode.Q },
+            { (int)Actions.AbortSpell, (int)KeyCode.E },
+            { (int)Actions.UseMagicItem, (int)KeyCode.U },
+            { (int)Actions.ReadyWeapon, (int)KeyCode.Z },
+            { (int)Actions.SwitchHand, (int)KeyCode.H },
+            { (int)Actions.Status, (int)KeyCode.I },
+            { (int)Actions.CharacterSheet, (int)KeyCode.F5 },
+            { (int)Actions.Inventory, (int)KeyCode.F6 },
+            { (int)Actions.ActivateCenterObject, (int)KeyCode.Mouse0 },
+            { (int)Actions.ActivateCursor, (int)KeyCode.Return },
+            { (int)Actions.LookUp, (int)KeyCode.Insert },
+            { (int)Actions.LookDown, (int)KeyCode.Delete },
+            { (int)Actions.CenterView, (int)KeyCode.Home },
+            { (int)Actions.Sneak, (int)KeyCode.LeftAlt },
+            { (int)Actions.LogBook, (int)KeyCode.L },
+            { (int)Actions.NoteBook, (int)KeyCode.N },
+            { (int)Actions.AutoMap, (int)KeyCode.M },
+            { (int)Actions.TravelMap, (int)KeyCode.V },
+            { (int)Actions.PrintScreen, (int)KeyCode.F8 },
+            { (int)Actions.QuickSave, (int)KeyCode.F9 },
+            { (int)Actions.QuickLoad, (int)KeyCode.F11 },
+            #if UNITY_ANDROID
+            { (int)Actions.SwingWeapon, (int)KeyCode.Y }
+            #else
+            { (int)Actions.SwingWeapon, (int)KeyCode.Mouse1 }
+            #endif
+        };
+
+        /// <summary>
+        /// key: AxisActions
+        /// value: string
+        /// </summary>
+        static readonly Dictionary<int, string> defaultAxisActionBindings = new Dictionary<int, string>()
+        {
+            { (int)AxisActions.MovementHorizontal , "Axis1" },
+            { (int)AxisActions.MovementVertical, "Axis2" },
+            { (int)AxisActions.CameraHorizontal, "Axis4" },
+            { (int)AxisActions.CameraVertical, "Axis5" },
+        };
+        /// <summary>
+        /// key: JoystickUIActions
+        /// value: KeyCode
+        /// </summary>
+        static readonly Dictionary<int, int> defaultJoystickUIBindings = new Dictionary<int, int>()
+        {
+            { (int)JoystickUIActions.LeftClick , (int)KeyCode.JoystickButton0 },
+            { (int)JoystickUIActions.RightClick, (int)KeyCode.JoystickButton3 },
+            { (int)JoystickUIActions.MiddleClick, (int)KeyCode.JoystickButton2 },
+            { (int)JoystickUIActions.Back, (int)KeyCode.JoystickButton1 },
+        };
 
         KeyCode[] keyCodeList;
         KeyCode[] reservedKeys = new KeyCode[] { };
@@ -405,6 +484,7 @@ namespace DaggerfallWorkshop.Game
             PrintScreen,
 
             AutoRun,
+            ToggleRun,
 
             Unknown,
         }
@@ -676,7 +756,36 @@ namespace DaggerfallWorkshop.Game
         {
             return (previousActions.Contains(action) && !currentActions.Contains(action));
         }
-
+        /// <summary>
+        /// Returns the default keycode that is bound to an action
+        /// </summary>
+        public KeyCode GetDefaultBinding(Actions action)
+        {
+            if (defaultActionBindings.TryGetValue((int)action, out int binding))
+                return (KeyCode)binding;
+            else
+                return KeyCode.None;
+        }
+        /// <summary>
+        /// Returns the default keycode that is bound to an axis action
+        /// </summary>
+        public string GetDefaultAxisBinding(AxisActions action)
+        {
+            if (defaultAxisActionBindings.TryGetValue((int)action, out string binding))
+                return binding;
+            else
+                return "";
+        }
+        /// <summary>
+        /// Returns the default keycode that is bound to a joystick UI action
+        /// </summary>
+        public KeyCode GetDefaultJoystickUIBinding(JoystickUIActions action)
+        {
+            if (defaultJoystickUIBindings.TryGetValue((int)action, out int binding))
+                return (KeyCode)binding;
+            else
+                return KeyCode.None;
+        }
         /// <summary>
         /// Finds first non-None KeyCode bound to a specific action
         /// </summary>
@@ -989,7 +1098,6 @@ namespace DaggerfallWorkshop.Game
                 || axis == cameraAxisBindingCache[0]
                 || axis == cameraAxisBindingCache[1]));
         }
-
         // 'autofill' false: Forcefully set keybindings to defaults
         // 'autofill' true: Deploys default values if action missing from loaded keybinds
         public void ResetDefaults(bool autofill = false)
@@ -1017,70 +1125,15 @@ namespace DaggerfallWorkshop.Game
                 setJoystickUIBinding = SetJoystickUIBinding;
             }
 
-            setBinding(KeyCode.Escape, Actions.Escape, true);
-            setBinding(KeyCode.BackQuote, Actions.ToggleConsole, true);
+            foreach (var kvp in defaultActionBindings)
+                setBinding((KeyCode)kvp.Value, (Actions)kvp.Key, true);
 
-            setBinding(KeyCode.W, Actions.MoveForwards, true);
-            setBinding(KeyCode.S, Actions.MoveBackwards, true);
-            setBinding(KeyCode.A, Actions.MoveLeft, true);
-            setBinding(KeyCode.D, Actions.MoveRight, true);
-            setBinding(KeyCode.LeftArrow, Actions.TurnLeft, true);
-            setBinding(KeyCode.RightArrow, Actions.TurnRight, true);
+            foreach (var kvp in defaultAxisActionBindings)
+                setAxisBinding(kvp.Value, (AxisActions)kvp.Key);
 
-            setBinding(KeyCode.PageUp, Actions.FloatUp, true);
-            setBinding(KeyCode.PageDown, Actions.FloatDown, true);
-            setBinding(KeyCode.Space, Actions.Jump, true);
-            setBinding(KeyCode.C, Actions.Crouch, true);
-            setBinding(KeyCode.LeftControl, Actions.Slide, true);
-            setBinding(KeyCode.LeftShift, Actions.Run, true);
-            setBinding(KeyCode.Mouse2, Actions.AutoRun, true);
+            foreach (var kvp in defaultJoystickUIBindings)
+                setJoystickUIBinding((KeyCode)kvp.Value, (JoystickUIActions)kvp.Key);
 
-            setBinding(KeyCode.R, Actions.Rest, true);
-            setBinding(KeyCode.T, Actions.Transport, true);
-            setBinding(KeyCode.F1, Actions.StealMode, true);
-            setBinding(KeyCode.F2, Actions.GrabMode, true);
-            setBinding(KeyCode.F3, Actions.InfoMode, true);
-            setBinding(KeyCode.F4, Actions.TalkMode, true);
-
-            setBinding(KeyCode.Backspace, Actions.CastSpell, true);
-            setBinding(KeyCode.Q, Actions.RecastSpell, true);
-            setBinding(KeyCode.E, Actions.AbortSpell, true);
-            setBinding(KeyCode.U, Actions.UseMagicItem, true);
-
-            setBinding(KeyCode.Z, Actions.ReadyWeapon, true);
-            setBinding(Application.isMobilePlatform ? KeyCode.Y : KeyCode.Mouse1, Actions.SwingWeapon, true);
-            setBinding(KeyCode.H, Actions.SwitchHand, true);
-
-            setBinding(KeyCode.I, Actions.Status, true);
-            setBinding(KeyCode.F5, Actions.CharacterSheet, true);
-            setBinding(KeyCode.F6, Actions.Inventory, true);
-
-            setBinding(KeyCode.Mouse0, Actions.ActivateCenterObject, true);
-            setBinding(KeyCode.Return, Actions.ActivateCursor, true);
-
-            setBinding(KeyCode.Insert, Actions.LookUp, true);
-            setBinding(KeyCode.Delete, Actions.LookDown, true);
-            setBinding(KeyCode.Home, Actions.CenterView, true);
-            setBinding(KeyCode.LeftAlt, Actions.Sneak, true);
-
-            setBinding(KeyCode.L, Actions.LogBook, true);
-            setBinding(KeyCode.N, Actions.NoteBook, true);
-            setBinding(KeyCode.M, Actions.AutoMap, true);
-            setBinding(KeyCode.V, Actions.TravelMap, true);
-
-            setBinding(KeyCode.F8, Actions.PrintScreen, true);
-            setBinding(KeyCode.F9, Actions.QuickSave, true);
-            setBinding(KeyCode.F11, Actions.QuickLoad, true);
-
-            setAxisBinding("Axis1", AxisActions.MovementHorizontal);
-            setAxisBinding("Axis2", AxisActions.MovementVertical);
-            setAxisBinding("Axis4", AxisActions.CameraHorizontal);
-            setAxisBinding("Axis5", AxisActions.CameraVertical);
-
-            setJoystickUIBinding(KeyCode.JoystickButton0, JoystickUIActions.LeftClick);
-            setJoystickUIBinding(KeyCode.JoystickButton3, JoystickUIActions.RightClick);
-            setJoystickUIBinding(KeyCode.JoystickButton2, JoystickUIActions.MiddleClick);
-            setJoystickUIBinding(KeyCode.JoystickButton1, JoystickUIActions.Back);
             UpdateBindingCache();
 
             foreach (AxisActions axisAction in Enum.GetValues(typeof(AxisActions)))

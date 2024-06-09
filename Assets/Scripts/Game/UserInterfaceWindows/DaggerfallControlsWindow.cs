@@ -382,6 +382,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             string currentLabel = button.Label.Text;
             KeyCode code1;
             KeyCode code2;
+            bool isBindingCancelled = false, isBindingCleared = false;
+            BaseScreenComponent.OnMouseClickHandler buttonClicked = delegate (BaseScreenComponent sender, Vector2 position) { isBindingCancelled = true; };
+            BaseScreenComponent.OnMouseDoubleClickHandler buttonDoubleClicked = delegate (BaseScreenComponent sender, Vector2 position) { isBindingCleared = true; isBindingCancelled = false; };
+            button.OnMouseClick += buttonClicked;
+            button.OnMouseDoubleClick += buttonDoubleClicked;
 
             button.Label.Text = "";
             yield return new WaitForSecondsRealtime(0.05f);
@@ -406,14 +411,18 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             setWaitingForInput(false);
 
             KeyCode code = code1 == code2 || code2 == KeyCode.None ? code1 : InputManager.Instance.GetComboCode(code1, code2);
+            var action = (InputManager.Actions)Enum.Parse(typeof(InputManager.Actions), button.Name);
 
-            if (code != KeyCode.None && InputManager.Instance.ReservedKeys.FirstOrDefault(x => x == code) == KeyCode.None)
+            if (isBindingCleared)
+                code = InputManager.Instance.GetDefaultBinding(action);
+
+            if (!isBindingCancelled && code != KeyCode.None && InputManager.Instance.ReservedKeys.FirstOrDefault(x => x == code) == KeyCode.None)
             {
                 button.Label.Text = ControlsConfigManager.Instance.GetButtonText(code);
                 button.SuppressToolTip = button.Label.Text != ControlsConfigManager.ElongatedButtonText;
                 button.ToolTipText = ControlsConfigManager.Instance.GetButtonText(code, true);
 
-                var action = (InputManager.Actions)Enum.Parse(typeof(InputManager.Actions), button.Name);
+                action = (InputManager.Actions)Enum.Parse(typeof(InputManager.Actions), button.Name);
                 ControlsConfigManager.Instance.SetUnsavedBinding(action, InputManager.Instance.GetKeyString(code));
                 checkDuplicates();
             }
@@ -421,6 +430,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             {
                 button.Label.Text = currentLabel;
             }
+            button.OnMouseClick -= buttonClicked;
+            button.OnMouseDoubleClick -= buttonDoubleClicked;
         }
 
         private static string GetText(string key)
