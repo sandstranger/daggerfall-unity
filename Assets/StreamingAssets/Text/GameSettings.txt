@@ -156,6 +156,8 @@ runInBackground,                                    Run in background
 runInBackgroundInfo,                                Should the game keep running when it loses focus
 qualityLevel,                                       Quality Level
 qualityLevelInfo,                                   General graphic quality
+framerate,                                          Framerate
+enableVsync,                                        Enable Vsync
 mainFilterMode,                                     Main Filter
 mainFilterModeInfo,                                 Filter for game textures
 guiFilterMode,                                      GUI Filter
