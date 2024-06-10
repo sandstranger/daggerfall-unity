@@ -53,7 +53,7 @@ namespace DaggerfallWorkshop.Game
             }
         }
 
-        private void Awake()
+        private void Start()
         {
             ScreenControlsConfigurator.ResetToDefaults += Reset;
 
@@ -81,6 +81,7 @@ namespace DaggerfallWorkshop.Game
         public void Reset()
         {
             _rectTransform.position = PlayerPrefs.GetVector3(_defaultPositionKey, _rectTransform.position);
+
             _rectTransform.sizeDelta = PlayerPrefs.GetVector2(_defaultSizeKey, _rectTransform.sizeDelta);
 
             float alpha = PlayerPrefs.GetFloat(_defaultAlphaKey, _canvasGroup.alpha);
