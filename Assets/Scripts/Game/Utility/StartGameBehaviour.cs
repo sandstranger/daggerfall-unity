@@ -5,7 +5,7 @@
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
 // Contributors:    Lypyl (lypyldf@gmail.com)
-// 
+//
 // Notes:
 //
 
@@ -252,7 +252,7 @@ namespace DaggerfallWorkshop.Game.Utility
             // HUD settings
             DaggerfallHUD hud = DaggerfallUI.Instance.DaggerfallHUD;
             if (hud != null)                                              //null at startup
-                hud.ShowCrosshair = DaggerfallUnity.Settings.Crosshair; 
+                hud.ShowCrosshair = DaggerfallUnity.Settings.Crosshair;
 
             // Weapon swing settings
             WeaponManager weaponManager = GameManager.Instance.WeaponManager;
@@ -413,7 +413,7 @@ namespace DaggerfallWorkshop.Game.Utility
 
             // Assign starting gear to player entity
             AssignStartingEquipment(playerEntity, characterDocument);
-            
+
             // Assign starting spells to player entity
             AssignStartingSpells(playerEntity, characterDocument);
 
@@ -969,7 +969,7 @@ namespace DaggerfallWorkshop.Game.Utility
                     vignetteSettings.roundness.value = DaggerfallUnity.Settings.VignetteRoundness;
                     vignetteSettings.rounded.overrideState = true;
                     vignetteSettings.rounded.value = DaggerfallUnity.Settings.VignetteRounded;
-                }    
+                }
             }
 
             // Depth of Field

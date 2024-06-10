@@ -23,8 +23,15 @@ namespace DaggerfallWorkshop.Game
             }
         }
 
+        public Canvas Canvas => _canvas;
+        public Camera RenderCamera => _renderCamera;
+
         private ButtonPositionHelper _currentButton;
 
+        [SerializeField]
+        private Canvas _canvas;
+        [SerializeField]
+        private Camera _renderCamera;
         [SerializeField]
         private TMP_Text _currentButtonNameText;
         [SerializeField]
@@ -60,15 +67,18 @@ namespace DaggerfallWorkshop.Game
         public void Show()
         {
             _rootPanel.SetActive(true);
+            _renderCamera.gameObject.SetActive(true);
             Input.multiTouchEnabled = false;
         }
 
         private void Close()
         {
             _rootPanel.SetActive(false);
+            _renderCamera.gameObject.SetActive(false);
             Input.multiTouchEnabled = true;
             CurrentButton = null;
             _currentButtonNameText.text = string.Empty;
+            PlayerPrefs.Save();
         }
 
         private void OnAlphaPlusBtnClicked()

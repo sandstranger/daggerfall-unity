@@ -7,7 +7,6 @@ namespace DaggerfallWorkshop.Game
         public static void SetBool(string key, bool value)
         {
             SetInt(key, value ? 1 : 0);
-            Save();
         }
 
         public static bool GetBool(string key, bool defaultValue = false)
@@ -20,8 +19,6 @@ namespace DaggerfallWorkshop.Game
             SetFloat($"{key}_x", vector.x);
             SetFloat($"{key}_y", vector.y);
             SetFloat($"{key}_z", vector.z);
-
-            Save();
         }
 
         public static Vector3 GetVector3(string key, Vector3 defaultValue)
@@ -34,8 +31,6 @@ namespace DaggerfallWorkshop.Game
         {
             SetFloat($"{key}_x", vector.x);
             SetFloat($"{key}_y", vector.y);
-
-            Save();
         }
 
         public static Vector2 GetVector2(string key, Vector2 defaultValue)

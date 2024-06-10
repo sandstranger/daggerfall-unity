@@ -84,8 +84,6 @@ namespace DaggerfallWorkshop.Game.MagicAndEffects
         Dictionary<ulong, DaggerfallUnityItem> activeMagicItemsInRound = new Dictionary<ulong, DaggerfallUnityItem>();
         Dictionary<ulong, DaggerfallUnityItem> itemsPendingReroll = new Dictionary<ulong, DaggerfallUnityItem>();
 
-        private bool _hideScreenControls;
-
         #endregion
 
         #region Properties
@@ -155,7 +153,6 @@ namespace DaggerfallWorkshop.Game.MagicAndEffects
 
         private void Awake()
         {
-            _hideScreenControls = ScreenControls.HideControls;
             // Check if this is player's effect manager
             // We do some extra coordination for player
             entityBehaviour = GetComponent<DaggerfallEntityBehaviour>();
@@ -249,27 +246,18 @@ namespace DaggerfallWorkshop.Game.MagicAndEffects
                     return;
                 }
 
-                bool castReadySpell = _hideScreenControls
-                    ? InputManager.Instance.ActionStarted(InputManager.Actions.ActivateCenterObject) &&
-                      readySpell != null
-                    : InputManager.Instance.ActionComplete(InputManager.Actions.ActivateCenterObject) &&
-                      readySpell != null;
-
                 // Cast spell
-                if (castReadySpell)
+                if (InputManager.Instance.ActionStarted(InputManager.Actions.ActivateCenterObject) &&
+                    readySpell != null)
                 {
                     CastReadySpell();
                     return;
                 }
 
 
-                bool needToRecastSpell = _hideScreenControls ? InputManager.Instance.ActionStarted(InputManager.Actions.RecastSpell) && lastSpell != null &&
-                                                               !GameManager.Instance.PlayerSpellCasting.IsPlayingAnim :
-                InputManager.Instance.ActionComplete(InputManager.Actions.RecastSpell) && lastSpell != null &&
-                    !GameManager.Instance.PlayerSpellCasting.IsPlayingAnim;
-
                 // Recast spell - not available while playing another spell animation
-                if (needToRecastSpell)
+                if (InputManager.Instance.ActionStarted(InputManager.Actions.RecastSpell) && lastSpell != null &&
+                    !GameManager.Instance.PlayerSpellCasting.IsPlayingAnim)
                 {
                     if (GameManager.Instance.PlayerEntity.Items.Contains(ItemGroups.MiscItems, (int)MiscItems.Spellbook))
                         SetReadySpell(lastSpell);

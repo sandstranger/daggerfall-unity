@@ -140,7 +140,6 @@ namespace DaggerfallWorkshop.Game
         Rect controllerCursorRect;
 
         bool pauseController = false;
-        private bool _hideScreenControls;
 
         #endregion
 
@@ -425,7 +424,6 @@ namespace DaggerfallWorkshop.Game
 
         void Start()
         {
-            _hideScreenControls = ScreenControls.HideControls;
             getKeyMethod = (k) => heldKeyCounter > 0 && ContainsKeyCode(heldKeys, k, true);
             getKeyDownMethod = (k) => heldKeyCounter > 0 && (previousKeyCounter <= 0 || !ContainsKeyCode(previousKeys, k, false)) && ContainsKeyCode(heldKeys, k, true);
             getKeyUpMethod = (k) => previousKeyCounter > 0 && ContainsKeyCode(previousKeys, k, false) && (heldKeyCounter <= 0 || !ContainsKeyCode(heldKeys, k, true));
@@ -994,7 +992,12 @@ namespace DaggerfallWorkshop.Game
             setBinding(KeyCode.C, Actions.Crouch, true);
             setBinding(KeyCode.LeftControl, Actions.Slide, true);
             setBinding(KeyCode.LeftShift, Actions.Run, true);
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+            setBinding(KeyCode.F, Actions.AutoRun, true);
+#else
             setBinding(KeyCode.Mouse2, Actions.AutoRun, true);
+#endif
 
             setBinding(KeyCode.R, Actions.Rest, true);
             setBinding(KeyCode.T, Actions.Transport, true);
@@ -1016,7 +1019,11 @@ namespace DaggerfallWorkshop.Game
             setBinding(KeyCode.F5, Actions.CharacterSheet, true);
             setBinding(KeyCode.F6, Actions.Inventory, true);
 
-            setBinding(KeyCode.Mouse0, Actions.ActivateCenterObject, true);
+#if UNITY_ANDROID && !UNITY_EDITOR
+            setBinding(KeyCode.Clear, Actions.ActivateCenterObject, true);
+#else
+            setBinding(KeyCode.H, Actions.ActivateCenterObject, true);
+#endif
             setBinding(KeyCode.Return, Actions.ActivateCursor, true);
 
             setBinding(KeyCode.Insert, Actions.LookUp, true);
@@ -1649,7 +1656,7 @@ namespace DaggerfallWorkshop.Game
         bool GetPollKey(KeyCode k)
         {
             if ((int)k < startingAxisKeyCode)
-                return Input.GetKey(k);
+                return Input.GetKey(k) || ScreenControls.GetKey(k);
             else
                 return GetAxisKey((int)k);
         }
@@ -1827,11 +1834,6 @@ namespace DaggerfallWorkshop.Game
         // Enumerate all keyboard actions in progress
         void FindKeyboardActions()
         {
-            if (!_hideScreenControls)
-            {
-                return;
-            }
-
             var enumerator = existingKeyDict.GetEnumerator();
             while (enumerator.MoveNext())
             {

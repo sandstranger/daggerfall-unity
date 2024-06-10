@@ -13,8 +13,14 @@ namespace DaggerfallWorkshop.Game
         [SerializeField]
         private ButtonPositionHelper _buttonPositionHelper;
 
-        public void OnDrag(PointerEventData eventData) =>
-            _buttonPositionHelper.Position = Input.mousePosition;
+        public void OnDrag(PointerEventData eventData)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                (RectTransform)controlsConfigurator.Canvas.transform, eventData.position,
+                controlsConfigurator.RenderCamera, out var position);
+
+            _buttonPositionHelper.Position = controlsConfigurator.Canvas.transform.TransformPoint(position);
+        }
 
         public void OnPointerDown(PointerEventData eventData) =>
             controlsConfigurator.CurrentButton = _buttonPositionHelper;

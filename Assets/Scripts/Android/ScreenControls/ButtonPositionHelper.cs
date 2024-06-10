@@ -1,18 +1,14 @@
-﻿using System;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using PlayerPrefs = DaggerfallWorkshop.Game.PlayerPrefsExtensions;
 
 namespace DaggerfallWorkshop.Game
 {
+    [RequireComponent(typeof(CanvasGroup))]
     sealed class ButtonPositionHelper : MonoBehaviour
     {
         private string _buttonId;
 
-        private Image _buttonImage;
-        private Image[] _images;
-        private TMP_Text _text;
+        private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
 
         private string _positionKey;
@@ -48,22 +44,11 @@ namespace DaggerfallWorkshop.Game
 
         public float Alpha
         {
-            get => _buttonImage.color.a;
+            get => _canvasGroup.alpha;
 
             set
             {
-                foreach (var image in _images)
-                {
-                    var imageColor = image.color;
-                    image.color = new Color(imageColor.r, imageColor.g, imageColor.b, value);
-                }
-
-                if (_text != null)
-                {
-                    Color textColor = _text.color;
-                    _text.color = new Color(textColor.r, textColor.g, textColor.b, value);
-                }
-
+                _canvasGroup.alpha = value;
                 PlayerPrefs.SetFloat(_alphaKey, value);
             }
         }
@@ -81,10 +66,7 @@ namespace DaggerfallWorkshop.Game
             _sizeKey = $"{_buttonId}_size";
             _alphaKey = $"{_buttonId}_alpha";
 
-            _buttonImage = GetComponent<Image>() ?? GetComponentInChildren<Image>();
-            _images = GetComponentsInChildren<Image>() ?? Array.Empty<Image>();
-
-            _text = GetComponentInChildren<TMP_Text>();
+            _canvasGroup = GetComponent<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
 
             SaveDefaultValues();
@@ -92,22 +74,8 @@ namespace DaggerfallWorkshop.Game
             _rectTransform.position = PlayerPrefs.GetVector3(_positionKey, _rectTransform.position);
             _rectTransform.sizeDelta = PlayerPrefs.GetVector2(_sizeKey, _rectTransform.sizeDelta);
 
-            Color color = _buttonImage.color;
-
-            float alpha = PlayerPrefs.GetFloat(_alphaKey, color.a);
-            _buttonImage.color = new Color(color.r, color.g, color.b,alpha);
-
-            foreach (var image in _images)
-            {
-                var imageColor = image.color;
-                image.color = new Color(imageColor.r, imageColor.g, imageColor.b, alpha);
-            }
-
-            if (_text != null)
-            {
-                Color textColor = _text.color;
-                _text.color = new Color(textColor.r, textColor.g, textColor.b, alpha);
-            }
+            float alpha = PlayerPrefs.GetFloat(_alphaKey, _canvasGroup.alpha);
+            _canvasGroup.alpha = alpha;
         }
 
         public void Reset()
@@ -115,27 +83,12 @@ namespace DaggerfallWorkshop.Game
             _rectTransform.position = PlayerPrefs.GetVector3(_defaultPositionKey, _rectTransform.position);
             _rectTransform.sizeDelta = PlayerPrefs.GetVector2(_defaultSizeKey, _rectTransform.sizeDelta);
 
-            Color color = _buttonImage.color;
-
-            float alpha = PlayerPrefs.GetFloat(_defaultAlphaKey, color.a);
-            _buttonImage.color = new Color(color.r, color.g, color.b,alpha);
-
-            foreach (var image in _images)
-            {
-                var imageColor = image.color;
-                image.color = new Color(imageColor.r, imageColor.g, imageColor.b, alpha);
-            }
-
-            if (_text != null)
-            {
-                Color textColor = _text.color;
-                _text.color = new Color(textColor.r, textColor.g, textColor.b, alpha);
-            }
+            float alpha = PlayerPrefs.GetFloat(_defaultAlphaKey, _canvasGroup.alpha);
+            _canvasGroup.alpha = alpha;
 
             PlayerPrefs.DeleteKey(_alphaKey);
             PlayerPrefs.DeleteVector2Key(_sizeKey);
             PlayerPrefs.DeleteVector3Key(_positionKey);
-            PlayerPrefs.Save();
         }
 
         private void SaveDefaultValues()
@@ -152,7 +105,7 @@ namespace DaggerfallWorkshop.Game
 
             if (!PlayerPrefs.HasKey(_defaultAlphaKey))
             {
-                PlayerPrefs.SetFloat(_defaultAlphaKey, _buttonImage.color.a);
+                PlayerPrefs.SetFloat(_defaultAlphaKey, _canvasGroup.alpha);
             }
         }
     }

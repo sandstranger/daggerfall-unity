@@ -9,7 +9,6 @@ namespace DaggerfallWorkshop.Game
         private zFrame.UI.Joystick _joystick;
         [SerializeField]
         private RectTransform _joystickKnob;
-
         [SerializeField]
         private float _forceMultiplier = 1.5f;
 
