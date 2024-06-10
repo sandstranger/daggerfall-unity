@@ -52,16 +52,7 @@ namespace DaggerfallWorkshop.Game
 
             _renderCamera.targetTexture = _renderTexture;
 
-            _btnConsole.onClick.AddListener(() =>
-            {
-                if (_console == null)
-                {
-                    _console = GameObject.Find("Console").GetComponent<ConsoleUI>();
-                }
-
-                _console.ToggleConsole();
-            });
-
+            _btnConsole.onClick.AddListener(() => _console.ToggleConsole());
             _extraBtnsToggle.onClick.AddListener(() => _extraBtnsHolder.SetActive(!_extraBtnsHolder.activeSelf));
             _enterBtn.onClick.AddListener(() => EnterPressed = true);
         }
