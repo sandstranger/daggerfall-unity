@@ -238,7 +238,7 @@ namespace DaggerfallWorkshop.Game.Utility
                 QualitySettings.vSyncCount = 0;
 
             // Target frame rate settings
-            if (DaggerfallUnity.Settings.TargetFrameRate >= 30 && !DaggerfallUnity.Settings.VSync)
+            if(DaggerfallUnity.Settings.TargetFrameRate != 0)
                 Application.targetFrameRate = DaggerfallUnity.Settings.TargetFrameRate;
 
             // Filter settings

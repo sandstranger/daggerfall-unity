@@ -148,7 +148,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         Checkbox runInBackground;
         HorizontalSlider qualityLevel;
         HorizontalSlider mainFilterMode;
-        //HorizontalSlider framerate;
+        HorizontalSlider framerate;
         //Checkbox vsync;
         HorizontalSlider guiFilterMode;
         HorizontalSlider videoFilterMode;
@@ -363,9 +363,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             runInBackground = AddCheckbox(leftPanel, "runInBackground", DaggerfallUnity.Settings.RunInBackground);
             qualityLevel = AddSlider(leftPanel, "qualityLevel", DaggerfallUnity.Settings.QualityLevel, TextManager.Instance.GetLocalizedTextList("qualitySettings", TextCollections.TextSettings));
             qualityLevel.OnScroll += QualityLevel_OnScroll;
-            //framerate = AddSlider(leftPanel, "framerate", DaggerfallUnity.Settings.TargetFrameRate, TextManager.Instance.GetLocalizedTextList("framerate", TextCollections.TextSettings));
-            //framerate.OnScroll += Framerate_OnScroll;
-            //vsync = AddCheckbox(leftPanel, "enableVsync", DaggerfallUnity.Settings.VSync);
+            framerate = AddSlider(leftPanel, "framerate", 5, 120, DaggerfallUnity.Settings.TargetFrameRate == 0 ? 30 : DaggerfallUnity.Settings.TargetFrameRate);
+            framerate.OnScroll += Framerate_OnScroll;
             string[] filterModes = TextManager.Instance.GetLocalizedTextList("filterModes", TextCollections.TextSettings);
             mainFilterMode = AddSlider(leftPanel, "mainFilterMode", DaggerfallUnity.Settings.MainFilterMode, filterModes);
             guiFilterMode = AddSlider(leftPanel, "guiFilterMode", DaggerfallUnity.Settings.GUIFilterMode, filterModes);
@@ -530,14 +529,18 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             DaggerfallUnity.Settings.VideoFilterMode = videoFilterMode.ScrollIndex;
 
             DaggerfallUnity.Settings.FieldOfView = fovSlider.Value;
-            //DaggerfallUnity.Settings.TargetFrameRate = framerate.Value;
-            //DaggerfallUnity.Settings.VSync = vsync.IsChecked;
             DaggerfallUnity.Settings.TerrainDistance = terrainDistance.Value;
             DaggerfallUnity.Settings.ShadowResolutionMode = shadowResolutionMode.ScrollIndex;
             DaggerfallUnity.Settings.DungeonLightShadows = dungeonLightShadows.IsChecked;
             DaggerfallUnity.Settings.InteriorLightShadows = interiorLightShadows.IsChecked;
             DaggerfallUnity.Settings.ExteriorLightShadows = exteriorLightShadows.IsChecked;
             DaggerfallUnity.Settings.AmbientLitInteriors = ambientLitInteriors.IsChecked;
+            float lastFramerate = DaggerfallUnity.Settings.TargetFrameRate == 0 ? 30 : DaggerfallUnity.Settings.TargetFrameRate;
+            if (framerate.Value != lastFramerate)
+            {
+                DaggerfallUnity.Settings.TargetFrameRate = framerate.Value;
+                Application.targetFrameRate = framerate.Value;
+            }
 
             /* Accessibility */
             DaggerfallUnity.Settings.AutomapTempleColor = automapTempleColor.BackgroundColor;

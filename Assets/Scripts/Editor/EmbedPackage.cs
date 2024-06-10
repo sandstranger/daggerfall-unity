@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions
 {
-#if UNITY_2017_3_OR_NEWER
+#if UNITY_2017_3_OR_NEWER && !UNITY_ANDROID
 
     /// <summary>
     /// Editor extension for embedding packages as a local copy in the project.

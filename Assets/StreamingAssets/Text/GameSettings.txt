@@ -158,8 +158,6 @@ qualityLevel,                                       Quality Level
 qualityLevelInfo,                                   General graphic quality
 framerate,                                          Framerate
 framerateInfo,                                      How many frames per second the game will run at
-enableVsync,                                        Enable Vsync
-enableVsyncInfo,                                    Syncs the game's framerate to the screen's refresh rate.
 mainFilterMode,                                     Main Filter
 mainFilterModeInfo,                                 Filter for game textures
 guiFilterMode,                                      GUI Filter
