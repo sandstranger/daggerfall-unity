@@ -240,6 +240,22 @@ MonoBehaviour:
     m_Localized: ToggleRun
     m_Metadata:
       m_Items: []
+  - m_Id: 151270164983177216
+    m_Localized: '5
+
+      15
+
+      30
+
+      45
+
+      60
+
+      90
+
+      120'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

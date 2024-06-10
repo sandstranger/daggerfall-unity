@@ -148,8 +148,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         Checkbox runInBackground;
         HorizontalSlider qualityLevel;
         HorizontalSlider mainFilterMode;
-        HorizontalSlider framerate;
-        Checkbox vsync;
+        //HorizontalSlider framerate;
+        //Checkbox vsync;
         HorizontalSlider guiFilterMode;
         HorizontalSlider videoFilterMode;
         HorizontalSlider fovSlider;
@@ -363,9 +363,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             runInBackground = AddCheckbox(leftPanel, "runInBackground", DaggerfallUnity.Settings.RunInBackground);
             qualityLevel = AddSlider(leftPanel, "qualityLevel", DaggerfallUnity.Settings.QualityLevel, TextManager.Instance.GetLocalizedTextList("qualitySettings", TextCollections.TextSettings));
             qualityLevel.OnScroll += QualityLevel_OnScroll;
-            framerate = AddSlider(leftPanel, "framerate", DaggerfallUnity.Settings.TargetFrameRate, TextManager.Instance.GetLocalizedTextList("framerate", TextCollections.TextSettings));
-            framerate.OnScroll += Framerate_OnScroll;
-            vsync = AddCheckbox(leftPanel, "enableVsync", DaggerfallUnity.Settings.VSync);
+            //framerate = AddSlider(leftPanel, "framerate", DaggerfallUnity.Settings.TargetFrameRate, TextManager.Instance.GetLocalizedTextList("framerate", TextCollections.TextSettings));
+            //framerate.OnScroll += Framerate_OnScroll;
+            //vsync = AddCheckbox(leftPanel, "enableVsync", DaggerfallUnity.Settings.VSync);
             string[] filterModes = TextManager.Instance.GetLocalizedTextList("filterModes", TextCollections.TextSettings);
             mainFilterMode = AddSlider(leftPanel, "mainFilterMode", DaggerfallUnity.Settings.MainFilterMode, filterModes);
             guiFilterMode = AddSlider(leftPanel, "guiFilterMode", DaggerfallUnity.Settings.GUIFilterMode, filterModes);
@@ -530,8 +530,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             DaggerfallUnity.Settings.VideoFilterMode = videoFilterMode.ScrollIndex;
 
             DaggerfallUnity.Settings.FieldOfView = fovSlider.Value;
-            DaggerfallUnity.Settings.TargetFrameRate = framerate.Value;
-            DaggerfallUnity.Settings.VSync = vsync.IsChecked;
+            //DaggerfallUnity.Settings.TargetFrameRate = framerate.Value;
+            //DaggerfallUnity.Settings.VSync = vsync.IsChecked;
             DaggerfallUnity.Settings.TerrainDistance = terrainDistance.Value;
             DaggerfallUnity.Settings.ShadowResolutionMode = shadowResolutionMode.ScrollIndex;
             DaggerfallUnity.Settings.DungeonLightShadows = dungeonLightShadows.IsChecked;

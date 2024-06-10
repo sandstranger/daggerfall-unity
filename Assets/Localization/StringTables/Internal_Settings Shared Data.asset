@@ -147,6 +147,10 @@ MonoBehaviour:
     m_Key: ToggleRun
     m_Metadata:
       m_Items: []
+  - m_Id: 151270164983177216
+    m_Key: framerate
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
