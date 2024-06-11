@@ -1013,11 +1013,6 @@ namespace DaggerfallWorkshop.Game
 
             setBinding(KeyCode.Z, Actions.ReadyWeapon, true);
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            setBinding(KeyCode.Colon, Actions.SwingWeapon, true);
-#else
-            setBinding(KeyCode.Mouse1, Actions.SwingWeapon, true);
-#endif
             setBinding(KeyCode.Mouse1, Actions.SwingWeapon, true);
             setBinding(KeyCode.H, Actions.SwitchHand, true);
 
