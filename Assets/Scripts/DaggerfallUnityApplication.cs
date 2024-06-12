@@ -90,9 +90,6 @@ public static class DaggerfallUnityApplication
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void SubsystemInit()
     {
-#if UNITY_ANDROID && !UNITY_EDITOR
-        Permission.RequestUserPermission(Permission.ExternalStorageWrite);
-#endif
      //   RequestManageAllFilesAccess();
 #if UNITY_ANDROID && !UNITY_EDITOR
         persistentDataPath = AndroidGameFolder;
