@@ -226,7 +226,7 @@ public static class DaggerfallUnityApplication
     {
         if (Application.isPlaying && Application.installMode != ApplicationInstallMode.Editor)
         {
-//            Debug.unityLogger.logHandler = new LogHandler();
+            Debug.unityLogger.logHandler = new LogHandler();
         }
     }
 }

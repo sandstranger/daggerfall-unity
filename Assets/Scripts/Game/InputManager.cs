@@ -1018,7 +1018,6 @@ namespace DaggerfallWorkshop.Game
 #else
             setBinding(KeyCode.Mouse1, Actions.SwingWeapon, true);
 #endif
-            setBinding(KeyCode.Mouse1, Actions.SwingWeapon, true);
             setBinding(KeyCode.H, Actions.SwitchHand, true);
 
             setBinding(KeyCode.I, Actions.Status, true);

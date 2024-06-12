@@ -31,6 +31,7 @@ namespace DaggerfallWorkshop.Game
 #if UNITY_ANDROID && !UNITY_EDITOR
             DaggerfallUnityApplication.CreateAndroidGameFolder();
             if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+            {
 #endif
             _maxFpsInputFIeld.text = DaggerfallUnity.Settings.TargetFrameRate.ToString();
             _maxFpsInputFIeld.onValueChanged.AddListener(_viewController.ChangeFps);
