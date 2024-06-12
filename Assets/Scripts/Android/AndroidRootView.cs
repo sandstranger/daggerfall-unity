@@ -1,6 +1,8 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
+#if UNITY_ANDROID && !UNITY_EDITOR
+using UnityEngine.Android;
+#endif
 using UnityEngine.UI;
 
 namespace DaggerfallWorkshop.Game
@@ -26,9 +28,15 @@ namespace DaggerfallWorkshop.Game
 
         private void Start()
         {
-            _maxFpsInputFIeld.onValueChanged.AddListener(_viewController.ChangeFps);
+#if UNITY_ANDROID && !UNITY_EDITOR
+            DaggerfallUnityApplication.CreateAndroidGameFolder();
+            if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+#endif
             _maxFpsInputFIeld.text = DaggerfallUnity.Settings.TargetFrameRate.ToString();
-
+            _maxFpsInputFIeld.onValueChanged.AddListener(_viewController.ChangeFps);
+#if UNITY_ANDROID && !UNITY_EDITOR
+            }
+#endif
             _hideControlsToggle.isOn = ScreenControls.HideControls;
 
             _hideControlsToggle.onValueChanged.AddListener(hideControls =>

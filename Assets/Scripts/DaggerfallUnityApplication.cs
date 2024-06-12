@@ -14,6 +14,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Android;
 
 public static class DaggerfallUnityApplication
 {
@@ -57,6 +58,14 @@ public static class DaggerfallUnityApplication
         }
     }
 
+    public static void CreateAndroidGameFolder()
+    {
+        if (!Directory.Exists(AndroidGameFolder))
+        {
+            Directory.CreateDirectory(AndroidGameFolder);
+        }
+    }
+
     private static void InitializePersistentPath()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -81,12 +90,11 @@ public static class DaggerfallUnityApplication
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void SubsystemInit()
     {
+#if UNITY_ANDROID && !UNITY_EDITOR
+        Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+#endif
      //   RequestManageAllFilesAccess();
 #if UNITY_ANDROID && !UNITY_EDITOR
-        if (!Directory.Exists(AndroidGameFolder))
-        {
-            Directory.CreateDirectory(AndroidGameFolder);
-        }
         persistentDataPath = AndroidGameFolder;
 #else
         if (persistentDataPath == null)
@@ -218,7 +226,7 @@ public static class DaggerfallUnityApplication
     {
         if (Application.isPlaying && Application.installMode != ApplicationInstallMode.Editor)
         {
-            Debug.unityLogger.logHandler = new LogHandler();
+//            Debug.unityLogger.logHandler = new LogHandler();
         }
     }
 }
