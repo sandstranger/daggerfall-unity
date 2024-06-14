@@ -58,7 +58,8 @@ namespace DaggerfallWorkshop.Game.Utility
                 Debug.LogError($"Failed to build {assemblyPath}.");
                 return false;
             }
-            File.Move(assemblyPath, assemblyPath + ".bytes");
+            File.Copy(assemblyPath, assemblyPath + ".bytes", true);
+            File.Delete(assemblyPath);
             return true;
         }
 
