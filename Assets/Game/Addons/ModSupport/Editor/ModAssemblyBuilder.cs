@@ -31,7 +31,7 @@ namespace DaggerfallWorkshop.Game.Utility
             var assemblyBuilder = new AssemblyBuilder(assemblyPath, scriptPaths)
             {
                 referencesOptions = ReferencesOptions.UseEngineModules,
-                buildTargetGroup = BuildTargetGroup.Standalone,
+                buildTargetGroup = BuildTargetGroup.Android,
                 additionalReferences = GetAdditionalReferences()
             };
 
@@ -58,7 +58,7 @@ namespace DaggerfallWorkshop.Game.Utility
                 Debug.LogError($"Failed to build {assemblyPath}.");
                 return false;
             }
-
+            File.Move(assemblyPath, assemblyPath + ".bytes");
             return true;
         }
 

@@ -602,10 +602,11 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
 
                 if (scriptPaths.Count > 0)
                 {
-                    string assemblyPath = Path.Combine(GetTempModDirPath(), fileName.Replace("dfmod", "dll.bytes"));
+                    string assemblyPath = Path.Combine(GetTempModDirPath(), fileName.Replace("dfmod", "dll"));
 
                     if (!ModAssemblyBuilder.Compile(assemblyPath, scriptPaths.ToArray()))
                         return false;
+                    assemblyPath += ".bytes";
 
                     string outputAssetPath = assemblyPath.Substring(assemblyPath.LastIndexOf("Assets"));
                     AssetDatabase.ImportAsset(outputAssetPath);
