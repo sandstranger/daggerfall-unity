@@ -17,7 +17,7 @@ namespace DaggerfallWorkshop
     public static class DaggerfallGC
     {
         // Min time between two unused assets collections
-        private const float uuaThrottleDelay = 180f;
+        private const float uuaThrottleDelay = 60f;
 
         private static float uuaTimer = Time.realtimeSinceStartup;
 
