@@ -713,12 +713,9 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
             {
                 string destFile = Path.Combine(modsFolderPath, Path.GetFileName(file));
                 if (File.Exists(destFile))
-                    Debug.LogWarning($"DFMod file already exists: {destFile}");
-                else
-                {
-                    File.Copy(file, destFile);
-                    File.Delete(file);
-                }
+                    Debug.LogWarning($"DFMod file already exists: {destFile}. Overwriting it!");
+                File.Copy(file, destFile, true);
+                File.Delete(file);
             }
             Directory.Delete(cachePath, true);
         }
@@ -727,9 +724,8 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
             // Copy .dfmod to mods folder
             string destFilePath = Path.Combine(modsFolderPath, Path.GetFileName(filePath));
             if (File.Exists(destFilePath))
-                Console.WriteLine($"File already exists: {destFilePath}");
-            else
-                File.Copy(filePath, destFilePath);
+                Debug.LogWarning($"File already exists: {destFilePath}. Overwriting it!");
+            File.Copy(filePath, destFilePath, true);
         }
         RefreshButton_OnMouseClick(null, Vector2.zero);
     }
