@@ -1601,7 +1601,7 @@ namespace DaggerfallWorkshop.Game
         void UpdateLook()
         {
             // Assign mouse
-            bool mouseLookAllowed = !TouchscreenInputManager.IsTouchscreenActive || Input.touchCount == 0;
+            bool mouseLookAllowed = !TouchscreenInputManager.IsTouchscreenActive || Input.touchCount == 0 && !Application.isEditor || VirtualJoystick.IsMouseLooking;
             mouseLookX = keyboardLookX != 0 ? keyboardLookX : mouseLookAllowed ? mouseX : 0;
             mouseLookY = keyboardLookY != 0 ? keyboardLookY : mouseLookAllowed ? mouseY : 0;
 

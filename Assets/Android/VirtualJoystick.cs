@@ -25,6 +25,10 @@ namespace DaggerfallWorkshop.Game
         public InputManager.AxisActions horizontalAxisAction = InputManager.AxisActions.MovementHorizontal;
         public InputManager.AxisActions verticalAxisAction = InputManager.AxisActions.MovementVertical;
         public Vector2 deadzone = Vector2.zero;
+        public bool isInMouseLookMode = false;
+
+        public static bool IsMouseLooking { get { return joysticksThatAreCurrentlyMouselooking.Count > 0; } }
+        private static List<string> joysticksThatAreCurrentlyMouselooking = new List<string>();
 
         private Vector2 inputVector;
         private Vector2 touchStartPos;
@@ -63,11 +67,12 @@ namespace DaggerfallWorkshop.Game
             {
                 background.localPosition = backgroundPos;
             }
-
             knob.position = background.position;
             SetJoystickVisibility(true);
             isTouching = true;
             OnDrag(eventData);
+            if (isInMouseLookMode)
+                joysticksThatAreCurrentlyMouselooking.Add(gameObject.name);
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -76,14 +81,14 @@ namespace DaggerfallWorkshop.Game
             inputVector = Vector2.zero;
             UpdateVirtualAxes(Vector2.zero);
             isTouching = false;
+            joysticksThatAreCurrentlyMouselooking.Remove(gameObject.name);
         }
-        private float lastDragTime = 0;
+
         public void OnDrag(PointerEventData eventData)
         {
             if (!isTouching)
                 return;
 
-            lastDragTime = Time.time;
             Vector2 direction = eventData.position - touchStartPos;
             inputVector = Vector2.ClampMagnitude(direction / joystickRadius, 1f);
             Vector2 knobPosScreenSpace = touchStartPos + inputVector * joystickRadius;
@@ -98,14 +103,17 @@ namespace DaggerfallWorkshop.Game
 
         private void UpdateVirtualAxes(Vector2 inputVec)
         {
+            if (isInMouseLookMode)
+                return;
+
             TouchscreenInputManager.SetAxis(horizontalAxisAction, inputVec.x);
             TouchscreenInputManager.SetAxis(verticalAxisAction, inputVec.y);
         }
 
         private void SetJoystickVisibility(bool isVisible)
         {
-            background.gameObject.SetActive(isVisible);
-            knob.gameObject.SetActive(isVisible);
+            background.gameObject.SetActive(isVisible && !isInMouseLookMode);
+            knob.gameObject.SetActive(isVisible && !isInMouseLookMode);
         }
     }
 }

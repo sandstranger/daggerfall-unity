@@ -33,6 +33,16 @@ namespace DaggerfallWorkshop.Game
             string key = "IsTouchscreenButtonEnabled_" + buttonName;
             PlayerPrefs.DeleteKey(key);
         }
+        private bool IsLeftJoystickEnabled
+        {
+            get { return PlayerPrefs.GetInt("IsTouchscreenButtonEnabled_LeftJoystick", 1) != 0; }
+            set { PlayerPrefs.SetInt("IsTouchscreenButtonEnabled_LeftJoystick", value ? 1 : 0); }
+        }
+        private bool IsRightJoystickEnabled
+        {
+            get { return PlayerPrefs.GetInt("IsTouchscreenButtonEnabled_RightJoystick", 1) != 0; }
+            set { PlayerPrefs.SetInt("IsTouchscreenButtonEnabled_RightJoystick", value ? 1 : 0); }
+        }
         #endregion
 
         #region Singleton
@@ -54,6 +64,8 @@ namespace DaggerfallWorkshop.Game
         [SerializeField] private Button disableCurrentlyEditingButtonButton;
         [SerializeField] private TMPro.TMP_Dropdown enableNewButtonDropdown;
         [SerializeField] private List<TouchscreenButton> allButtons = new List<TouchscreenButton>();
+        [SerializeField] private Toggle leftJoystickToggle, rightJoystickToggle;
+        [SerializeField] private VirtualJoystick leftJoystick, rightJoystick;
         private Dictionary<string, bool> allButtonDefaultValues = new Dictionary<string, bool>();
 
         private bool hasShownPopup = false;
@@ -67,8 +79,13 @@ namespace DaggerfallWorkshop.Game
                 allButtonDefaultValues[button.gameObject.name] = button.gameObject.activeSelf;
             UpdateAllButtonsEnabledStatus();
 
+            leftJoystick.isInMouseLookMode = !IsLeftJoystickEnabled;
+            rightJoystick.isInMouseLookMode = !IsRightJoystickEnabled;
+
             disableCurrentlyEditingButtonButton.onClick.AddListener(DisableCurrentlyEditingButton);
             enableNewButtonDropdown.onValueChanged.AddListener(EnableNewButtonFromDropdown);
+            leftJoystickToggle.onValueChanged.AddListener(OnLeftJoystickToggleValueChanged);
+            rightJoystickToggle.onValueChanged.AddListener(OnRightJoystickToggleValueChanged);
         }
         private void Start()
         {
@@ -78,10 +95,6 @@ namespace DaggerfallWorkshop.Game
         {
             if (TouchscreenInputManager.Instance)
                 TouchscreenInputManager.Instance.onResetButtonTransformsToDefaultValues -= ResetAllButtonsToDefault;
-        }
-        private void Update()
-        {
-            disableCurrentlyEditingButtonButton.gameObject.SetActive(TouchscreenInputManager.Instance.CurrentlyEditingButton != null);
         }
         /// <summary>
         /// Deletes all saved enabled/disabled statuses for buttons.
@@ -154,6 +167,15 @@ namespace DaggerfallWorkshop.Game
                     "button? You can add it back in again with the 'Add Button' dropdown.", onConfirmationAction, null, "Yes, remove the button");
             hasShownPopup = true;
         }
-
+        private void OnLeftJoystickToggleValueChanged(bool newVal)
+        {
+            leftJoystick.isInMouseLookMode = !newVal;
+            IsLeftJoystickEnabled = newVal;
+        }
+        private void OnRightJoystickToggleValueChanged(bool newVal)
+        {
+            rightJoystick.isInMouseLookMode = !newVal;
+            IsRightJoystickEnabled = newVal;
+        }
     }
 }

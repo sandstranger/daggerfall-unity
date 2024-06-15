@@ -21,18 +21,18 @@ namespace DaggerfallWorkshop.Game
         public static TouchscreenInputManager Instance { get; private set; }
 
         #region monobehaviour
+        [SerializeField] private Camera renderCamera;
         [SerializeField] private Canvas canvas;
         [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private UnityUIPopup confirmChangePopup;
         [SerializeField] private Canvas editControlsCanvas;
-        [SerializeField] private TMPro.TMP_Dropdown editControlsDropdown;
         [SerializeField] private Canvas joystickCanvas;
         [SerializeField] private Canvas buttonsCanvas;
-        [SerializeField] private UnityUIPopup confirmChangePopup;
-        [SerializeField] private Camera renderCamera;
-        [SerializeField] private TouchscreenButton editTouchscreenControlsButton;
-        [SerializeField] private Button resetButtonTransformsButton;
-        [SerializeField] private Button resetButtonMappingsButton;
+        [SerializeField] private Canvas selectedButtonOptionsPanel;
         [SerializeField] private Button editControlsBackgroundButton;
+        [SerializeField] private TMPro.TMP_Dropdown editButtonMappingDropdown;
+        [SerializeField] private TouchscreenButton editTouchscreenControlsButton;
+        [SerializeField] private Button resetButtonTransformsButton, resetButtonMappingsButton;
         [SerializeField] private Slider alphaSlider;
         [SerializeField] private bool debugInEditor = false;
 
@@ -69,6 +69,7 @@ namespace DaggerfallWorkshop.Game
         private void Setup()
         {
             editControlsCanvas.enabled = false;
+            selectedButtonOptionsPanel.enabled = false;
 
             alphaSlider.maxValue = 1;
             alphaSlider.minValue = 0.15f;
@@ -86,13 +87,12 @@ namespace DaggerfallWorkshop.Game
             }
 
             // edit controls canvas setup
-            editControlsDropdown.ClearOptions();
+            editButtonMappingDropdown.ClearOptions();
             List<string> options = new List<string>();
             for (int i = 0; i <= (int)InputManager.Actions.Unknown; ++i)
                 options.Add(((InputManager.Actions)i).ToString());
-            editControlsDropdown.AddOptions(options);
-            editControlsDropdown.gameObject.SetActive(false);
-            editControlsDropdown.onValueChanged.AddListener(OnEditControlsDropdownValueChanged);
+            editButtonMappingDropdown.AddOptions(options);
+            editButtonMappingDropdown.onValueChanged.AddListener(OnEditControlsDropdownValueChanged);
             editControlsBackgroundButton.gameObject.SetActive(false);
 
             editTouchscreenControlsButton.onClick.AddListener(OnEditTouchscreenControlsButtonClicked);
@@ -101,7 +101,6 @@ namespace DaggerfallWorkshop.Game
             editControlsBackgroundButton.onClick.AddListener(OnEditControlsBackgroundClicked);
             alphaSlider.onValueChanged.AddListener(OnAlphaSliderValueChanged);
         }
-
         private void Update()
         {
             _isInDaggerfallGUI = !IsEditingControls && GameManager.IsGamePaused;
@@ -133,14 +132,14 @@ namespace DaggerfallWorkshop.Game
             {
                 StopEditingCurrentButton();
             }
-            editControlsDropdown.gameObject.SetActive(true);
-            editControlsDropdown.value = (int)touchscreenButton.myAction;
+            selectedButtonOptionsPanel.enabled = true;
+            editButtonMappingDropdown.value = (int)touchscreenButton.myAction;
             currentlyEditingButton = touchscreenButton;
             onCurrentlyEditingButtonChanged?.Invoke(touchscreenButton);
         }
         private void StopEditingCurrentButton()
         {
-            editControlsDropdown.gameObject.SetActive(false);
+            selectedButtonOptionsPanel.enabled = false;
             currentlyEditingButton = null;
             onCurrentlyEditingButtonChanged?.Invoke(null);
         }
