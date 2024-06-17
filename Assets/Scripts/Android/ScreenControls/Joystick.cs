@@ -1,13 +1,9 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 namespace DaggerfallWorkshop.Game
 {
     sealed class Joystick : MonoBehaviour
     {
-        [SerializeField]
-        private ButtonPositionHelper _positionHelper;
         [SerializeField]
         private zFrame.UI.Joystick _joystick;
         [SerializeField]
@@ -17,7 +13,8 @@ namespace DaggerfallWorkshop.Game
 
         private void Awake()
         {
-            _positionHelper.OnRepositionFinished += () => _joystick.maxRadius = _joystickKnob.rect.width;
+            var positionHelper = GetComponent<ButtonPositionHelper>();
+            positionHelper.OnRepositionFinished += () => _joystick.maxRadius = _joystickKnob.rect.width;
         }
 
         private void Start()
