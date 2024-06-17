@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace DaggerfallWorkshop.Game
 {
     [RequireComponent(typeof(Image))]
-    sealed class LongPressButton : MonoBehaviour, IPointerDownHandler, IPointerExitHandler
+    sealed class LongPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         [SerializeField]
         private InputManager.Actions _keyEvent;
@@ -15,7 +15,7 @@ namespace DaggerfallWorkshop.Game
             ScreenControls.SetKey(InputManager.Instance.GetBinding(_keyEvent), true);
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public void OnPointerUp(PointerEventData eventData)
         {
             ScreenControls.SetKey(InputManager.Instance.GetBinding(_keyEvent), false);
         }
