@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Gavin Clayton (interkarma@dfworkshop.net)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -406,7 +406,7 @@ namespace DaggerfallWorkshop
             RetroModeAspectCorrection = GetInt(sectionVideo, "RetroModeAspectCorrection", 0, 2);
             PalettizationLUTShift = GetInt(sectionVideo, "PalettizationLUTShift");
             VSync = GetBool(sectionVideo, "VSync");
-            TargetFrameRate = GetInt(sectionVideo, "TargetFrameRate", 0, 300);
+            TargetFrameRate = GetInt(sectionVideo, "TargetFrameRate", 60, 300);
             Fullscreen = GetBool(sectionVideo, "Fullscreen");
             ExclusiveFullscreen = GetBool(sectionVideo, "ExclusiveFullscreen");
             RunInBackground = GetBool(sectionVideo, "RunInBackground");
@@ -484,7 +484,7 @@ namespace DaggerfallWorkshop
             EnableEnhancedItemLists = GetBool(sectionGUI, "EnableEnhancedItemLists");
             EnableModernConversationStyleInTalkWindow = GetBool(sectionGUI, "EnableModernConversationStyleInTalkWindow");
             IconsPositioningScheme = GetString(sectionGUI, "IconsPositioningScheme");
-            HelmAndShieldMaterialDisplay = GetInt(sectionGUI, "HelmAndShieldMaterialDisplay", 0, 3);            
+            HelmAndShieldMaterialDisplay = GetInt(sectionGUI, "HelmAndShieldMaterialDisplay", 0, 3);
             ShopQualityPresentation = GetInt(sectionGUI, "ShopQualityPresentation", 0, 2);
             ShopQualityHUDDelay = GetInt(sectionGUI, "ShopQualityHUDDelay", 1, 10);
             ShowQuestJournalClocksAsCountdown = GetBool(sectionGUI, "ShowQuestJournalClocksAsCountdown");
@@ -536,7 +536,7 @@ namespace DaggerfallWorkshop
             AutomapNumberOfDungeons = GetInt(sectionMap, "AutomapNumberOfDungeons", 0, 100);
             AutomapDisableMicroMap = GetBool(sectionMap, "AutomapDisableMicroMap");
             AutomapRememberSliceLevel = GetBool(sectionMap, "AutomapRememberSliceLevel");
-            AutomapAlwaysMaxOutSliceLevel = GetBool(sectionMap, "AutomapAlwaysMaxOutSliceLevel");            
+            AutomapAlwaysMaxOutSliceLevel = GetBool(sectionMap, "AutomapAlwaysMaxOutSliceLevel");
             ExteriorMapDefaultZoomLevel = GetFloat(sectionMap, "ExteriorMapDefaultZoomLevel", 4, 31);
             ExteriorMapResetZoomLevelOnNewLocation = GetBool(sectionMap, "ExteriorMapResetZoomLevelOnNewLocation");
             AutomapTempleColor = GetColor(sectionMap, "AutomapTempleColor", DaggerfallUI.DaggerfallDefaultTempleAutomapColor);
