@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using PlayerPrefs = DaggerfallWorkshop.Game.PlayerPrefsExtensions;
 
 namespace DaggerfallWorkshop.Game
@@ -20,6 +21,8 @@ namespace DaggerfallWorkshop.Game
         private string _defaultAlphaKey;
 
         public string ButtonId => _buttonId;
+
+        public event Action OnRepositionFinished;
 
         public Vector3 Position
         {
@@ -76,6 +79,8 @@ namespace DaggerfallWorkshop.Game
 
             float alpha = PlayerPrefs.GetFloat(_alphaKey, _canvasGroup.alpha);
             _canvasGroup.alpha = alpha;
+
+            OnRepositionFinished?.Invoke();
         }
 
         public void Reset()
