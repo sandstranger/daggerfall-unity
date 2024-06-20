@@ -99,6 +99,11 @@ namespace DaggerfallWorkshop.Game
             },
             new Resolution()
             {
+                width = (int)(Screen.width / 2.5),
+                height = (int)(Screen.height / 2.5)
+            },
+            new Resolution()
+            {
                 width = Screen.width / 2,
                 height = Screen.height / 2
             },
@@ -106,6 +111,21 @@ namespace DaggerfallWorkshop.Game
             {
                 width = (int)(Screen.width / 1.5),
                 height = (int)(Screen.height / 1.5)
+            },
+            new Resolution()
+            {
+                width = (int)(Screen.width / 1.4),
+                height = (int)(Screen.height / 1.4)
+            },
+            new Resolution()
+            {
+                width = (int)(Screen.width / 1.3),
+                height = (int)(Screen.height / 1.3)
+            },
+            new Resolution()
+            {
+                width = (int)(Screen.width / 1.2),
+                height = (int)(Screen.height / 1.2)
             },
             new Resolution()
             {
