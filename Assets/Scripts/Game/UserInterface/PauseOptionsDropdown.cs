@@ -64,7 +64,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
             openMenuIcon = Resources.Load<Texture2D>("hamburger_button");
 
             // Drop down button
-            dropDownToggleButton = DaggerfallUI.AddButton(new Rect(50, 0, 27, 27), this);
+            dropDownToggleButton = DaggerfallUI.AddButton(new Rect(100, 20, 27, 27), this);
             dropDownToggleButton.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);//0.5f);
             dropDownToggleButton.OnMouseClick += DropdownButton_OnMouseClick;
             dropDownToggleButton.Hotkey = DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.OptionsDropdown);
