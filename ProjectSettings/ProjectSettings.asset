@@ -899,7 +899,8 @@ PlayerSettings:
     WebGL: 1
     Windows Store Apps: 2
     iPhone: 0
-  il2cppCompilerConfiguration: {}
+  il2cppCompilerConfiguration:
+    Android: 2
   il2cppCodeGeneration: {}
   managedStrippingLevel:
     EmbeddedLinux: 1
