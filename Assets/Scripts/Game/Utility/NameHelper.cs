@@ -378,7 +378,7 @@ namespace DaggerfallWorkshop.Game.Utility
                 string nameGenText = nameGenAsset.text;
 
                 // Look for a replacement NameGen file from StreamingAssets/Text
-#if UNITY_EDITOR && !UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
                 string streamingPath = Path.Combine(DaggerfallUnityApplication.PersistentDataPath, textString, nameGenFilename + txtExt);
 #else
                 string streamingPath = Path.Combine(Application.streamingAssetsPath, textString, nameGenFilename + txtExt);
