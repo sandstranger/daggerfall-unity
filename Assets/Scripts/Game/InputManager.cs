@@ -1889,8 +1889,8 @@ namespace DaggerfallWorkshop.Game
         {
             if (!_hideControls)
             {
-                float h = ScreenControls.GetAxis(AxisActions.MovementHorizontal);
-                float v = ScreenControls.GetAxis(AxisActions.MovementVertical);
+                float h = ScreenControls.JoystickMovement.x;
+                float v = ScreenControls.JoystickMovement.y;
 
                 if (v != 0 || h != 0)
                 {
@@ -1913,12 +1913,12 @@ namespace DaggerfallWorkshop.Game
                         currentActions.Add(Actions.MoveBackwards);
                     }
 
-                    if (h != 0)
+                    if (!Mathf.Approximately(h, 0))
                     {
                         ApplyHorizontalForce(h);
                     }
 
-                    if (v != 0)
+                    if (!Mathf.Approximately(v,0))
                     {
                         ApplyVerticalForce(v);
                     }

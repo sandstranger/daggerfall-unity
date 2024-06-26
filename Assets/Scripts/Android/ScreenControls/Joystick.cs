@@ -19,12 +19,7 @@ namespace DaggerfallWorkshop.Game
 
         private void Start()
         {
-            _joystick.OnValueChanged.AddListener(v =>
-            {
-                var finalForce = v * _forceMultiplier;
-                ScreenControls.SetAxis(InputManager.AxisActions.MovementHorizontal, finalForce.x);
-                ScreenControls.SetAxis(InputManager.AxisActions.MovementVertical, finalForce.y);
-            });
+            _joystick.OnValueChanged.AddListener(v => ScreenControls.JoystickMovement = v * _forceMultiplier);
         }
     }
 }
