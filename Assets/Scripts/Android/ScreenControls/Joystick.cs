@@ -21,12 +21,9 @@ namespace DaggerfallWorkshop.Game
         {
             _joystick.OnValueChanged.AddListener(v =>
             {
-                if (v.magnitude != 0)
-                {
-                    var finalForce = v * _forceMultiplier;
-                    InputManager.Instance.ApplyHorizontalForce(finalForce.x);
-                    InputManager.Instance.ApplyVerticalForce(finalForce.y);
-                }
+                var finalForce = v * _forceMultiplier;
+                ScreenControls.SetAxis(InputManager.AxisActions.MovementHorizontal, finalForce.x);
+                ScreenControls.SetAxis(InputManager.AxisActions.MovementVertical, finalForce.y);
             });
         }
     }

@@ -34,6 +34,7 @@ namespace DaggerfallWorkshop.Game
         [SerializeField] private ConsoleUI _console;
         [SerializeField] private Button _enterBtn;
 
+        private static readonly Dictionary<InputManager.AxisActions, float> _axes = new Dictionary<InputManager.AxisActions, float>();
         private static readonly Dictionary<KeyCode, bool> _keys = new Dictionary<KeyCode, bool>();
         private RenderTexture _renderTexture;
         private bool _hideControls = false;
@@ -57,6 +58,15 @@ namespace DaggerfallWorkshop.Game
             _enterBtn.onClick.AddListener(() => EnterPressed = true);
         }
 
+        public static void SetAxis(InputManager.AxisActions action, float value)
+        {
+            _axes[action] = value;
+        }
+
+        public static float GetAxis(InputManager.AxisActions action)
+        {
+            return _axes.TryGetValue(action, out var axis ) ? axis : 0;
+        }
 
         public static void SetKey(KeyCode keyCode, bool value)
         {

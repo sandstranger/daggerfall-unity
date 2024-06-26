@@ -140,6 +140,7 @@ namespace DaggerfallWorkshop.Game
         Rect controllerCursorRect;
 
         bool pauseController = false;
+        private bool _hideControls = false;
 
         #endregion
 
@@ -424,6 +425,7 @@ namespace DaggerfallWorkshop.Game
 
         void Start()
         {
+            _hideControls = ScreenControls.HideControls;
             getKeyMethod = (k) => heldKeyCounter > 0 && ContainsKeyCode(heldKeys, k, true);
             getKeyDownMethod = (k) => heldKeyCounter > 0 && (previousKeyCounter <= 0 || !ContainsKeyCode(previousKeys, k, false)) && ContainsKeyCode(heldKeys, k, true);
             getKeyUpMethod = (k) => previousKeyCounter > 0 && ContainsKeyCode(previousKeys, k, false) && (heldKeyCounter <= 0 || !ContainsKeyCode(heldKeys, k, true));
@@ -1885,8 +1887,48 @@ namespace DaggerfallWorkshop.Game
         // processes player movement via joystick
         void FindInputAxisActions()
         {
+            if (!_hideControls)
+            {
+                float h = ScreenControls.GetAxis(AxisActions.MovementHorizontal);
+                float v = ScreenControls.GetAxis(AxisActions.MovementVertical);
 
-            if (!EnableController || String.IsNullOrEmpty(movementAxisBindingCache[0]) || String.IsNullOrEmpty(movementAxisBindingCache[1]))
+                if (v != 0 || h != 0)
+                {
+                    if (h > 0)
+                    {
+                        currentActions.Add(Actions.MoveRight);
+                    }
+                    else if (h < 0)
+                    {
+                        currentActions.Add(Actions.MoveLeft);
+                    }
+
+                    if (v > 0)
+                    {
+                        currentActions.Add(Actions.MoveForwards);
+                    }
+                    else if (v < 0)
+                    {
+                        ToggleAutorun = false;
+                        currentActions.Add(Actions.MoveBackwards);
+                    }
+                    
+                    if (h != 0)
+                    {
+                        ApplyHorizontalForce(h);
+                    }
+
+                    if (v != 0)
+                    {
+                        ApplyVerticalForce(v);
+                    }
+
+                    return;
+                }
+            }
+
+            if (!EnableController || String.IsNullOrEmpty(movementAxisBindingCache[0]) ||
+                String.IsNullOrEmpty(movementAxisBindingCache[1]))
                 return;
 
             float horiz = Input.GetAxis(movementAxisBindingCache[0]);
