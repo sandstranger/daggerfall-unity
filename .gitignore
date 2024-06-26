@@ -49,3 +49,5 @@ sysinfo.txt
 .DS_Store
 
 mono_crash.*
+
+.fake
