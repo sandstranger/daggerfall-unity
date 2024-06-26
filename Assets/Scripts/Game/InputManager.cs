@@ -1912,7 +1912,7 @@ namespace DaggerfallWorkshop.Game
                         ToggleAutorun = false;
                         currentActions.Add(Actions.MoveBackwards);
                     }
-                    
+
                     if (h != 0)
                     {
                         ApplyHorizontalForce(h);
@@ -1923,8 +1923,8 @@ namespace DaggerfallWorkshop.Game
                         ApplyVerticalForce(v);
                     }
 
-                    return;
                 }
+                return;
             }
 
             if (!EnableController || String.IsNullOrEmpty(movementAxisBindingCache[0]) ||
