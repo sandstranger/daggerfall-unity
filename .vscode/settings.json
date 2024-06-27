@@ -135,7 +135,7 @@
             }
         ]
     },
-    "csharp.semanticHighlighting.enabled": false,
+    "csharp.semanticHighlighting.enabled": true,
     "dotnet.defaultSolution": "dagerfall-unity.sln",
     "dotnet.server.useOmnisharp": true,
     "dotnet.preferCSharpExtension": true

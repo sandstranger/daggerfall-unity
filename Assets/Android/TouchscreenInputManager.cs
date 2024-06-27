@@ -13,6 +13,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
+using System.Collections;
 
 namespace DaggerfallWorkshop.Game
 {
@@ -34,6 +35,7 @@ namespace DaggerfallWorkshop.Game
         [SerializeField] private TouchscreenButton editTouchscreenControlsButton;
         [SerializeField] private Button resetButtonTransformsButton, resetButtonMappingsButton;
         [SerializeField] private Slider alphaSlider;
+        [SerializeField] private Toggle joystickTapsActivateCenterObjectToggle;
         [SerializeField] private bool debugInEditor = false;
 
 
@@ -47,7 +49,6 @@ namespace DaggerfallWorkshop.Game
         public event System.Action onResetButtonActionsToDefaultValues;
         public event System.Action onResetButtonTransformsToDefaultValues;
 
-        private float startAlpha;
         private RenderTexture renderTex;
         private TouchscreenButton currentlyEditingButton;
 
@@ -71,9 +72,6 @@ namespace DaggerfallWorkshop.Game
             editControlsCanvas.enabled = false;
             selectedButtonOptionsPanel.enabled = false;
 
-            alphaSlider.maxValue = 1;
-            alphaSlider.minValue = 0.15f;
-            canvasGroup.alpha = alphaSlider.value = SavedAlpha;
             renderCamera.aspect = Camera.main.aspect;
             renderTex = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
             renderTex.isPowerOfTwo = false;
@@ -95,11 +93,18 @@ namespace DaggerfallWorkshop.Game
             editButtonMappingDropdown.onValueChanged.AddListener(OnEditControlsDropdownValueChanged);
             editControlsBackgroundButton.gameObject.SetActive(false);
 
+            alphaSlider.maxValue = 1;
+            alphaSlider.minValue = 0.15f;
+            canvasGroup.alpha = alphaSlider.value = SavedAlpha;
+
+            joystickTapsActivateCenterObjectToggle.isOn = VirtualJoystick.JoystickTapsShouldActivateCenterObject;
+
             editTouchscreenControlsButton.onClick.AddListener(OnEditTouchscreenControlsButtonClicked);
             resetButtonMappingsButton.onClick.AddListener(OnResetButtonMappingsButtonClicked);
             resetButtonTransformsButton.onClick.AddListener(OnResetButtonTransformsButtonClicked);
             editControlsBackgroundButton.onClick.AddListener(OnEditControlsBackgroundClicked);
             alphaSlider.onValueChanged.AddListener(OnAlphaSliderValueChanged);
+            joystickTapsActivateCenterObjectToggle.onValueChanged.AddListener(OnJoystickTapsToggleChanged);
         }
         private void Update()
         {
@@ -181,6 +186,9 @@ namespace DaggerfallWorkshop.Game
             SavedAlpha = newVal;
             canvasGroup.alpha = newVal;
         }
+        private void OnJoystickTapsToggleChanged(bool val){
+            VirtualJoystick.JoystickTapsShouldActivateCenterObject = val;
+        }
         #endregion
 
         #region statics
@@ -212,7 +220,19 @@ namespace DaggerfallWorkshop.Game
                 return false;
             return keys.ContainsKey((int)k) && keys[(int)k];
         }
-
+        /// <summary>
+        /// Triggers the given Daggerfall action by setting its bound key held then unheld.
+        /// </summary>
+        public static void TriggerAction(InputManager.Actions action){
+            Instance.StartCoroutine(TriggerActionCoroutine(action));
+        }
+        private static IEnumerator TriggerActionCoroutine(InputManager.Actions action){
+            yield return new WaitForEndOfFrame();
+            KeyCode actionKey = InputManager.Instance.GetBinding(action);
+            SetKey(actionKey, true);
+            yield return new WaitForEndOfFrame();
+            SetKey(actionKey, false);
+        }
         public static bool GetPollKey(KeyCode k)
         {
             if (!isMobilePlatform)

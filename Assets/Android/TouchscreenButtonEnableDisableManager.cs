@@ -81,6 +81,8 @@ namespace DaggerfallWorkshop.Game
 
             leftJoystick.isInMouseLookMode = !IsLeftJoystickEnabled;
             rightJoystick.isInMouseLookMode = !IsRightJoystickEnabled;
+            leftJoystickToggle.isOn = IsLeftJoystickEnabled;
+            rightJoystickToggle.isOn = IsRightJoystickEnabled;
 
             disableCurrentlyEditingButtonButton.onClick.AddListener(DisableCurrentlyEditingButton);
             enableNewButtonDropdown.onValueChanged.AddListener(EnableNewButtonFromDropdown);

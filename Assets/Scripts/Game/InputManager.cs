@@ -105,7 +105,7 @@ namespace DaggerfallWorkshop.Game
             { (int)Actions.Status, (int)KeyCode.I },
             { (int)Actions.CharacterSheet, (int)KeyCode.F5 },
             { (int)Actions.Inventory, (int)KeyCode.F6 },
-            { (int)Actions.ActivateCenterObject, (int)KeyCode.Mouse0 },
+            { (int)Actions.ActivateCenterObject, (int)KeyCode.Mouse3 },
             { (int)Actions.ActivateCursor, (int)KeyCode.Return },
             { (int)Actions.LookUp, (int)KeyCode.Insert },
             { (int)Actions.LookDown, (int)KeyCode.Delete },

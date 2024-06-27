@@ -13,10 +13,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace DaggerfallWorkshop.Game
 {
-    public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
+    public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IDragHandler
     {
         public RectTransform background;
         public RectTransform knob;
@@ -28,8 +29,14 @@ namespace DaggerfallWorkshop.Game
         public bool isInMouseLookMode = false;
 
         public PointerEventData CurrentPointerEventData {get; private set;}
-        public Vector2 TouchStartPos{get; private set;}
+        public Vector2 TouchStartPos {get; private set;}
+        public float TouchStartTime {get; private set;}
         public static VirtualJoystick JoystickThatIsCurrentlyMouseLooking{get; private set;} = null;
+        public static bool JoystickTapsShouldActivateCenterObject 
+        {
+            get{ return PlayerPrefs.GetInt("JoystickTapsShouldActivateCenterObject", 1) == 1; }
+            set{ PlayerPrefs.SetInt("JoystickTapsShouldActivateCenterObject", value ? 1 : 0); }
+        }
 
         private Vector2 inputVector;
         private float joystickRadius;
@@ -62,6 +69,7 @@ namespace DaggerfallWorkshop.Game
                 return;
             CurrentPointerEventData = eventData;
             TouchStartPos = eventData.position;
+            TouchStartTime = Time.time;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(background.parent as RectTransform, TouchStartPos, myCam, out Vector2 backgroundPos))
             {
                 background.localPosition = backgroundPos;
@@ -73,7 +81,7 @@ namespace DaggerfallWorkshop.Game
             if (isInMouseLookMode && !JoystickThatIsCurrentlyMouseLooking)
                 JoystickThatIsCurrentlyMouseLooking = this;
         }
-
+        
         public void OnPointerUp(PointerEventData eventData)
         {
             SetJoystickVisibility(false);
@@ -114,6 +122,14 @@ namespace DaggerfallWorkshop.Game
         {
             background.gameObject.SetActive(isVisible && !isInMouseLookMode);
             knob.gameObject.SetActive(isVisible && !isInMouseLookMode);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            Vector2 deltaPos = TouchStartPos - eventData.position;
+            bool isWithinDeadzone = Mathf.Abs(deltaPos.x) < joystickRadius * 0.1f && Mathf.Abs(deltaPos.y) < joystickRadius * 0.1f;
+            if (JoystickTapsShouldActivateCenterObject && isWithinDeadzone && Time.time-TouchStartTime < .5f)
+                TouchscreenInputManager.TriggerAction(InputManager.Actions.ActivateCenterObject);
         }
     }
 }
