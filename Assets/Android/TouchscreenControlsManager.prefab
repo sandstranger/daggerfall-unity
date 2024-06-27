@@ -2919,6 +2919,7 @@ MonoBehaviour:
   horizontalAxisAction: 2
   verticalAxisAction: 3
   deadzone: {x: 0, y: 0}
+  isInMouseLookMode: 0
 --- !u!222 &4737503671774946051
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11891,6 +11892,7 @@ MonoBehaviour:
   horizontalAxisAction: 0
   verticalAxisAction: 1
   deadzone: {x: 0.12, y: 0.12}
+  isInMouseLookMode: 0
 --- !u!222 &397096260512006310
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13300,12 +13302,12 @@ PrefabInstance:
     - target: {fileID: 6930433440068948349, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -437.9
+      value: -437.90002
       objectReference: {fileID: 0}
     - target: {fileID: 6930433440068948349, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 63.00003
+      value: 98.00003
       objectReference: {fileID: 0}
     - target: {fileID: 6930433440068948349, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
@@ -16531,7 +16533,7 @@ PrefabInstance:
     - target: {fileID: 6930433440068948349, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 63
+      value: 98
       objectReference: {fileID: 0}
     - target: {fileID: 6930433440068948349, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
@@ -17176,7 +17178,7 @@ PrefabInstance:
     - target: {fileID: 4683232944436250778, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: m_VerticalAlignment
-      value: 512
+      value: 1024
       objectReference: {fileID: 0}
     - target: {fileID: 4683232944436250778, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}

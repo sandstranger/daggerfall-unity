@@ -95,9 +95,6 @@
             "url": "/Assets/Editor/.Schemas/SpellIcons.schema.json"
         }
     ],
-    "dotnet.defaultSolution": "dagerfall-unity.sln",
-    "dotnet.server.useOmnisharp": true,
-    "dotnet.preferCSharpExtension": true,
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
@@ -138,5 +135,8 @@
             }
         ]
     },
-    "csharp.semanticHighlighting.enabled": false
+    "csharp.semanticHighlighting.enabled": false,
+    "dotnet.defaultSolution": "dagerfall-unity.sln",
+    "dotnet.server.useOmnisharp": true,
+    "dotnet.preferCSharpExtension": true
 }

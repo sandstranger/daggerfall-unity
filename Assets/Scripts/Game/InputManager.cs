@@ -628,8 +628,17 @@ namespace DaggerfallWorkshop.Game
             wasPaused = false;
 
             // Collect mouse axes
-            mouseX = Input.GetAxisRaw("Mouse X");
-            mouseY = Input.GetAxisRaw("Mouse Y");
+            if (TouchscreenInputManager.IsTouchscreenActive && Input.touchCount > 0)
+            {
+                if (VirtualJoystick.JoystickThatIsCurrentlyMouseLooking){
+                    mouseX = VirtualJoystick.JoystickThatIsCurrentlyMouseLooking.CurrentPointerEventData.delta.x * .25f;
+                    mouseY = VirtualJoystick.JoystickThatIsCurrentlyMouseLooking.CurrentPointerEventData.delta.y * .25f;
+                }
+            }
+            else{
+                mouseX = Input.GetAxisRaw("Mouse X");
+                mouseY = Input.GetAxisRaw("Mouse Y");
+            }
 
             if (TouchscreenInputManager.IsTouchscreenActive)
             {
@@ -1601,7 +1610,7 @@ namespace DaggerfallWorkshop.Game
         void UpdateLook()
         {
             // Assign mouse
-            bool mouseLookAllowed = !TouchscreenInputManager.IsTouchscreenActive || Input.touchCount == 0 && !Application.isEditor || VirtualJoystick.IsMouseLooking;
+            bool mouseLookAllowed = !TouchscreenInputManager.IsTouchscreenActive || Input.touchCount == 0 && !Application.isEditor || VirtualJoystick.JoystickThatIsCurrentlyMouseLooking;
             mouseLookX = keyboardLookX != 0 ? keyboardLookX : mouseLookAllowed ? mouseX : 0;
             mouseLookY = keyboardLookY != 0 ? keyboardLookY : mouseLookAllowed ? mouseY : 0;
 

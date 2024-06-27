@@ -27,16 +27,15 @@ namespace DaggerfallWorkshop.Game
         public Vector2 deadzone = Vector2.zero;
         public bool isInMouseLookMode = false;
 
-        public static bool IsMouseLooking { get { return joysticksThatAreCurrentlyMouselooking.Count > 0; } }
-        private static List<string> joysticksThatAreCurrentlyMouselooking = new List<string>();
+        public PointerEventData CurrentPointerEventData {get; private set;}
+        public Vector2 TouchStartPos{get; private set;}
+        public static VirtualJoystick JoystickThatIsCurrentlyMouseLooking{get; private set;} = null;
 
         private Vector2 inputVector;
-        private Vector2 touchStartPos;
         private float joystickRadius;
         private bool isTouching = false;
         private Camera myCam;
         private RectTransform rootRectTF;
-        private CanvasScaler rootCanvasScaler;
 
         void Start()
         {
@@ -45,7 +44,6 @@ namespace DaggerfallWorkshop.Game
             rootRectTF = transform as RectTransform;
             while (rootRectTF.parent is RectTransform)
                 rootRectTF = rootRectTF.parent as RectTransform;
-            rootCanvasScaler = rootRectTF.GetComponent<CanvasScaler>();
 
             // set size to half of the screen area
             (transform as RectTransform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rootRectTF.rect.width / 2f);
@@ -62,8 +60,9 @@ namespace DaggerfallWorkshop.Game
         {
             if (Cursor.visible)
                 return;
-            touchStartPos = eventData.position;
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(background.parent as RectTransform, touchStartPos, myCam, out Vector2 backgroundPos))
+            CurrentPointerEventData = eventData;
+            TouchStartPos = eventData.position;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(background.parent as RectTransform, TouchStartPos, myCam, out Vector2 backgroundPos))
             {
                 background.localPosition = backgroundPos;
             }
@@ -71,8 +70,8 @@ namespace DaggerfallWorkshop.Game
             SetJoystickVisibility(true);
             isTouching = true;
             OnDrag(eventData);
-            if (isInMouseLookMode)
-                joysticksThatAreCurrentlyMouselooking.Add(gameObject.name);
+            if (isInMouseLookMode && !JoystickThatIsCurrentlyMouseLooking)
+                JoystickThatIsCurrentlyMouseLooking = this;
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -81,7 +80,8 @@ namespace DaggerfallWorkshop.Game
             inputVector = Vector2.zero;
             UpdateVirtualAxes(Vector2.zero);
             isTouching = false;
-            joysticksThatAreCurrentlyMouselooking.Remove(gameObject.name);
+            if (JoystickThatIsCurrentlyMouseLooking == this)
+                JoystickThatIsCurrentlyMouseLooking = null;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -89,9 +89,9 @@ namespace DaggerfallWorkshop.Game
             if (!isTouching)
                 return;
 
-            Vector2 direction = eventData.position - touchStartPos;
+            Vector2 direction = eventData.position - TouchStartPos;
             inputVector = Vector2.ClampMagnitude(direction / joystickRadius, 1f);
-            Vector2 knobPosScreenSpace = touchStartPos + inputVector * joystickRadius;
+            Vector2 knobPosScreenSpace = TouchStartPos + inputVector * joystickRadius;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(knob.parent as RectTransform, knobPosScreenSpace, myCam, out Vector2 knobPos))
                 knob.localPosition = knobPos;
             if (Mathf.Abs(inputVector.x) < deadzone.x)
