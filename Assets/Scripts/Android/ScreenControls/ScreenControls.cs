@@ -19,7 +19,7 @@ namespace DaggerfallWorkshop.Game
             set => PlayerPrefsExtensions.SetBool(HideControlsKey, value);
         }
 
-        public bool EnterPressed { get; private set; }
+        public static bool EnterPressed { get; private set; }
 
         public TouchCamera ButtonAttackSwing => _buttonAttackSwing;
 

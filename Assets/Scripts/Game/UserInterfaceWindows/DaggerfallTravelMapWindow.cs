@@ -429,7 +429,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             }
             else
             {
-                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || ScreenControls.Instance.EnterPressed)
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || ScreenControls.EnterPressed)
                 {
                     if (identifying)
                         OpenRegionPanel(GetPlayerRegion());

@@ -213,7 +213,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
         {
             base.Update();
 
-            if (Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter) || ScreenControls.Instance.EnterPressed)
+            if (Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter) || ScreenControls.EnterPressed)
             {
                 if (transactionType != TransactionType.None && transactionInput.Enabled)
                 {
