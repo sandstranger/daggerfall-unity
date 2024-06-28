@@ -310,9 +310,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             if (DaggerfallUI.Instance.HotkeySequenceProcessed == HotkeySequence.HotkeySequenceProcessStatus.NotFound)
             {
-                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyDown(extraProceedBinding) || ScreenControls.Instance.EnterPressed)
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyDown(extraProceedBinding) || ScreenControls.EnterPressed)
                     isNextMessageDeferred = true;
-                else if ((Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyUp(extraProceedBinding) || !ScreenControls.Instance.EnterPressed) && isNextMessageDeferred)
+                else if ((Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.KeypadEnter) || InputManager.Instance.GetKeyUp(extraProceedBinding) || !ScreenControls.EnterPressed) && isNextMessageDeferred)
                 {
                     isNextMessageDeferred = false;
                     // Special handling for message boxes with buttons
