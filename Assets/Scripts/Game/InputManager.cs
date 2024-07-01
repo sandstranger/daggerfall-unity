@@ -88,7 +88,7 @@ namespace DaggerfallWorkshop.Game
             { (int)Actions.Crouch, (int)KeyCode.C },
             { (int)Actions.Slide, (int)KeyCode.LeftControl },
             { (int)Actions.Run, (int)KeyCode.LeftShift },
-            { (int)Actions.AutoRun, (int)KeyCode.Mouse2 },
+            { (int)Actions.AutoRun, (int)KeyCode.F10 },
             { (int)Actions.ToggleRun, (int)KeyCode.F12 },
             { (int)Actions.Rest, (int)KeyCode.R },
             { (int)Actions.Transport, (int)KeyCode.T },
