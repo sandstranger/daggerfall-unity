@@ -19,6 +19,7 @@ using DaggerfallWorkshop.Game.UserInterface;
 using DaggerfallWorkshop.Game.UserInterfaceWindows;
 using DaggerfallWorkshop.Game.Utility.ModSupport;
 using DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings;
+using DaggerfallWorkshop;
 
 public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
 {
@@ -421,23 +422,15 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
 
         if (unknownDirectories.Length > 0)
         {
-            var cleanConfigMessageBox = new DaggerfallMessageBox(uiManager, this);
-            cleanConfigMessageBox.ParentPanel.BackgroundTexture = null;
-            cleanConfigMessageBox.SetText(ModManager.GetText("cleanConfigurationDir"));
-            cleanConfigMessageBox.AddButton(DaggerfallMessageBox.MessageBoxButtons.Yes);
-            cleanConfigMessageBox.AddButton(DaggerfallMessageBox.MessageBoxButtons.No, true);
-            cleanConfigMessageBox.OnButtonClick += (messageBox, messageBoxButton) =>
-            {
-                if (messageBoxButton == DaggerfallMessageBox.MessageBoxButtons.Yes)
-                {
-                    foreach (var directory in unknownDirectories)
-                        directory.Delete(true);
-                }
-
-                messageBox.CancelWindow();
+            void yesAction(){
+                foreach (var directory in unknownDirectories)
+                    directory.Delete(true);
                 moveNextStage = true;
-            };
-            uiManager.PushWindow(cleanConfigMessageBox);
+            }
+            void noAction(){
+                moveNextStage = true;
+            }
+            ShowConfirmationBox(ModManager.GetText("cleanConfigurationDir"), yesAction, noAction);
         }
         else
         {
@@ -701,6 +694,8 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
         if (!Directory.Exists(modsFolderPath))
             Directory.CreateDirectory(modsFolderPath);
 
+        bool upgradedMod = false;
+
         if (filePath.ToLower().EndsWith(".zip"))
         {
             // Extract zip and copy any .dfmod files contained to mods folder
@@ -712,8 +707,10 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
             foreach (string file in Directory.GetFiles(cachePath, "*.dfmod", SearchOption.AllDirectories))
             {
                 string destFile = Path.Combine(modsFolderPath, Path.GetFileName(file));
-                if (File.Exists(destFile))
+                if (File.Exists(destFile)){
                     Debug.LogWarning($"DFMod file already exists: {destFile}. Overwriting it!");
+                    upgradedMod = true;
+                }
                 File.Copy(file, destFile, true);
                 File.Delete(file);
             }
@@ -723,13 +720,37 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
         {
             // Copy .dfmod to mods folder
             string destFilePath = Path.Combine(modsFolderPath, Path.GetFileName(filePath));
-            if (File.Exists(destFilePath))
+            if (File.Exists(destFilePath)){
                 Debug.LogWarning($"File already exists: {destFilePath}. Overwriting it!");
+                upgradedMod = true;
+            }
             File.Copy(filePath, destFilePath, true);
         }
         RefreshButton_OnMouseClick(null, Vector2.zero);
+        if (upgradedMod){
+            ShowConfirmationBox("A mod was upgraded; this requires restarting the game. Restart now?", AndroidUtils.RestartAndroid, null);
+        }
     }
 
+    private void ShowConfirmationBox(string text, Action onSelectedYes, Action onSelectedNo)
+    {
+        var confirmationBox = new DaggerfallMessageBox(uiManager, this);
+        confirmationBox.ParentPanel.BackgroundTexture = null;
+        confirmationBox.SetText(text);
+        confirmationBox.AddButton(DaggerfallMessageBox.MessageBoxButtons.Yes);
+        confirmationBox.AddButton(DaggerfallMessageBox.MessageBoxButtons.No, true);
+        confirmationBox.OnButtonClick += (messageBox, messageBoxButton) =>
+        {
+            if (messageBoxButton == DaggerfallMessageBox.MessageBoxButtons.Yes) {
+                onSelectedYes?.Invoke();
+            }
+            else {
+                onSelectedNo?.Invoke();
+            }
+            messageBox.CancelWindow();
+        };
+        uiManager.PushWindow(confirmationBox);
+    }
     void ImportMod_OnMouseClick(BaseScreenComponent sender, Vector2 position)
     {
         Debug.Log("importing mod");
