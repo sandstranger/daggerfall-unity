@@ -17,7 +17,7 @@ using System.Collections;
 
 namespace DaggerfallWorkshop.Game
 {
-    public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IDragHandler
+    public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler
     {
         public RectTransform background;
         public RectTransform knob;
@@ -130,6 +130,17 @@ namespace DaggerfallWorkshop.Game
             bool isWithinDeadzone = Mathf.Abs(deltaPos.x) < joystickRadius * 0.1f && Mathf.Abs(deltaPos.y) < joystickRadius * 0.1f;
             if (JoystickTapsShouldActivateCenterObject && isWithinDeadzone && Time.time-TouchStartTime < .5f)
                 TouchscreenInputManager.TriggerAction(InputManager.Actions.ActivateCenterObject);
+        }
+
+        // We supposedly need this in order for OnPointerUp to be consistently called
+        // See: https://forum.unity.com/threads/onpointerup-occasionally-doesnt-fire.435230/#post-3379790
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            eventData.pointerPress = this.gameObject;
+        }
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            eventData.pointerPress = null;
         }
     }
 }
