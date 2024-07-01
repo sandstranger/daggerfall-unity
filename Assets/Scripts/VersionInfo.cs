@@ -20,5 +20,5 @@ public static class VersionInfo
     public const string DaggerfallUnityVersion = "1.1.1";
     public const string DaggerfallToolsForUnityVersion = "1.9.2";
 
-    public const string BaselineUnityVersion = "2019.4.40f1";
+    public const string BaselineUnityVersion = "2022.3.30f1";
 }
