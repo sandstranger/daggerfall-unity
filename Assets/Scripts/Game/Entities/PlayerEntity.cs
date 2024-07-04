@@ -257,7 +257,8 @@ namespace DaggerfallWorkshop.Game.Entity
         public void RemoveExpiredRentedRooms()
         {
             rentedRooms.RemoveAll(r => {
-                if (GetRemainingHours(r) < 1) {
+                int remainingHours = GetRemainingHours(r);
+                if (remainingHours < 1 || remainingHours > int.MaxValue*.8) {
                     SaveLoadManager.StateManager.RemovePermanentScene(DaggerfallInterior.GetSceneName(r.mapID, r.buildingKey));
                     return true;
                 } else

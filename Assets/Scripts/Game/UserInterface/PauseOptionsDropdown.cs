@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: jefetienne
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -46,6 +46,11 @@ namespace DaggerfallWorkshop.Game.UserInterface
         private IUserInterfaceManager uiManager;
         private VerticalScrollBar dropdownScroller;
 
+#if UNITY_ANDROID
+        int dropDownToggleButtonSize = 20;
+#else
+        int dropDownToggleButtonSize = 7;
+#endif
         #endregion
 
         #region Constructor and Setup
@@ -64,7 +69,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
             openMenuIcon = Resources.Load<Texture2D>("hamburger_button");
 
             // Drop down button
-            dropDownToggleButton = DaggerfallUI.AddButton(new Rect(100, 20, 27, 27), this);
+            dropDownToggleButton = DaggerfallUI.AddButton(new Rect(100, 20, dropDownToggleButtonSize, dropDownToggleButtonSize), this);
             dropDownToggleButton.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);//0.5f);
             dropDownToggleButton.OnMouseClick += DropdownButton_OnMouseClick;
             dropDownToggleButton.Hotkey = DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.OptionsDropdown);
@@ -116,7 +121,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
             float sx = Scale.x;
             float sy = Scale.y;
 
-            dropDownToggleButton.Size = new Vector2(7, 7) * Scale;
+            dropDownToggleButton.Size = new Vector2(dropDownToggleButtonSize, dropDownToggleButtonSize) * Scale;
 
             dropdownList.Scale = Scale;
             var height = dropdownList.HeightContent();
