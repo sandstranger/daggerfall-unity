@@ -577,6 +577,7 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
             modOutPutPath = modFilePath.Substring(0, modFilePath.LastIndexOfAny(new char[] { '\\', '/'})+1);
 
             //refresh
+            Caching.ClearCache();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 

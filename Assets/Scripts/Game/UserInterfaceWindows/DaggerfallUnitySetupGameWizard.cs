@@ -250,12 +250,17 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             browserPanel.Components.Add(versionLabel);
 
             // Add help text
+#if UNITY_ANDROID
+            findArena2Tip = GetText("findArena2TipAndroid");
+#else
             findArena2Tip = GetText("findArena2Tip");
+#endif
             pathValidated = GetText("pathValidated");
             helpLabel.Position = new Vector2(0, 150);
             helpLabel.HorizontalAlignment = HorizontalAlignment.Center;
             helpLabel.ShadowPosition = Vector2.zero;
             helpLabel.Text = findArena2Tip;
+            helpLabel.OnMouseClick += delegate{ Application.OpenURL("https://discord.gg/UDZuZpyvZe"); };
             browserPanel.Components.Add(helpLabel);
         }
 
