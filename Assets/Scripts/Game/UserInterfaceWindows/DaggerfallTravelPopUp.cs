@@ -167,7 +167,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             beginButton.Hotkey = DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.TravelBegin);
 
             exitButton = DaggerfallUI.AddButton(exitButtonRect, NativePanel);
-            exitButton.OnMouseClick += ExitButtonOnClickHandler;
+            exitButton.OnMouseUp += ExitButtonOnClickHandler;
             exitButton.Hotkey = DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.TravelExit);
             exitButton.OnKeyboardEvent += ExitButton_OnKeyboardEvent;
 

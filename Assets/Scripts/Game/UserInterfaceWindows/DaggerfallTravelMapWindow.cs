@@ -281,7 +281,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             regionLabel.HorizontalAlignment = HorizontalAlignment.Center;
 
             // Handle clicks
-            NativePanel.OnMouseClick += ClickHandler;
+            NativePanel.OnMouseUp += ClickHandler;
 
             // Setup buttons for first time
             LoadButtonTextures();
