@@ -439,7 +439,27 @@ namespace DaggerfallConnect.Arena2
 
             return tokens.ToArray();
         }
+        public static Token[] ReadTokens(ref Span<byte> buffer, ref int position, Formatting endToken)
+        {
+            if (buffer.IsEmpty)
+                return null;
 
+            List<Token> tokens = new List<Token>();
+
+            while (position < buffer.Length)
+            {
+                byte nextByte = buffer[position];
+                if (nextByte == (byte)endToken)
+                    break;
+
+                if (IsFormattingToken(nextByte))
+                    tokens.Add(ReadFormattingToken(ref buffer, ref position));
+                else
+                    tokens.Add(ReadTextToken(ref buffer, ref position));
+            }
+
+            return tokens.ToArray();
+        }
         /// <summary>
         /// Simple method to split tokens into text array, one entry per text token.
         /// Other formatting tokens are ignored.
@@ -545,6 +565,58 @@ namespace DaggerfallConnect.Arena2
             return token;
         }
 
+        private static Token ReadFormattingToken(ref Span<byte> buffer, ref int position)
+        {
+            Formatting formatting = (Formatting)buffer[position++];
+
+            byte? peek;
+            int x = 0, y = 0;
+            Token token = new Token();
+            token.formatting = formatting;
+            switch (token.formatting)
+            {
+                case Formatting.NewLineOffset:
+                    break;
+                case Formatting.FontPrefix:
+                    x = buffer[position++];
+                    break;
+                case Formatting.PositionPrefix:
+                    if (position < buffer.Length)
+                    {
+                        x = buffer[position++];
+                    }
+                    break;
+            }
+            token.x = x;
+            token.y = y;
+
+            return token;
+        }
+
+        private static Token ReadTextToken(ref Span<byte> buffer, ref int position)
+        {
+            // Find length of text data
+            int start = position;
+            int count = 0;
+            while (position < buffer.Length)
+            {
+                byte nextByte = buffer[position++];
+                if (nextByte >= (byte)Formatting.FirstCharacter && nextByte <= (byte)Formatting.LastCharacter)
+                    count++;
+                else
+                {
+                    position--; // Step back as we've gone one too far
+                    break;
+                }
+            }
+
+            // Create token
+            Token token = new Token();
+            token.formatting = Formatting.Text;
+            token.text = Encoding.UTF8.GetString(buffer.Slice(start, count));
+
+            return token;
+        }
         private static bool IsFormattingToken(byte value)
         {
             if (value >= (byte)Formatting.FirstCharacter && value <= (byte)Formatting.LastCharacter)

@@ -50,7 +50,7 @@ namespace DaggerfallWorkshop.Game
         public int Price;           // Base price for merchants
         public bool IsUnique;       // Book only available to mods and will not appear in loot tables or shelves
         public string WhenVarSet;   // Book only available in loot tables once this GlobalVar is set
-        public string Content;      // Text content of book
+        public StringBuilder Content = new(); // Text content of book
 
         /// <summary>
         /// Opens either localized or classic book file.
@@ -58,17 +58,10 @@ namespace DaggerfallWorkshop.Game
         /// </summary>
         /// <param name="filename">Filename of classic book file, e.g. "BOK00042.txt".</param>
         /// <returns>True if successful.</returns>
+
         public bool OpenBookFile(string filename)
         {
-            // Seek localized book file
-            if (!OpenLocalizedBookFile(filename))
-            {
-                // Fallback to classic book file
-                if (!OpenClassicBookFile(filename))
-                    return false;
-            }
-
-            return true;
+            return OpenLocalizedBookFile(filename) || OpenClassicBookFile(filename);
         }
 
         /// <summary>
@@ -119,37 +112,44 @@ namespace DaggerfallWorkshop.Game
         /// <returns>True if successful.</returns>
         public bool OpenClassicBookFile(string filename)
         {
-            // Book filename cannot be null or empty
             if (string.IsNullOrEmpty(filename))
                 return false;
 
-            // Try to open book
             BookFile bookFile = new BookFile();
             if (!BookReplacement.TryImportBook(filename, bookFile) &&
                 !bookFile.OpenBook(DaggerfallUnity.Instance.Arena2Path, filename))
                 return false;
 
-            // Prepare initial data
             Title = bookFile.Title;
             Author = bookFile.Author;
             IsNaughty = bookFile.IsNaughty;
             Price = bookFile.Price;
             IsUnique = false;
             WhenVarSet = string.Empty;
-            Content = string.Empty;
+            Content.Clear();
 
-            // Convert page tokens to markup and set book content
-            string content = string.Empty;
             for (int page = 0; page < bookFile.PageCount; page++)
             {
-                TextFile.Token[] tokens = bookFile.GetPageTokens(page); // Get all tokens on current page
-                content += ConvertTokensToString(tokens); // Convert contents of page to book markup
+                TextFile.Token[] tokens = bookFile.GetPageTokens(page);
+                ConvertTokensToString(tokens, Content);
             }
-            Content = content;
 
             return true;
         }
+        public bool CreateDummyBook()
+        {
+            // Set default values for the book properties
+            Title = "Dummy Book";
+            Author = "John Doe";
+            IsNaughty = false;
+            Price = 10;
+            IsUnique = false;
+            WhenVarSet = "";
+            Content.Clear().Append("This is a dummy book content.\nIt contains multiple lines.\nEnjoy reading!");
 
+            // Return true to indicate successful creation of the dummy book
+            return true;
+        }
         /// <summary>
         /// Opens a localized book file from StreamingAssets/Text/Books.
         /// As classic books are also .txt files (despite not being true plain text) the localized files append "-LOC" to book filename.
@@ -157,20 +157,18 @@ namespace DaggerfallWorkshop.Game
         /// </summary>
         /// <param name="filename">Filename of classic or localized book file, e.g. "BOK00042-LOC.txt" or "BOK00042.txt". -LOC is added to filename automatically if missing.</param>
         /// <returns>True if successfull.</returns>
+
         public bool OpenLocalizedBookFile(string filename)
         {
-            // Book filename cannot be null or empty
             if (string.IsNullOrEmpty(filename))
                 return false;
 
-            // Append -LOC if missing from filename
             string fileNoExt = Path.GetFileNameWithoutExtension(filename);
             if (!fileNoExt.EndsWith(localizedFilenameSuffix))
                 filename = fileNoExt + localizedFilenameSuffix + fileExtension;
 
             string[] lines = null;
 
-            // Seek localized book file from mods
             if (ModManager.Instance != null && ModManager.Instance.TryGetAsset(filename, false, out TextAsset textAsset))
             {
                 if (!string.IsNullOrWhiteSpace(textAsset.text))
@@ -190,69 +188,36 @@ namespace DaggerfallWorkshop.Game
                 if (!File.Exists(path))
                     return false;
 
-                // Attempt to load file from StreamingAssets/Text/Books
                 lines = File.ReadAllLines(path);
                 if (lines == null || lines.Length == 0)
                     return false;
             }
 
-            // Read file
             bool readingContent = false;
-            Content = string.Empty;
+            Content.Clear();
             for (int l = 0; l < lines.Length; l++)
             {
+                string line = lines[l].Trim();
                 if (!readingContent)
                 {
-                    // Everything up to and including Content: line is considered data input
-                    // Trim whitespace from either side of line and read tag data
-                    string line = lines[l].Trim();
                     if (line.StartsWith(titleKeyword, System.StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // Title:
                         Title = line.Substring(titleKeyword.Length).Trim();
-                    }
                     else if (line.StartsWith(authorKeyword, System.StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // Author:
                         Author = line.Substring(authorKeyword.Length).Trim();
-                    }
                     else if (line.StartsWith(isNaughtyKeyword, System.StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // IsNaughty:
-                        string isNaughtyString = line.Substring(isNaughtyKeyword.Length).Trim();
-                        if (!bool.TryParse(isNaughtyString, out IsNaughty))
-                            Debug.LogErrorFormat("Could not parse IsNaughty bool from '{0}'. Value must be True or False.", isNaughtyString);
-                    }
+                        bool.TryParse(line.Substring(isNaughtyKeyword.Length).Trim(), out IsNaughty);
                     else if (line.StartsWith(priceKeyword, System.StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // Price:
-                        string priceString = line.Substring(priceKeyword.Length).Trim();
-                        if (!int.TryParse(priceString, out Price))
-                            Debug.LogErrorFormat("Could not parse Price int from '{0}'. Value must be numerical.", priceString);
-                    }
+                        int.TryParse(line.Substring(priceKeyword.Length).Trim(), out Price);
                     else if (line.StartsWith(isUniqueKeyword, System.StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // IsUnique:
-                        string uniqueString = line.Substring(isUniqueKeyword.Length).Trim();
-                        if (!bool.TryParse(uniqueString, out IsUnique))
-                            Debug.LogErrorFormat("Could not parse IsUnique bool from '{0}'. Value must be True or False.");
-                    }
+                        bool.TryParse(line.Substring(isUniqueKeyword.Length).Trim(), out IsUnique);
                     else if (line.StartsWith(whenVarSetKeyword, System.StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // WhenVarSet:
                         WhenVarSet = line.Substring(whenVarSetKeyword.Length).Trim();
-                    }
                     else if (line.StartsWith(contentKeyword, System.StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // Content:
                         readingContent = true;
-                    }
                 }
                 else
                 {
-                    // Everything after Content: tag is book contents
-                    // Add back newline as File.ReadAllLines() strips this when splitting lines
-                    Content += lines[l] + "\n";
+                    Content.AppendLine(lines[l]);
                 }
             }
 
@@ -267,13 +232,13 @@ namespace DaggerfallWorkshop.Game
         public void SaveLocalizedBook(string filename)
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine(string.Format("{0} {1}", titleKeyword, Title));
-            builder.AppendLine(string.Format("{0} {1}", authorKeyword, Author));
-            builder.AppendLine(string.Format("{0} {1}", isNaughtyKeyword, IsNaughty));
-            builder.AppendLine(string.Format("{0} {1}", priceKeyword, Price));
-            builder.AppendLine(string.Format("{0} {1}", isUniqueKeyword, IsUnique));
-            builder.AppendLine(string.Format("{0} {1}", whenVarSetKeyword, WhenVarSet));
-            builder.AppendLine(string.Format("{0}\n{1}", contentKeyword, Content));
+            builder.AppendFormat("{0} {1}\n", titleKeyword, Title)
+                   .AppendFormat("{0} {1}\n", authorKeyword, Author)
+                   .AppendFormat("{0} {1}\n", isNaughtyKeyword, IsNaughty)
+                   .AppendFormat("{0} {1}\n", priceKeyword, Price)
+                   .AppendFormat("{0} {1}\n", isUniqueKeyword, IsUnique)
+                   .AppendFormat("{0} {1}\n", whenVarSetKeyword, WhenVarSet)
+                   .AppendFormat("{0}\n{1}", contentKeyword, Content);
             File.WriteAllText(filename, builder.ToString());
         }
 
@@ -283,33 +248,28 @@ namespace DaggerfallWorkshop.Game
         /// </summary>
         /// <param name="tokens">Input tokens.</param>
         /// <returns>String result.</returns>
-        string ConvertTokensToString(TextFile.Token[] tokens)
+        void ConvertTokensToString(TextFile.Token[] tokens, StringBuilder builder)
         {
-            string text = string.Empty;
-
-            // Classic books use only the following tokens
             for (int i = 0; i < tokens.Length; i++)
             {
                 switch (tokens[i].formatting)
                 {
                     case TextFile.Formatting.Text:
-                        text += tokens[i].text;
+                        builder.Append(tokens[i].text);
                         break;
                     case TextFile.Formatting.NewLine:
-                        text += "\n";
+                        builder.Append('\n');
                         break;
                     case TextFile.Formatting.JustifyLeft:
-                        text += markupJustifyLeft;
+                        builder.Append(markupJustifyLeft);
                         break;
                     case TextFile.Formatting.JustifyCenter:
-                        text += markupJustifyCenter;
+                        builder.Append(markupJustifyCenter);
                         break;
                     case TextFile.Formatting.FontPrefix:
-                        text += string.Format(markupFont, tokens[i].x);
+                        builder.AppendFormat(markupFont, tokens[i].x);
                         break;
                     case TextFile.Formatting.PositionPrefix:
-                        // Unused
-                        break;
                     case TextFile.Formatting.SameLineOffset:
                         // Unused
                         break;
@@ -318,8 +278,6 @@ namespace DaggerfallWorkshop.Game
                         break;
                 }
             }
-
-            return text;
         }
     }
 }

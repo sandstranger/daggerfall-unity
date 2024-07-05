@@ -214,8 +214,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             // Convert all book lines to labels
             bookLabels.Clear();
-            string[] lines = localizedBook.Content.Split(newline);
-            foreach (string line in lines)
+
+            // Use StringReader to read the StringBuilder line by line
+            using StringReader reader = new(localizedBook.Content.ToString());
+            string line;
+            while ((line = reader.ReadLine()) != null)
             {
                 TextFile.Token[] lineTokens = DaggerfallStringTableImporter.ConvertStringToRSCTokens(line);
                 if (lineTokens == null || lineTokens.Length == 0)
@@ -254,12 +257,10 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                                 bookLabels.Add(CreateLabel(currentFont, currentAlignment, currentColor, token.text, currentScale));
                                 break;
                         }
-
                     }
                 }
             }
         }
-
         TextLabel CreateLabel(DaggerfallFont font, HorizontalAlignment alignment, Color color, string text, float scale = 1.0f)
         {
             // Every group is cast into a word-wrapping label
