@@ -14,10 +14,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 namespace DaggerfallWorkshop.Game
 {
-    public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler
+    public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IDragHandler
     {
         public RectTransform background;
         public RectTransform knob;
@@ -44,6 +45,8 @@ namespace DaggerfallWorkshop.Game
         private Camera myCam;
         private RectTransform rootRectTF;
 
+        private int myTouchFingerID = -1;
+
         void Start()
         {
             // get refs
@@ -63,6 +66,18 @@ namespace DaggerfallWorkshop.Game
             // Initially invisible
             SetJoystickVisibility(false);
         }
+        private void LateUpdate()
+        {
+            if (isTouching && myTouchFingerID >= 0)
+            {
+                Touch myTouch = Input.touches.FirstOrDefault(p => p.fingerId == myTouchFingerID);
+                if (myTouch.fingerId != myTouchFingerID || myTouch.phase == TouchPhase.Ended || myTouch.phase == TouchPhase.Canceled)
+                {
+                    Debug.Log("Touch ended");
+                    OnPointerUp(null);
+                }
+            }
+        }
         public void OnPointerDown(PointerEventData eventData)
         {
             if (Cursor.visible)
@@ -78,6 +93,15 @@ namespace DaggerfallWorkshop.Game
             SetJoystickVisibility(true);
             isTouching = true;
             OnDrag(eventData);
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                if (Vector2.Distance(Input.GetTouch(i).position, TouchStartPos) < 3f)
+                {
+                    Debug.Log("Set touch to " + i);
+                    myTouchFingerID = Input.GetTouch(i).fingerId;
+                    break;
+                }
+            }
             if (isInMouseLookMode && !JoystickThatIsCurrentlyMouseLooking)
                 JoystickThatIsCurrentlyMouseLooking = this;
         }
@@ -90,6 +114,7 @@ namespace DaggerfallWorkshop.Game
             isTouching = false;
             if (JoystickThatIsCurrentlyMouseLooking == this)
                 JoystickThatIsCurrentlyMouseLooking = null;
+            myTouchFingerID = -1;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -130,17 +155,6 @@ namespace DaggerfallWorkshop.Game
             bool isWithinDeadzone = Mathf.Abs(deltaPos.x) < joystickRadius * 0.1f && Mathf.Abs(deltaPos.y) < joystickRadius * 0.1f;
             if (JoystickTapsShouldActivateCenterObject && isWithinDeadzone && Time.time-TouchStartTime < .5f)
                 TouchscreenInputManager.TriggerAction(InputManager.Actions.ActivateCenterObject);
-        }
-
-        // We supposedly need this in order for OnPointerUp to be consistently called
-        // See: https://forum.unity.com/threads/onpointerup-occasionally-doesnt-fire.435230/#post-3379790
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            eventData.pointerPress = this.gameObject;
-        }
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            eventData.pointerPress = null;
         }
     }
 }
