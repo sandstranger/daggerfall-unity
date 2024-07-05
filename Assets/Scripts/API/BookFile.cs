@@ -11,6 +11,8 @@
 
 using System;
 using System.IO;
+using System.Text;
+using System.Runtime.CompilerServices;
 using DaggerfallConnect.Utility;
 using DaggerfallWorkshop;
 using UnityEngine;
@@ -30,7 +32,7 @@ namespace DaggerfallConnect.Arena2
         readonly FileProxy bookFile = new FileProxy();
         BookHeader header = new BookHeader();
 
-        internal string lastSuccessfulBookHeaderRead = "";
+        private StringBuilder lastSuccessfulBookHeaderReadBuilder = new StringBuilder(100);
 
         #endregion
 
@@ -72,10 +74,11 @@ namespace DaggerfallConnect.Arena2
         /// </summary>
         /// <param name="message">The int32 message field that encodes the book's ID</param>
         /// <returns>A string that represents a file that should exist in the ARENA2/BOOKS directory (but this isn't verified on the filesystem)</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string messageToBookFilename(int message)
         {
             int decodedValue = message & 0xFF;
-            return "BOK" + decodedValue.ToString("D5") + ".TXT";
+            return $"BOK{decodedValue:D5}.TXT";
         }
 
         /// <summary>
@@ -102,7 +105,7 @@ namespace DaggerfallConnect.Arena2
             catch (EndOfStreamException e)
             {
                 Debug.LogErrorFormat($"EndOfStreamException encountered for book {name}.\n" +
-                    $"The last piece of data that was successfully read was {lastSuccessfulBookHeaderRead}.\n" +
+                    $"The last piece of data that was successfully read was {lastSuccessfulBookHeaderReadBuilder}.\n" +
                     $"{e.ToString()}");
                 return false;
             }
@@ -121,7 +124,7 @@ namespace DaggerfallConnect.Arena2
             catch (EndOfStreamException e)
             {
                 Debug.LogErrorFormat($"EndOfStreamException encountered for modded book {name}.\n" +
-                    $"The last piece of data that was successfully read was {lastSuccessfulBookHeaderRead}.\n" +
+                    $"The last piece of data that was successfully read was {lastSuccessfulBookHeaderReadBuilder}.\n" +
                     $"{e.ToString()}");
                 return false;
             }
@@ -138,44 +141,55 @@ namespace DaggerfallConnect.Arena2
             if (page < 0 || page >= PageCount)
                 throw new IndexOutOfRangeException("BookFile: Invalid page index.");
 
-            byte[] buffer = bookFile.GetBytes();
+            Span<byte> buffer = bookFile.GetBytes();
 
-            return TextFile.ReadTokens(ref buffer, (int)header.PageOffsets[page], TextFile.Formatting.EndOfPage);
+            int pos = (int)header.PageOffsets[page];
+            
+            return TextFile.ReadTokens(ref buffer, ref pos, TextFile.Formatting.EndOfPage);
         }
 
         #endregion
 
         #region Private Methods
 
-        bool ReadHeader(bool randomPrice = true)
+        private bool ReadHeader(bool randomPrice = true)
         {
             BinaryReader reader = bookFile.GetReader();
-            lastSuccessfulBookHeaderRead = "not even the Title";
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("not even the Title");
 
             header = new BookHeader();
             header.Title = FileProxy.ReadCStringSkip(reader, 0, 64);
-            lastSuccessfulBookHeaderRead = "the Book's Title";
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Title");
             header.Author = FileProxy.ReadCStringSkip(reader, 0, 64);
-            lastSuccessfulBookHeaderRead = "the Book's Author";
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Author");
             header.IsNaughty = (FileProxy.ReadCStringSkip(reader, 0, 8) == naughty);
-            lastSuccessfulBookHeaderRead = "the Book's Naughty flag";
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Naughty flag");
             header.NullValues = reader.ReadBytes(88);
-            lastSuccessfulBookHeaderRead = "the Book's Null Values";
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Null Values");
             header.Price = reader.ReadUInt32();
-            lastSuccessfulBookHeaderRead = "the Book's Price";
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Price");
             header.Unknown1 = reader.ReadUInt16();
-            lastSuccessfulBookHeaderRead = "the Book's Unknown1";
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Unknown1");
             header.Unknown2 = reader.ReadUInt16();
-            lastSuccessfulBookHeaderRead = "the Book's Unknown2";
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Unknown2");
             header.Unknown3 = reader.ReadUInt16();
-            lastSuccessfulBookHeaderRead = "the Book's Unknown3";
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Unknown3");
             header.PageCount = reader.ReadUInt16();
-            lastSuccessfulBookHeaderRead = "the Book's Page Count";
-            header.PageOffsets = new UInt32[header.PageCount];
+            lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Page Count");
+
+            if (header.PageOffsets == null || header.PageOffsets.Length < header.PageCount)
+            {
+                header.PageOffsets = new UInt32[header.PageCount];
+            }
+            else
+            {
+                Array.Clear(header.PageOffsets, 0, header.PageOffsets.Length);
+            }
+
             for (int i = 0; i < header.PageCount; i++)
             {
                 header.PageOffsets[i] = reader.ReadUInt32();
-                lastSuccessfulBookHeaderRead = "the Book's Page Offsets: Loop " + i + " of " + header.PageCount;
+                lastSuccessfulBookHeaderReadBuilder.Clear().Append("the Book's Page Offsets: Loop ").Append(i).Append(" of ").Append(header.PageCount);
             }
 
             if (randomPrice)
@@ -186,7 +200,7 @@ namespace DaggerfallConnect.Arena2
                 DFRandom.Seed = reader.ReadUInt32(); // first 4 bytes of book file as a uint
                 header.Price = (uint)DFRandom.random_range_inclusive(300, 800);
             }
-            lastSuccessfulBookHeaderRead = "";
+            lastSuccessfulBookHeaderReadBuilder.Clear();
             return true;
         }
 

@@ -19,6 +19,9 @@ using DaggerfallWorkshop.Game;
 using DaggerfallWorkshop.Game.Utility.ModSupport;
 using FullSerializer;
 
+using System.Runtime.CompilerServices;
+
+
 namespace DaggerfallWorkshop.Utility.AssetInjection
 {
     [Serializable]
@@ -57,6 +60,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
 #pragma warning restore 649
     }
 
+
     /// <summary>
     /// Handles import and injection of custom books with the purpose of providing modding support.
     /// Book files are imported from mod bundles with load order or loaded directly from disk.
@@ -65,19 +69,16 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
     {
         #region Fields & Properties
 
-        static readonly string booksPath = Path.Combine(Paths.StreamingAssetsPath, "Books");
-        static readonly string mappingPath = Path.Combine(booksPath, "Mapping");
+        private static readonly string booksPath = Path.Combine(Paths.StreamingAssetsPath, "Books");
+        private static readonly string mappingPath = Path.Combine(booksPath, "Mapping");
 
         internal static readonly Dictionary<int, BookMappingEntry> BookMappingEntries = new Dictionary<int, BookMappingEntry>();
-        static bool customBooksSeeked;
+        private static bool customBooksSeeked;
 
         /// <summary>
         /// Path to custom books on disk.
         /// </summary>
-        public static string BooksPath
-        {
-            get { return booksPath; }
-        }
+        public static string BooksPath => booksPath;
 
         #endregion
 
@@ -105,27 +106,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
 
                     if (fsResult.Succeeded)
                     {
-                        foreach (BookMappingEntry entry in map)
-                        {
-                            if (string.IsNullOrEmpty(entry.Name) || string.IsNullOrEmpty(entry.Title) || entry.ID == 0)
-                            {
-                                Debug.LogError("Failed to register book because required informations are missing.");
-                                continue;
-                            }
-
-                            if (bookIDNameMapping.ContainsKey(entry.ID))
-                            {
-                                Debug.LogErrorFormat("Failed to register book {0} because id {1} is already in use by {2}.", entry.Title, entry.ID, bookIDNameMapping[entry.ID]);
-                                continue;
-                            }
-                            else if (entry.ID == 10000)
-                            {
-                                Debug.LogErrorFormat("Failed to register book {0} because id 10000 is reserved.", entry.Title);
-                                continue;
-                            }
-
-                            BookMappingEntries.Add(entry.ID, entry);
-                        }
+                        ProcessBookMappingEntries(map, bookIDNameMapping);
                     }
                 }
 
@@ -133,7 +114,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
             }
 
             foreach (var entry in BookMappingEntries)
-                bookIDNameMapping.Add(entry.Key, entry.Value.Title); 
+                bookIDNameMapping.Add(entry.Key, entry.Value.Title);
         }
 
         /// <summary>
@@ -142,10 +123,10 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
         /// </summary>
         /// <param name="id">Book id.</param>
         /// <returns>True if all conditions are met.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool BookMeetsConditions(int id)
         {
-            BookMappingEntry entry;
-            if (!BookMappingEntries.TryGetValue(id, out entry))
+            if (!BookMappingEntries.TryGetValue(id, out BookMappingEntry entry))
                 return true;
 
             return !entry.IsUnique
@@ -177,8 +158,7 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
                 }
 
                 // Seek from mods
-                TextAsset textAsset;
-                if (ModManager.Instance != null && ModManager.Instance.TryGetAsset(name, false, out textAsset))
+                if (ModManager.Instance != null && ModManager.Instance.TryGetAsset(name, false, out TextAsset textAsset))
                 {
                     if (book.OpenBook(textAsset.bytes, name))
                         return true;
@@ -197,17 +177,45 @@ namespace DaggerfallWorkshop.Utility.AssetInjection
         /// </summary>
         private static IEnumerable<string> GetBooksMaps()
         {
-            var looseFilesMaps = Directory.Exists(mappingPath) ?
-                Directory.GetFiles(mappingPath, "*.json").Where(x => !x.EndsWith("IDs.json")).Select(x => File.ReadAllText(x)) :
-                null;
+            var looseFilesMaps = Directory.Exists(mappingPath)
+                ? Directory.GetFiles(mappingPath, "*.json")
+                    .Where(x => !x.EndsWith("IDs.json", StringComparison.Ordinal))
+                    .Select(File.ReadAllText)
+                : null;
 
-            var modsMaps = ModManager.Instance ? ModManager.Instance.GetAllModsWithContributes(x => x.BooksMapping != null).SelectMany(mod =>
-                mod.ModInfo.Contributes.BooksMapping.Select(x => mod.GetAsset<TextAsset>(x).ToString())) :
-                null;
+            var modsMaps = ModManager.Instance
+                ? ModManager.Instance.GetAllModsWithContributes(x => x.BooksMapping != null)
+                    .SelectMany(mod => mod.ModInfo.Contributes.BooksMapping.Select(x => mod.GetAsset<TextAsset>(x).ToString()))
+                : null;
 
-            return looseFilesMaps != null && modsMaps != null ?
-                looseFilesMaps.Concat(modsMaps) :
-                looseFilesMaps ?? modsMaps ?? Enumerable.Empty<string>();
+            return looseFilesMaps != null && modsMaps != null
+                ? looseFilesMaps.Concat(modsMaps)
+                : looseFilesMaps ?? modsMaps ?? Enumerable.Empty<string>();
+        }
+
+        private static void ProcessBookMappingEntries(List<BookMappingEntry> map, Dictionary<int, string> bookIDNameMapping)
+        {
+            foreach (BookMappingEntry entry in map)
+            {
+                if (string.IsNullOrEmpty(entry.Name) || string.IsNullOrEmpty(entry.Title) || entry.ID == 0)
+                {
+                    Debug.LogError("Failed to register book because required information is missing.");
+                    continue;
+                }
+
+                if (bookIDNameMapping.ContainsKey(entry.ID))
+                {
+                    Debug.LogErrorFormat("Failed to register book {0} because id {1} is already in use by {2}.", entry.Title, entry.ID, bookIDNameMapping[entry.ID]);
+                    continue;
+                }
+                else if (entry.ID == 10000)
+                {
+                    Debug.LogErrorFormat("Failed to register book {0} because id 10000 is reserved.", entry.Title);
+                    continue;
+                }
+
+                BookMappingEntries.Add(entry.ID, entry);
+            }
         }
 
         #endregion
