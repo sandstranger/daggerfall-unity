@@ -1187,52 +1187,62 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             float scale = GetRegionMapScale(selectedRegion);
             Vector2 coordinates = GetCoordinates();
-            int x = (int)(coordinates.x / scale);
-            int y = (int)(coordinates.y / scale);
+#if UNITY_ANDROID
+            int dotSizeOffset = 1;
+#else
+            int dotSizeOffset = 0;
+#endif
+            for(int xOffset = -dotSizeOffset; xOffset <= dotSizeOffset; ++xOffset){
+                for (int yOffset = -dotSizeOffset; yOffset <= dotSizeOffset; ++yOffset){
 
-            if (selectedRegion == betonyIndex)      // Manually correct Betony offset
-            {
-                x += 60;
-                y += 212;
-            }
+                    int x = (int)((coordinates.x + xOffset) / scale);
+                    int y = (int)((coordinates.y + yOffset) / scale);
 
-            if (selectedRegion == 61)               // Fix for Cybiades zoom-in map. Map is more zoomed in than for other regions but the pixel coordinates are not scaled to match.
-                                                    // The upper right corner of Cybiades (about x=440 y=340) is the same for both Cybiades's zoomed-in map and Sentinel's less zoomed in map,
-                                                    // so that is being used as the base for this fix.
-            {
-                int xDiff = x - 440;
-                int yDiff = y - 340;
-                xDiff /= 4;
-                yDiff /= 4;
-                x = 440 + xDiff;
-                y = 340 + yDiff;
-            }
+                    if (selectedRegion == betonyIndex)      // Manually correct Betony offset
+                    {
+                        x += 60;
+                        y += 212;
+                    }
 
-            int sampleRegion = DaggerfallUnity.Instance.ContentReader.MapFileReader.GetPoliticIndex(x, y) - 128;
+                    if (selectedRegion == 61)               // Fix for Cybiades zoom-in map. Map is more zoomed in than for other regions but the pixel coordinates are not scaled to match.
+                                                            // The upper right corner of Cybiades (about x=440 y=340) is the same for both Cybiades's zoomed-in map and Sentinel's less zoomed in map,
+                                                            // so that is being used as the base for this fix.
+                    {
+                        int xDiff = x - 440;
+                        int yDiff = y - 340;
+                        xDiff /= 4;
+                        yDiff /= 4;
+                        x = 440 + xDiff;
+                        y = 340 + yDiff;
+                    }
 
-            if (sampleRegion != selectedRegion && sampleRegion >= 0 && sampleRegion < DaggerfallUnity.Instance.ContentReader.MapFileReader.RegionCount)
-            {
-                mouseOverRegion = sampleRegion;
-                return;
-            }
+                    int sampleRegion = DaggerfallUnity.Instance.ContentReader.MapFileReader.GetPoliticIndex(x, y) - 128;
 
-            if (DaggerfallUnity.ContentReader.HasLocation(x, y) && !FindingLocation)
-            {
-                DaggerfallUnity.ContentReader.HasLocation(x, y, out locationSummary);
-
-                if (locationSummary.MapIndex < 0 || locationSummary.MapIndex >= currentDFRegion.MapNames.Length)
-                    return;
-                else
-                {
-                    int index = GetPixelColorIndex(locationSummary.LocationType);
-                    if (index == -1)
+                    if (sampleRegion != selectedRegion && sampleRegion >= 0 && sampleRegion < DaggerfallUnity.Instance.ContentReader.MapFileReader.RegionCount)
+                    {
+                        mouseOverRegion = sampleRegion;
                         return;
+                    }
 
-                    // Only make location selectable if it is already discovered
-                    if (!checkLocationDiscovered(locationSummary))
-                        return;
+                    if (DaggerfallUnity.ContentReader.HasLocation(x, y) && !FindingLocation)
+                    {
+                        DaggerfallUnity.ContentReader.HasLocation(x, y, out locationSummary);
 
-                    locationSelected = true;
+                        if (locationSummary.MapIndex < 0 || locationSummary.MapIndex >= currentDFRegion.MapNames.Length)
+                            continue;
+                        else
+                        {
+                            int index = GetPixelColorIndex(locationSummary.LocationType);
+                            if (index == -1)
+                                continue;
+
+                            // Only make location selectable if it is already discovered
+                            if (!checkLocationDiscovered(locationSummary))
+                                continue;
+
+                            locationSelected = true;
+                        }
+                    }
                 }
             }
         }
