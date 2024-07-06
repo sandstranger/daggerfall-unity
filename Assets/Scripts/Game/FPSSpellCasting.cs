@@ -272,6 +272,7 @@ namespace DaggerfallWorkshop.Game
 
         IEnumerator AnimateSpellCast()
         {
+            bool hasReleasedFrame = false;
             while (true)
             {
                 if (currentAnims != null && currentAnims.Length > 0 && currentFrame >= 0)
@@ -280,12 +281,17 @@ namespace DaggerfallWorkshop.Game
                     currentFrame++;
 
                     // Trigger cast frame
-                    if (currentFrame == releaseFrame)
+                    if (currentFrame >= releaseFrame && !hasReleasedFrame)
+                    {
                         RaiseOnReleaseFrameEvent();
-
+                        hasReleasedFrame = true;
+                    }
                     // Handle end of frames
                     if (currentFrame >= frameIndices.Length)
+                    {
                         currentFrame = -1;
+                        hasReleasedFrame = false;
+                    }
                 }
 
                 yield return new WaitForSeconds(animSpeed);
