@@ -75,10 +75,16 @@ namespace DaggerfallWorkshop.Game
 
         private static bool s_shouldShowLabels = true;
 
+        public event System.Action Resized;
+
         public InputManager.Actions myAction = InputManager.Actions.Unknown;
         public bool WasDragging { get; private set; }
+        public bool CanActionBeEdited{get{return canActionBeEdited;}}
+        public bool CanButtonBeRemoved{get{return canButtonBeRemoved;}}
 
         [SerializeField] private bool canActionBeEdited = true;
+        [SerializeField] private bool canButtonBeResized = true;
+        [SerializeField] private bool canButtonBeRemoved = true;
         [SerializeField] private ResizeButtonPosition resizeButtonPos = ResizeButtonPosition.TopLeft;
         [SerializeField] private TMPro.TMP_Text label;
         [SerializeField] private RectTransform resizeButton;
@@ -191,7 +197,10 @@ namespace DaggerfallWorkshop.Game
                 if (Mathf.Abs(newSize.x - defaultButtonSizeDelta.x) < snapScale)
                     newSize = defaultButtonSizeDelta;
 
+                Vector2 lastSize = rectTransform.sizeDelta;
                 rectTransform.sizeDelta = newSize;
+                if (!Mathf.Approximately(lastSize.x, newSize.x))
+                    Resized?.Invoke();
             }
             else
             {
@@ -285,7 +294,7 @@ namespace DaggerfallWorkshop.Game
                 pointerDownWasTouchingResizeButton = IsPointerTouchingResizeButton(eventData);
 
                 if (!pointerDownWasTouchingResizeButton)
-                    TouchscreenInputManager.Instance.EditTouchscreenButton(canActionBeEdited ? this : null);
+                    TouchscreenInputManager.Instance.EditTouchscreenButton(this);
             }
             else
             {
@@ -364,7 +373,7 @@ namespace DaggerfallWorkshop.Game
         private void Instance_onCurrentlyEditingButtonChanged(TouchscreenButton currentlyEditingButton)
         {
             if(resizeButton)
-                resizeButton.gameObject.SetActive(currentlyEditingButton == this);
+                resizeButton.gameObject.SetActive(currentlyEditingButton == this && currentlyEditingButton.canButtonBeResized);
             if(currentlyEditingButton != this)
                 WasDragging = false;
         }

@@ -125,20 +125,15 @@ namespace DaggerfallWorkshop.Game
 
         public void EditTouchscreenButton(TouchscreenButton touchscreenButton)
         {
-            if(touchscreenButton == null)
-            {
-                StopEditingCurrentButton();
-                return;
-            }
             if (touchscreenButton == currentlyEditingButton)
                 return;
 
-            if (currentlyEditingButton)
-            {
-                StopEditingCurrentButton();
+            StopEditingCurrentButton();
+            selectedButtonOptionsPanel.enabled = touchscreenButton && (touchscreenButton.CanActionBeEdited || touchscreenButton.CanButtonBeRemoved);
+            if (touchscreenButton){
+                editButtonMappingDropdown.interactable = touchscreenButton.CanActionBeEdited;
+                editButtonMappingDropdown.value = (int)touchscreenButton.myAction;
             }
-            selectedButtonOptionsPanel.enabled = true;
-            editButtonMappingDropdown.value = (int)touchscreenButton.myAction;
             currentlyEditingButton = touchscreenButton;
             onCurrentlyEditingButtonChanged?.Invoke(touchscreenButton);
         }
