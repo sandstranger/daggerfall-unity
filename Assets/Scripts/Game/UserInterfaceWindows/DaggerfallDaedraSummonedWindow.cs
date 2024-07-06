@@ -32,7 +32,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         DaggerfallQuestPopupWindow.DaedraData daedraSummoned;
         Quest daedraQuest;
-
+#if UNITY_ANDROID && !UNITY_EDITOR
+        private TouchScreenKeyboard keyboard;
+#endif
         int textId;
         IMacroContextProvider mcp;
 
@@ -104,26 +106,42 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 MacroHelper.ExpandMacros(ref messageTokens, mcp);
             }
             idx = 0;
-            DisplayNextTextChunk();     
+            DisplayNextTextChunk();
         }
-
         public override void Update()
         {
             base.Update();
 
             if (lastChunk && !answerGiven)
             {
-                HotkeySequence.KeyModifiers keyModifiers = HotkeySequence.GetKeyboardKeyModifiers();
-                if (DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.Yes).IsUpWith(keyModifiers))
-                {
+                void startQuest(){
                     HandleAnswer(QuestMachine.QuestMessages.AcceptQuest);
                     QuestMachine.Instance.StartQuest(daedraQuest);
                 }
-                else if (DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.No).IsUpWith(keyModifiers))
-                {
+                void refuseQuest(){
                     HandleAnswer(QuestMachine.QuestMessages.RefuseQuest);
                     GameObjectHelper.CreateFoeSpawner(true, DaggerfallQuestPopupWindow.daedricFoes[UnityEngine.Random.Range(0, 5)], UnityEngine.Random.Range(3, 6), 8, 64);
                 }
+#if UNITY_ANDROID && !UNITY_EDITOR
+                if (Input.GetMouseButtonUp(0)){
+                    if (Vector2.Distance(Input.mousePosition, new Vector2(Screen.currentResolution.width, 0)) < 250)
+                    {
+                        keyboard = TouchScreenKeyboard.Open(string.Empty, TouchScreenKeyboardType.Default);
+                    }
+                }
+                if (keyboard != null)
+                {
+                    if (keyboard.text.ToLower().Contains('y'))
+                        startQuest();
+                    else if (keyboard.text.ToLower().Contains('n'))
+                        refuseQuest();
+                }
+#endif
+                HotkeySequence.KeyModifiers keyModifiers = HotkeySequence.GetKeyboardKeyModifiers();
+                if (DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.Yes).IsUpWith(keyModifiers))
+                    startQuest();
+                else if (DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.No).IsUpWith(keyModifiers))
+                    refuseQuest();
             }
         }
 
