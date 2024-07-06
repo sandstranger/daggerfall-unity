@@ -21,6 +21,7 @@ namespace DaggerfallWorkshop.Game
     {
         public static TouchscreenKeyboardManager Instance { get; private set; }
         public static bool SubmittedInput { get; private set; }
+        public bool IsKeyboardActive { get { return dummyInputField.gameObject.activeSelf && currentTextbox != null; }}
         
         [SerializeField] private TMPro.TMP_InputField dummyInputField;
         private TextBox currentTextbox;

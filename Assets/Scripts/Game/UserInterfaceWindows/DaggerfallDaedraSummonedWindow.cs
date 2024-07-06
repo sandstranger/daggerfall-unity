@@ -29,6 +29,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         FLCPlayer playerPanel;
         MultiFormatTextLabel messageLabel;
         TextCursor textCursor;
+        TextBox androidTextbox;
 
         DaggerfallQuestPopupWindow.DaedraData daedraSummoned;
         Quest daedraQuest;
@@ -92,6 +93,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             textCursor.Enabled = false;
             playerPanel.Components.Add(textCursor);
 
+#if UNITY_ANDROID
+            androidTextbox = new TextBox();
+            androidTextbox.Enabled = false;
+            playerPanel.Components.Add(androidTextbox);
+#endif
             // Initialise message to display,
             if (daedraQuest != null)
             {   // with the quest offer message.
@@ -106,24 +112,36 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             idx = 0;
             DisplayNextTextChunk();     
         }
-
         public override void Update()
         {
             base.Update();
 
             if (lastChunk && !answerGiven)
             {
-                HotkeySequence.KeyModifiers keyModifiers = HotkeySequence.GetKeyboardKeyModifiers();
-                if (DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.Yes).IsUpWith(keyModifiers))
-                {
+                void startQuest(){
                     HandleAnswer(QuestMachine.QuestMessages.AcceptQuest);
                     QuestMachine.Instance.StartQuest(daedraQuest);
                 }
-                else if (DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.No).IsUpWith(keyModifiers))
-                {
+                void refuseQuest(){
                     HandleAnswer(QuestMachine.QuestMessages.RefuseQuest);
                     GameObjectHelper.CreateFoeSpawner(true, DaggerfallQuestPopupWindow.daedricFoes[UnityEngine.Random.Range(0, 5)], UnityEngine.Random.Range(3, 6), 8, 64);
                 }
+#if UNITY_ANDROID
+                if (Input.GetMouseButtonUp(0)){
+                    Debug.Log(Input.mousePosition);
+                    if (Vector2.Distance(Input.mousePosition, new Vector2(Screen.currentResolution.width, 0)) < 250)
+                        TouchscreenKeyboardManager.Instance.ToggleKeyboardOn(androidTextbox);
+                }
+                if (androidTextbox.Text.ToLower().Contains('y'))
+                    startQuest();
+                else if (androidTextbox.Text.ToLower().Contains('n'))
+                    refuseQuest();
+#endif
+                HotkeySequence.KeyModifiers keyModifiers = HotkeySequence.GetKeyboardKeyModifiers();
+                if (DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.Yes).IsUpWith(keyModifiers))
+                    startQuest();
+                else if (DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.No).IsUpWith(keyModifiers))
+                    refuseQuest();
             }
         }
 
