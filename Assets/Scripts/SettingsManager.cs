@@ -406,7 +406,7 @@ namespace DaggerfallWorkshop
             RetroModeAspectCorrection = GetInt(sectionVideo, "RetroModeAspectCorrection", 0, 2);
             PalettizationLUTShift = GetInt(sectionVideo, "PalettizationLUTShift");
             VSync = GetBool(sectionVideo, "VSync");
-            TargetFrameRate = GetInt(sectionVideo, "TargetFrameRate", 60, 300);
+            TargetFrameRate = GetInt(sectionVideo, "TargetFrameRate", 0, 300);
             Fullscreen = GetBool(sectionVideo, "Fullscreen");
             ExclusiveFullscreen = GetBool(sectionVideo, "ExclusiveFullscreen");
             RunInBackground = GetBool(sectionVideo, "RunInBackground");
