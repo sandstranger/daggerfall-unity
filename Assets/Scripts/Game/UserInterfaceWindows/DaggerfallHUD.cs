@@ -253,7 +253,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             // Align compass to screen panel
             Rect screenRect = ParentPanel.Rectangle;
             float compassX = screenRect.x + screenRect.width - (compass.Size.x);
-            float compassY = screenRect.y + screenRect.height - (compass.Size.y);
+            float compassY = DaggerfallUnity.Settings.HUDGoesOnTop ? screenRect.y : screenRect.y + screenRect.height - (compass.Size.y);
             compass.Position = new Vector2(compassX, compassY);
 
             // Update midscreen text timer and remove once complete

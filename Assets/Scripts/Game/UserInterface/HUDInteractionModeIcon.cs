@@ -126,7 +126,10 @@ namespace DaggerfallWorkshop.Game.UserInterface
                             Size = talkSize * displayScale / resScale;
                             break;
                     }
-                    Position = new Vector2((barWidth * 5) + (HUDVitals.borderSize * 2), Screen.height - HUDVitals.borderSize - Size.y);
+                    if (DaggerfallUnity.Settings.HUDGoesOnTop)
+                        Position = new Vector2((barWidth * 5) + (HUDVitals.borderSize * 2), HUDVitals.borderSize);
+                    else
+                        Position = new Vector2((barWidth * 5) + (HUDVitals.borderSize * 2), Screen.height - HUDVitals.borderSize - Size.y);
                 }
 
                 base.Update();

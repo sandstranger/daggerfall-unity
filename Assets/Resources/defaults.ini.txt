@@ -105,6 +105,7 @@ SDFFontRendering=True
 EnableGeographicBackgrounds=False
 DungeonExitWagonPrompt=True
 TravelMapLocationsOutline=False
+HUDGoesOnTop=True
 IllegalRestWarning=True
 LargeHUD=False
 LargeHUDDocked=True

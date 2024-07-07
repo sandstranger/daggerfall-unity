@@ -86,24 +86,24 @@ namespace DaggerfallWorkshop.Game.UserInterface
         {
             playerEntity = GameManager.Instance.PlayerEntity;
             LoadAssets();
-
+            
             BackgroundColor = Color.clear;
             HorizontalAlignment = HorizontalAlignment.Left;
-            VerticalAlignment = VerticalAlignment.Bottom;
+            VerticalAlignment = DaggerfallUnity.Settings.HUDGoesOnTop ? VerticalAlignment.Top : VerticalAlignment.Bottom; ;
             SetMargins(Margins.All, borderSize);
             
-            healthBar.VerticalAlignment = VerticalAlignment.Bottom;
-            fatigueBar.VerticalAlignment = VerticalAlignment.Bottom;
-            magickaBar.VerticalAlignment = VerticalAlignment.Bottom;
+            healthBar.VerticalAlignment = VerticalAlignment;
+            fatigueBar.VerticalAlignment = VerticalAlignment;
+            magickaBar.VerticalAlignment = VerticalAlignment;
 
             if (DaggerfallUnity.Settings.EnableVitalsIndicators)
             {
-                healthBarLoss.VerticalAlignment = VerticalAlignment.Bottom;
-                fatigueBarLoss.VerticalAlignment = VerticalAlignment.Bottom;
-                magickaBarLoss.VerticalAlignment = VerticalAlignment.Bottom;
-                healthBarGain.VerticalAlignment = VerticalAlignment.Bottom;
-                fatigueBarGain.VerticalAlignment = VerticalAlignment.Bottom;
-                magickaBarGain.VerticalAlignment = VerticalAlignment.Bottom;
+                healthBarLoss.VerticalAlignment = VerticalAlignment;
+                fatigueBarLoss.VerticalAlignment = VerticalAlignment;
+                magickaBarLoss.VerticalAlignment = VerticalAlignment;
+                healthBarGain.VerticalAlignment = VerticalAlignment;
+                fatigueBarGain.VerticalAlignment = VerticalAlignment;
+                magickaBarGain.VerticalAlignment = VerticalAlignment;
 
                 // to make bar appear behind other bars, add it first.
                 Components.Add(healthBarLoss);

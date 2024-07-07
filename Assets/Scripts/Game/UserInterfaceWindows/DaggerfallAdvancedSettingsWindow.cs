@@ -119,6 +119,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         Checkbox geographicBackgrounds;
         Checkbox dungeonExitWagonPrompt;
         Checkbox travelMapLocationsOutline;
+        Checkbox hudGoesOnTop;
 
         // Enhancements
         Checkbox modSystem;
@@ -313,6 +314,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             geographicBackgrounds = AddCheckbox(rightPanel, "geographicBackgrounds", DaggerfallUnity.Settings.EnableGeographicBackgrounds);
             dungeonExitWagonPrompt = AddCheckbox(rightPanel, "dungeonExitWagonPrompt", DaggerfallUnity.Settings.DungeonExitWagonPrompt);
             travelMapLocationsOutline = AddCheckbox(rightPanel, "travelMapLocationsOutline", DaggerfallUnity.Settings.TravelMapLocationsOutline);
+            hudGoesOnTop = AddCheckbox(rightPanel, "hudGoesOnTop", DaggerfallUnity.Settings.HUDGoesOnTop);
         }
 
         private void Enhancements(Panel leftPanel, Panel rightPanel)
@@ -489,6 +491,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             DaggerfallUnity.Settings.GuildQuestListBox = guildQuestListBox.IsChecked;
             DaggerfallUnity.Settings.BowLeftHandWithSwitching = bowLeftHandWithSwitching.IsChecked;
             DaggerfallUnity.Settings.TravelMapLocationsOutline = travelMapLocationsOutline.IsChecked;
+            DaggerfallUnity.Settings.HUDGoesOnTop = hudGoesOnTop.IsChecked;
 
             DaggerfallUnity.Settings.DungeonAmbientLightScale = dungeonAmbientLightScale.GetValue();
             DaggerfallUnity.Settings.NightAmbientLightScale = nightAmbientLightScale.GetValue();
@@ -789,7 +792,30 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         private static string GetText(string key)
         {
-            return TextManager.Instance.GetText(textTable, key);
+            string text = TextManager.Instance.GetText(textTable, key);
+            if (text == "<TextError-NotFound>" && Application.isMobilePlatform)
+                text = GetAndroidFallbackText(key);
+            return text;
+        }
+        /// <summary>
+        /// We've added some texts on Android, but we don't want to have to extract the StreamingAssets/GameSettings.txt
+        /// file to the device every time the game is opened, as it's a slow operation, so we'll just hardcode the fallbacks here.
+        /// </summary>
+        private static string GetAndroidFallbackText(string key)
+        {
+            switch (key)
+            {
+                case "framerate":
+                    return "Framerate";
+                case "framerateInfo":
+                    return "How many frames per second the game will run at";
+                case "hudGoesOnTop":
+                    return "Place HUD items on top of screen";
+                case "hudGoesOnTopInfo":
+                    return "Determines whether the vitals and compass are drawn on top of the screen (better for mobile)";
+                default:
+                    return "<TextError-NotFound>";
+            }
         }
 
         private static string GetInfo(string key)

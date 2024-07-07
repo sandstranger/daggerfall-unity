@@ -1,4 +1,4 @@
-﻿// Project:         Daggerfall Unity
+// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -255,6 +255,7 @@ namespace DaggerfallWorkshop
         public bool EnableArrowCounter { get; set; }
         public bool DungeonExitWagonPrompt { get; set; }
         public bool TravelMapLocationsOutline { get; set; }
+        public bool HUDGoesOnTop { get; set; }
         public bool IllegalRestWarning { get; set; }
         public bool LargeHUD { get; set; }
         public bool LargeHUDDocked { get; set; }
@@ -506,6 +507,7 @@ namespace DaggerfallWorkshop
             EnableArrowCounter = GetBool(sectionGUI, "EnableArrowCounter");
             DungeonExitWagonPrompt = GetBool(sectionGUI, "DungeonExitWagonPrompt");
             TravelMapLocationsOutline = GetBool(sectionGUI, "TravelMapLocationsOutline");
+            HUDGoesOnTop = GetBool(sectionGUI, "HUDGoesOnTop");
             IllegalRestWarning = GetBool(sectionGUI, "IllegalRestWarning");
             LargeHUD = GetBool(sectionGUI, "LargeHUD");
             LargeHUDDocked = GetBool(sectionGUI, "LargeHUDDocked");

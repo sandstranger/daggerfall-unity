@@ -47,6 +47,7 @@ namespace DaggerfallWorkshop.Game
             
             // set vars
             SetJoystickRadius();
+            knob.gameObject.SetActive(false);
         }
         void OnDestroy(){
             if(myButton)
