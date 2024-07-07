@@ -18814,6 +18814,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: d-pad
       objectReference: {fileID: 0}
+    - target: {fileID: 3026937191953731648, guid: 5953fc052d0a646b5b0c168ca44280a9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4709877082143012083, guid: 5953fc052d0a646b5b0c168ca44280a9,
         type: 3}
       propertyPath: m_Pivot.x
