@@ -210,7 +210,7 @@ namespace DaggerfallWorkshop.Game
             loopVolumeScale = volumeScale;
             loopAudioSource.loop = true;
             loopAudioSource.spatialBlend = 0;
-            loopAudioSource.PlayWhenReady(loopClip, volumeScale, (int)clip);
+            loopAudioSource.PlayWhenReady(loopClip, volumeScale);
             return loopClip;
         }
 
@@ -220,7 +220,7 @@ namespace DaggerfallWorkshop.Game
             {
                 AudioClip audioClip = dfAudioSource.GetAudioClip((int)clip);
                 ambientAudioSource.spatialBlend = 0;
-                ambientAudioSource.PlayOneShotWhenReady(audioClip, volumeScale, (int)clip);
+                ambientAudioSource.PlayOneShotWhenReady(audioClip, volumeScale);
             }
         }
 
@@ -234,7 +234,7 @@ namespace DaggerfallWorkshop.Game
                 ambientAudioSource.spatialBlend = 1f;
                 ambientAudioSource.minDistance = minDistance;
                 ambientAudioSource.maxDistance = minDistance * 8;
-                ambientAudioSource.PlayOneShotWhenReady(audioClip, volumeScale, (int)clip);
+                ambientAudioSource.PlayOneShotWhenReady(audioClip, volumeScale);
             }
         }
 

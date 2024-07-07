@@ -12,7 +12,7 @@ namespace UnityEngine
 
         private static Dictionary<int, AudioClip> waitingClips = new Dictionary<int, AudioClip>();
 
-        public static void PlayWhenReady(this AudioSource audioSource, AudioClip audioClip, float volumeScale, int id = -1)
+        public static void PlayWhenReady(this AudioSource audioSource, AudioClip audioClip, float volumeScale)
         {
             DaggerfallUnity.Instance.StartCoroutine(WhenClipReadyCoroutine(audioClip, audioLoopMaxDelay,
                 clip =>
@@ -20,31 +20,27 @@ namespace UnityEngine
                     audioSource.clip = clip;
                     audioSource.volume = volumeScale * DaggerfallUnity.Settings.SoundVolume;
                     audioSource.Play();
-                }, id));
+                }));
         }
 
-        public static void PlayOneShotWhenReady(this AudioSource audioSource, AudioClip audioClip, float volumeScale, int id = -1)
+        public static void PlayOneShotWhenReady(this AudioSource audioSource, AudioClip audioClip, float volumeScale)
         {
             DaggerfallUnity.Instance.StartCoroutine(WhenClipReadyCoroutine(audioClip, audioClipMaxDelay,
                 clip =>
                 {
                     audioSource.volume = volumeScale * DaggerfallUnity.Settings.SoundVolume;
                     audioSource.PlayOneShot(clip);
-                }, id));
+                }));
         }
 
-        public static void PlayClipAtPointWhenReady(AudioClip audioClip, Vector3 position, float volumeScale, int id = -1)
+        public static void PlayClipAtPointWhenReady(AudioClip audioClip, Vector3 position, float volumeScale)
         {
             DaggerfallUnity.Instance.StartCoroutine(WhenClipReadyCoroutine(audioClip, audioClipMaxDelay,
-                clip => AudioSource.PlayClipAtPoint(clip, position, volumeScale * DaggerfallUnity.Settings.SoundVolume), id));
+                clip => AudioSource.PlayClipAtPoint(clip, position, volumeScale * DaggerfallUnity.Settings.SoundVolume)));
         }
 
-        private static IEnumerator WhenClipReadyCoroutine(AudioClip audioClip, float maxDelay, Action<AudioClip> clipHandler, int id = -1)
+        private static IEnumerator WhenClipReadyCoroutine(AudioClip audioClip, float maxDelay, Action<AudioClip> clipHandler)
         {
-            if (id >= 0 && waitingClips.ContainsKey(id))
-                yield break;
-            if (id >= 0)
-                waitingClips[id] = audioClip;
             float loadWaitTimer = 0f;
             while (audioClip.loadState == AudioDataLoadState.Unloaded ||
                    audioClip.loadState == AudioDataLoadState.Loading)
@@ -52,15 +48,10 @@ namespace UnityEngine
                 loadWaitTimer += Time.unscaledDeltaTime;
                 if (loadWaitTimer > maxDelay)
                 {
-                    if (id >= 0)
-                        waitingClips.Remove(id);
                     yield break;
-
                 }
                 yield return null;
             }
-            if (id >= 0)
-                waitingClips.Remove(id);
             clipHandler(audioClip);
         }
     }
