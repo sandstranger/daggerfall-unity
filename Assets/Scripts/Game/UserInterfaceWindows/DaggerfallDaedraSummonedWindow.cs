@@ -128,8 +128,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
 #if UNITY_ANDROID
                 if (Input.GetMouseButtonUp(0)){
-                    Debug.Log(Input.mousePosition);
-                    if (Vector2.Distance(Input.mousePosition, new Vector2(Screen.currentResolution.width, 0)) < 250)
+                    Rect rect = NativePanel.Rectangle;
+                    Vector2 screenPos = Vector2.zero;
+                    screenPos.x = rect.x + rect.width * (textCursor.Position.x / 320f);
+                    screenPos.y = rect.y + rect.height * (1 - textCursor.Position.y / 200f);
+                    if (Input.mousePosition.y < screenPos.y + 20 && Input.mousePosition.x > screenPos.x - 200)
                         TouchscreenKeyboardManager.Instance.ToggleKeyboardOn(androidTextbox);
                 }
                 if (androidTextbox.Text.ToLower().Contains('y'))
