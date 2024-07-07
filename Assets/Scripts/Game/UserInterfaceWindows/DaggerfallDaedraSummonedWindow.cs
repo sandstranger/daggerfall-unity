@@ -124,7 +124,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
 #if UNITY_ANDROID && !UNITY_EDITOR
                 if (Input.GetMouseButtonUp(0)){
-                    if (Vector2.Distance(Input.mousePosition, new Vector2(Screen.currentResolution.width, 0)) < 250)
+                    if (Vector2.Distance(Input.mousePosition, new Vector2(Screen.currentResolution.width, 0)) < 500)
                     {
                         keyboard = TouchScreenKeyboard.Open(string.Empty, TouchScreenKeyboardType.Default);
                     }
