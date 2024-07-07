@@ -69,7 +69,8 @@ namespace DaggerfallWorkshop.Game.UserInterface
             openMenuIcon = Resources.Load<Texture2D>("hamburger_button");
 
             // Drop down button
-            dropDownToggleButton = DaggerfallUI.AddButton(new Rect(0, 0, dropDownToggleButtonSize, dropDownToggleButtonSize), this);
+            
+            dropDownToggleButton = DaggerfallUI.AddButton(new Rect(130, 0, dropDownToggleButtonSize, dropDownToggleButtonSize), this);
             dropDownToggleButton.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);//0.5f);
             dropDownToggleButton.OnMouseClick += DropdownButton_OnMouseClick;
             dropDownToggleButton.Hotkey = DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.OptionsDropdown);
@@ -77,7 +78,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
 
             // Dropdown options panel
             dropdownPanel = new Panel();
-            dropdownPanel.Position = new Vector2(0, dropDownToggleButton.Position.y + dropDownToggleButton.Size.y);
+            dropdownPanel.Position = new Vector2(dropDownToggleButton.Position.x, dropDownToggleButton.Position.y + dropDownToggleButton.Size.y);
             dropdownPanel.Size = new Vector2(50, 30);
             dropdownPanel.BackgroundColor = Color.black;
             dropdownPanel.Enabled = false;
@@ -129,7 +130,7 @@ namespace DaggerfallWorkshop.Game.UserInterface
             dropdownList.Position = new Vector2(2, 2) * Scale;
 
             dropdownPanel.Size = new Vector2(dropdownList.Size.x + 6 * sx, dropdownList.Size.y + 3 * sy);
-            dropdownPanel.Position = new Vector2(0, dropDownToggleButton.Position.y + dropDownToggleButton.Size.y);
+            dropdownPanel.Position = new Vector2(dropDownToggleButton.Position.x, dropDownToggleButton.Position.y + dropDownToggleButton.Size.y);
 
             dropdownScroller.Size = new Vector2(5 * sx, dropdownPanel.Size.y - 3 * sy);
             dropdownScroller.Position = new Vector2(maxTextWidth, 2) * Scale;
