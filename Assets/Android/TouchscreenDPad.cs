@@ -49,7 +49,8 @@ namespace DaggerfallWorkshop.Game
             SetJoystickRadius();
             knob.gameObject.SetActive(false);
         }
-        void OnDestroy(){
+        void OnDestroy()
+        {
             if(myButton)
                 myButton.Resized -= SetJoystickRadius;
         }
@@ -115,7 +116,13 @@ namespace DaggerfallWorkshop.Game
             float angle = Mathf.Atan2(input.y, input.x);
             angle = Mathf.Round(angle / (Mathf.PI / 4)) * (Mathf.PI / 4);
 
-            return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+            Vector2 toReturn = new(Mathf.Cos(angle), Mathf.Sin(angle));
+            if(Mathf.Abs(toReturn.x) < .01f)
+                toReturn.x = 0;
+            if(Mathf.Abs(toReturn.y) < .01f)
+                toReturn.y = 0;
+
+            return toReturn;
         }
         private void SetJoystickRadius(){
             Rect joystickRect = UnityUIUtils.GetScreenspaceRect(background, myCam);
