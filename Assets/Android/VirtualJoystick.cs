@@ -127,11 +127,12 @@ namespace DaggerfallWorkshop.Game
             Vector2 knobPosScreenSpace = TouchStartPos + inputVector * joystickRadius;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(knob.parent as RectTransform, knobPosScreenSpace, myCam, out Vector2 knobPos))
                 knob.localPosition = knobPos;
+            bool isMovementJoystick = verticalAxisAction == InputManager.AxisActions.MovementVertical;
             if (Mathf.Abs(inputVector.x) < deadzone.x && Mathf.Abs(inputVector.y) < deadzone.y)
                 inputVector = Vector2.zero;
-            else if (Mathf.Abs(inputVector.x) / Mathf.Abs(inputVector.y) > 2.4142f)
+            else if (isMovementJoystick && Mathf.Abs(inputVector.x) / Mathf.Abs(inputVector.y) > 2.4142f)
                 inputVector.y = 0;
-            else if (Mathf.Abs(inputVector.y) / Mathf.Abs(inputVector.x) > 2.4142f)
+            else if (isMovementJoystick && Mathf.Abs(inputVector.y) / Mathf.Abs(inputVector.x) > 2.4142f)
                 inputVector.x = 0;
             UpdateVirtualAxes(inputVector);
         }
