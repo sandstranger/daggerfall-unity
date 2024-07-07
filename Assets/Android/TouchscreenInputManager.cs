@@ -87,7 +87,7 @@ namespace DaggerfallWorkshop.Game
             // edit controls canvas setup
             editButtonMappingDropdown.ClearOptions();
             List<string> options = new List<string>();
-            for (int i = 0; i <= (int)InputManager.Actions.Unknown; ++i)
+            for (int i = 0; i <= (int)InputManager.Actions.Custom10; ++i)
                 options.Add(((InputManager.Actions)i).ToString());
             editButtonMappingDropdown.AddOptions(options);
             editButtonMappingDropdown.onValueChanged.AddListener(OnEditControlsDropdownValueChanged);
@@ -112,7 +112,6 @@ namespace DaggerfallWorkshop.Game
             canvas.enabled = IsTouchscreenActive;
             buttonsCanvas.enabled = IsTouchscreenActive;
             joystickCanvas.enabled = !IsEditingControls && IsTouchscreenActive;
-
         }
         private void OnGUI()
         {

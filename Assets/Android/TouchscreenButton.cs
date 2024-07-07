@@ -298,8 +298,15 @@ namespace DaggerfallWorkshop.Game
             }
             else
             {
-                KeyCode myKey = InputManager.Instance.GetBinding(myAction);
-                TouchscreenInputManager.SetKey(myKey, true);
+                if (myAction > InputManager.Actions.Unknown) // if I have a custom action, add the action to the input manager manually
+                {
+                    InputManager.Instance.AddAction(myAction);
+                }
+                else // else use our touchscreen input manager normally
+                {
+                    KeyCode myKey = InputManager.Instance.GetBinding(myAction);
+                    TouchscreenInputManager.SetKey(myKey, true);
+                }
             }
 
         }

@@ -122,7 +122,7 @@ namespace DaggerfallWorkshop.Game
             { (int)Actions.SwingWeapon, (int)KeyCode.Y }
             #else
             { (int)Actions.SwingWeapon, (int)KeyCode.Mouse1 }
-            #endif
+#endif
         };
 
         /// <summary>
@@ -487,6 +487,17 @@ namespace DaggerfallWorkshop.Game
             ToggleRun,
 
             Unknown,
+
+            Custom01,
+            Custom02,
+            Custom03,
+            Custom04,
+            Custom05,
+            Custom06,
+            Custom07,
+            Custom08,
+            Custom09,
+            Custom10
         }
 
         #endregion
@@ -739,7 +750,8 @@ namespace DaggerfallWorkshop.Game
         /// </summary>
         public void AddAction(Actions action)
         {
-            currentActions.Add(action);
+            if (!currentActions.Contains(action))
+                currentActions.Add(action);
         }
 
         /// <summary>
@@ -1757,7 +1769,7 @@ namespace DaggerfallWorkshop.Game
 
             return false;
         }
-
+        
         bool GetPollKey(KeyCode k)
         {
             bool isDepressed = (int)k < startingAxisKeyCode ? Input.GetKey(k) : GetAxisKey((int)k);
