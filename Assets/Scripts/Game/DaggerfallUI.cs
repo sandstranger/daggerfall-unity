@@ -974,7 +974,7 @@ namespace DaggerfallWorkshop.Game
 
         public void PlayOneShot(SoundClips clip)
         {
-            if (dfAudioSource)
+            if (dfAudioSource && (clip != SoundClips.ButtonClick || !DaggerfallUnity.Settings.DisableButtonClickSound))
                 dfAudioSource.PlayOneShot(clip, 0);
         }
 
