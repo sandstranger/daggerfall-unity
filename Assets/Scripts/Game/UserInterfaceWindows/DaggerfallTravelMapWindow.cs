@@ -1173,7 +1173,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         // Check if player mouse over valid location while region selected & not finding location
         protected virtual void UpdateMouseOverLocation()
         {
-            if (RegionSelected == false || FindingLocation)
+            if (RegionSelected == false || FindingLocation || uiManager.TopWindow != this)
                 return;
 
             locationSelected = false;
