@@ -19,11 +19,15 @@ namespace DaggerfallWorkshop.Game
         public static CulledGameObjectManager Instance { get; private set; }
         public const float UnscaledBlockRange = 2060;
         public const float ScaledBlockRange = UnscaledBlockRange * MeshReader.GlobalScale;
+        public const float ScaledBlockRangeSquared = ScaledBlockRange * ScaledBlockRange;
 
         [SerializeField]
         private GameObject culledObjectsParent;
 
         private Dictionary<int, CulledGameObject> culledObjects = new Dictionary<int, CulledGameObject>();
+        private List<int> keysToRemove = new List<int>();
+        private List<GameObject> allCullableObjects = new List<GameObject>();
+        List<GameObject> cullableRDBObjects = new List<GameObject>();
 
         private void Awake()
         {
@@ -49,22 +53,10 @@ namespace DaggerfallWorkshop.Game
             if (Time.frameCount % 66 == 0)
             {
                 // Remove any deleted gameObjects from the culled objects
-                List<int> keysToRemove = new List<int>();
-                foreach(var kvp in culledObjects)
-                {
-                    if (!kvp.Value.gameObject || !kvp.Value.wasOriginalParentNull && !kvp.Value.originalParent || kvp.Value.wasObjectInside != GameManager.Instance.IsPlayerInside)
-                        keysToRemove.Add(kvp.Key);
-                }
-                foreach (int k in keysToRemove)
-                {
-                    if (culledObjects[k].gameObject)
-                        Destroy(culledObjects[k].gameObject);
-                    culledObjects.Remove(k);
-                }
+                RemoveAnyDeletedObjectsFromCulledDictionary();
 
                 // Get cullable objects, etc
                 Vector3 playerPosition = GameManager.Instance.PlayerMotor.transform.position;
-                List<GameObject> allCullableObjects = new List<GameObject>();
                 allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveActionDoorObjects(true));
                 //allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveCivilianMobileObjects(true)); //disabled since civilian mobile objects already cull themselves.
                 allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveEnemyObjects(true));
@@ -73,53 +65,14 @@ namespace DaggerfallWorkshop.Game
                 allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveStaticNPCObjects(true));
 
                 // Cull and un-cull objects based on range. All objects outside of the ScaledBlockRange distance from player should be culled.
-                foreach (GameObject obj in allCullableObjects)
-                {
-                    float distance = Vector3.Distance(playerPosition, obj.transform.position);
-                    if (distance > ScaledBlockRange)
-                    {
-                        if (!IsObjectCulled(obj))
-                        {
-                            CullObject(obj);
-                        }
-                    }
-                    else
-                    {
-                        if (IsObjectCulled(obj))
-                        {
-                            UnCullObject(obj);
-                        }
-                    }
-                }
+                CullAndUncullDistantObjects(playerPosition);
+                allCullableObjects.Clear();
 
                 // Cull and un-cull dungeon blocks based on range.
-                List<GameObject> cullableRDBObjects = new List<GameObject>();
                 cullableRDBObjects.AddRange(ActiveGameObjectDatabase.GetActiveRDBObjects(true));
                 cullableRDBObjects.RemoveAll(p => p.transform.root && p.transform.root.gameObject.name == "Automap");
-                foreach (GameObject block in cullableRDBObjects)
-                {
-                    // Constructing bounds manually based on the block's footprint and pivot information
-                    Vector3 blockCenter = block.transform.position + Vector3.one * (1024 * MeshReader.GlobalScale); // Center of the block
-                    Vector3 blockSize = Vector3.one * (2048 * MeshReader.GlobalScale); // Assuming infinite height for simplicity
-                    Bounds blockBounds = new Bounds(blockCenter, blockSize);
-
-                    // Check if the player is within the ScaledBlockRange from the closest point on the bounds
-                    float closestPointDistance = Vector3.Distance(playerPosition, blockBounds.ClosestPoint(playerPosition));
-                    if (closestPointDistance > ScaledBlockRange && !blockBounds.Contains(playerPosition)) // Check if outside range and player not inside block
-                    {
-                        if (!IsObjectCulled(block))
-                        {
-                            CullObject(block);
-                        }
-                    }
-                    else
-                    {
-                        if (IsObjectCulled(block))
-                        {
-                            UnCullObject(block);
-                        }
-                    }
-                }
+                CullAndUncullDistantDungeonBlocks(playerPosition);
+                cullableRDBObjects.Clear();
             }
         }
 
@@ -170,6 +123,69 @@ namespace DaggerfallWorkshop.Game
         public bool IsObjectCulled(GameObject obj)
         {
             return obj && culledObjects.ContainsKey(obj.GetInstanceID());
+        }
+        private void RemoveAnyDeletedObjectsFromCulledDictionary()
+        {
+            foreach (var kvp in culledObjects)
+            {
+                if (!kvp.Value.gameObject || !kvp.Value.wasOriginalParentNull && !kvp.Value.originalParent || kvp.Value.wasObjectInside != GameManager.Instance.IsPlayerInside)
+                    keysToRemove.Add(kvp.Key);
+            }
+            foreach (int k in keysToRemove)
+            {
+                if (culledObjects[k].gameObject)
+                    Destroy(culledObjects[k].gameObject);
+                culledObjects.Remove(k);
+            }
+            keysToRemove.Clear();
+        }
+        private void CullAndUncullDistantObjects(Vector3 playerPosition)
+        {
+            foreach (GameObject obj in allCullableObjects)
+            {
+                float sqrDistance = (playerPosition - obj.transform.position).sqrMagnitude;
+                if (sqrDistance > ScaledBlockRangeSquared)
+                {
+                    if (!IsObjectCulled(obj))
+                    {
+                        CullObject(obj);
+                    }
+                }
+                else
+                {
+                    if (IsObjectCulled(obj))
+                    {
+                        UnCullObject(obj);
+                    }
+                }
+            }
+        }
+        private void CullAndUncullDistantDungeonBlocks(Vector3 playerPosition)
+        {
+            foreach (GameObject block in cullableRDBObjects)
+            {
+                // Constructing bounds manually based on the block's footprint and pivot information
+                Vector3 blockCenter = block.transform.position + Vector3.one * (1024 * MeshReader.GlobalScale); // Center of the block
+                Vector3 blockSize = Vector3.one * (2048 * MeshReader.GlobalScale); // Assuming infinite height for simplicity
+                Bounds blockBounds = new Bounds(blockCenter, blockSize);
+
+                // Check if the player is within the ScaledBlockRange from the closest point on the bounds
+                float closestPointDistance = Vector3.Distance(playerPosition, blockBounds.ClosestPoint(playerPosition));
+                if (closestPointDistance > ScaledBlockRange && !blockBounds.Contains(playerPosition)) // Check if outside range and player not inside block
+                {
+                    if (!IsObjectCulled(block))
+                    {
+                        CullObject(block);
+                    }
+                }
+                else
+                {
+                    if (IsObjectCulled(block))
+                    {
+                        UnCullObject(block);
+                    }
+                }
+            }
         }
     }
 }
