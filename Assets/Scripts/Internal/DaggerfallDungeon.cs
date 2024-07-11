@@ -382,7 +382,7 @@ namespace DaggerfallWorkshop
                 {
                     if (Vector3.Distance(actionDoor.transform.position, pos) < tolerance)
                     {
-                        actionDoor.gameObject.SetActive(false);
+                        Destroy(actionDoor.gameObject);
                         duplicateFound = true;
                         Debug.Log(">Disabled overlapping action door");
                         break;

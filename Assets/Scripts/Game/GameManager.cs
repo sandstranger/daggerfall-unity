@@ -779,11 +779,11 @@ namespace DaggerfallWorkshop.Game
         /// </summary>
         public void ClearEnemies()
         {
-            foreach (GameObject enemyObject in ActiveGameObjectDatabase.GetActiveEnemyObjects())
+            foreach (GameObject enemyObject in ActiveGameObjectDatabase.GetActiveEnemyObjects(true))
                 Destroy(enemyObject);
 
             // Also check for enemy spawners that might emit an enemy
-            foreach (GameObject spawnerObject in ActiveGameObjectDatabase.GetActiveFoeSpawnerObjects())
+            foreach (GameObject spawnerObject in ActiveGameObjectDatabase.GetActiveFoeSpawnerObjects(true))
                 Destroy(spawnerObject);
         }
 
