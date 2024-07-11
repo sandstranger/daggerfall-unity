@@ -29,5 +29,24 @@ namespace DaggerfallWorkshop
             }
 #endif
         }
+
+        public enum ApplicationRunMode
+        {
+            Device,
+            Editor,
+            Simulator
+        }
+        public static bool IsRunningInSimulator => CurrentApplicationRunMode == ApplicationRunMode.Simulator;
+        public static ApplicationRunMode CurrentApplicationRunMode
+        {
+            get
+            {
+#if UNITY_EDITOR
+                return UnityEngine.Device.Application.isEditor && !UnityEngine.Device.Application.isMobilePlatform ? ApplicationRunMode.Editor : ApplicationRunMode.Simulator;
+#else
+      return ApplicationRunMode.Device;
+#endif
+            }
+        }
     }
 }

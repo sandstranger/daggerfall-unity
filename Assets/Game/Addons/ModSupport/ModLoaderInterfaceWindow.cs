@@ -54,6 +54,7 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
     readonly Button enableAllButton          = new Button();
     readonly Button disableAllButton         = new Button();
     readonly Button saveAndCloseButton       = new Button();
+    readonly Button removeModButton          = new Button();
     readonly Button extractFilesButton       = new Button();
     readonly Button showModDescriptionButton = new Button();
     readonly Button modSettingsButton        = new Button();
@@ -265,7 +266,7 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
         saveAndCloseButton.OnMouseClick += SaveAndCloseButton_OnMouseClick;
         saveAndCloseButton.Hotkey = DaggerfallShortcut.GetBinding(DaggerfallShortcut.Buttons.GameSetupSaveAndClose);
         ModPanel.Components.Add(saveAndCloseButton);
-
+        
         extractFilesButton.Size = new Vector2(60, 12);
         extractFilesButton.Position = new Vector2(5, 117);
         extractFilesButton.Outline.Enabled = true;
@@ -286,6 +287,18 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
         modSettingsButton.OnMouseClick += ModSettingsButton_OnMouseClick;
         modSettingsButton.Enabled = false;
         ModPanel.Components.Add(modSettingsButton);
+
+#if UNITY_ANDROID
+        removeModButton.Size = new Vector2(50, 12);
+        removeModButton.Outline.Enabled = true;
+        removeModButton.BackgroundColor = textColor;
+        removeModButton.VerticalAlignment = VerticalAlignment.Bottom;
+        removeModButton.HorizontalAlignment = HorizontalAlignment.Right;
+        removeModButton.Label.Text = ModManager.GetText("removeMod");
+        removeModButton.Label.ToolTipText = ModManager.GetText("removeModInfo");
+        removeModButton.OnMouseClick += RemoveModButton_OnMouseClick;
+        ModPanel.Components.Add(removeModButton);
+#endif
 
         GetLoadedMods();
         UpdateModPanel();
@@ -781,6 +794,37 @@ public class ModLoaderInterfaceWindow : DaggerfallPopupWindow
         Mod mod = ModManager.Instance.GetMod(modSettings[modList.SelectedIndex].modInfo.ModTitle);
         ModSettingsWindow modSettingsWindow = new ModSettingsWindow(DaggerfallUI.UIManager, mod);
         DaggerfallUI.UIManager.PushWindow(modSettingsWindow);
+    }
+
+    void RemoveModButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
+    {
+        Mod mod = ModManager.Instance.GetMod(modSettings[modList.SelectedIndex].modInfo.ModTitle);
+        if (mod != null)
+        {
+            string modTitle = mod.Title;
+            string modPath = Path.Combine(mod.DirPath, mod.FileName + ".dfmod");
+            string modVersion = mod.ModInfo.ModVersion;
+            string modAuthor = mod.ModInfo.ModAuthor;
+
+            var messageBox = new DaggerfallMessageBox(uiManager, this);
+            messageBox.AllowCancel = true;
+            messageBox.ClickAnywhereToClose = true;
+            messageBox.ParentPanel.BackgroundTexture = null;
+            messageBox.SetText(string.Format(ModManager.GetText("removeModConfirmation"), modTitle));
+            messageBox.AddButton(DaggerfallMessageBox.MessageBoxButtons.Yes);
+            messageBox.AddButton(DaggerfallMessageBox.MessageBoxButtons.No, true);
+            messageBox.OnButtonClick += (sender2, button) =>
+            {
+                if (button == DaggerfallMessageBox.MessageBoxButtons.Yes)
+                {
+                    ModManager.Instance.UnloadMod(modTitle, true);
+                    File.Delete(modPath);
+                    RefreshButton_OnMouseClick(null, Vector2.zero);
+                    AndroidUtils.RestartAndroid();
+                }
+            };
+            uiManager.PushWindow(messageBox);
+        }
     }
 
     void ModEnabledCheckBox_OnToggleState()

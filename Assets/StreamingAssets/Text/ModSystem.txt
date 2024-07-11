@@ -33,6 +33,9 @@ refresh,                    Refresh
 refreshInfo,                Check for changes in mod directory
 saveClose,                  Save and Close
 saveCloseInfo,              Save changes and return to options menu
+removeMod,                  Remove Mod
+removeModInfo,              Uninstall the mod
+removeModConfirmation,      Are you sure you want to remove {0}? This will restart the app.
 extractText,                Extract Text
 extractTextInfo,            Extract Text Assets
 extractTextConfirmation,    All text assets from this mod have been extracted to {0}.

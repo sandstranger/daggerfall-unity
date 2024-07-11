@@ -1395,44 +1395,49 @@ namespace DaggerfallWorkshop.Game
             Vector2 lerped = Vector2.Lerp(a, b, t);
             return new Vector2Int((int)lerped.x, (int)lerped.y);
         }
+
         /// <summary>
         /// Gets all resolutions without duplicates; when the same resolution support different refresh rates, the highest one is chosen.
         /// </summary>
         /// <returns>All supported distinct resolutions.</returns>
         public static Resolution[] GetDistinctResolutions()
         {
-#if UNITY_ANDROID
-            Vector2Int maxRes = baseScreenResolution ?? new Vector2Int(1920, 1080);
-            Vector2Int minRes = new Vector2Int((int)(maxRes.x / (maxRes.y/360f)), 360);
-            
-            List<Resolution> resolutions = new List<Resolution>();
-            for(int i = 0; i <= 9; ++ i)
+            if(Application.isMobilePlatform || AndroidUtils.IsRunningInSimulator)
             {
-                Vector2Int stepRes = LerpVector2Int(maxRes, minRes, i/9f);
-                resolutions.Add(new Resolution() { width = stepRes.x, height = stepRes.y });
-            }
+                Debug.Log("Getting distinct resolutions for mobile platform");
+                Vector2Int maxRes = baseScreenResolution ?? new Vector2Int(1920, 1080);
+                Vector2Int minRes = new Vector2Int((int)(maxRes.x / (maxRes.y / 360f)), 360);
 
-            return resolutions.ToArray();
-#else
-            Resolution[] resolutions = Screen.resolutions;
-            var distinctResolutions = new List<Resolution>(resolutions.Length);
-
-            for (int i = 0; i < resolutions.Length; i++)
-            {
-                Resolution current = resolutions[i];
-
-                if (i + 1 < resolutions.Length)
+                List<Resolution> resolutions = new List<Resolution>();
+                for (int i = 0; i <= 9; ++i)
                 {
-                    Resolution next = resolutions[i + 1];
-                    if (current.width == next.width && current.height == next.height)
-                        continue;
+                    Vector2Int stepRes = LerpVector2Int(maxRes, minRes, i / 9f);
+                    resolutions.Add(new Resolution() { width = stepRes.x, height = stepRes.y });
                 }
 
-                distinctResolutions.Add(current);
+                return resolutions.ToArray();
             }
+            else
+            {
+                Resolution[] resolutions = Screen.resolutions;
+                var distinctResolutions = new List<Resolution>(resolutions.Length);
 
-            return distinctResolutions.ToArray();
-#endif
+                for (int i = 0; i < resolutions.Length; i++)
+                {
+                    Resolution current = resolutions[i];
+
+                    if (i + 1 < resolutions.Length)
+                    {
+                        Resolution next = resolutions[i + 1];
+                        if (current.width == next.width && current.height == next.height)
+                            continue;
+                    }
+
+                    distinctResolutions.Add(current);
+                }
+
+                return distinctResolutions.ToArray();
+            }
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿// Project:         Daggerfall Unity
+// Project:         Daggerfall Unity
 // Copyright:       Copyright (C) 2009-2023 Daggerfall Workshop
 // Web Site:        http://www.dfworkshop.net
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -535,6 +535,32 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
                     .Any(looseQuest => looseQuest == questName));
         }
 
+        // Unload mod and related asset bundle
+        public bool UnloadMod(string modTitle, bool unloadAllAssets)
+        {
+            try
+            {
+                int index = GetModIndex(modTitle);
+                if (index < 0)
+                {
+                    Debug.Log("Failed to unload mod as mod title wasn't found: " + modTitle);
+                    return false;
+                }
+
+                Mod mod = mods[index];
+                if (mod.AssetBundle)
+                    mod.AssetBundle.Unload(unloadAllAssets);
+
+                mods.RemoveAt(index);
+                OnUnloadMod(modTitle);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.Message);
+                return false;
+            }
+        }
         #endregion
 
         #region Mod Loading & setup
@@ -659,32 +685,6 @@ namespace DaggerfallWorkshop.Game.Utility.ModSupport
             }
         }
 
-        // Unload mod and related asset bundle
-        private bool UnloadMod(string modTitle, bool unloadAllAssets)
-        {
-            try
-            {
-                int index = GetModIndex(modTitle);
-                if (index < 0)
-                {
-                    Debug.Log("Failed to unload mod as mod title wasn't found: " + modTitle);
-                    return false;
-                }
-
-                Mod mod = mods[index];
-                if (mod.AssetBundle)
-                    mod.AssetBundle.Unload(unloadAllAssets);
-
-                mods.RemoveAt(index);
-                OnUnloadMod(modTitle);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(ex.Message);
-                return false;
-            }
-        }
 
         //begin setting up mods
         private void Init()

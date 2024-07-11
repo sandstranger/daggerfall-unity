@@ -425,7 +425,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             dunMicMapInnerColor.BackgroundColor = DaggerfallUI.DaggerfallDefaultMicMapInnerQoLColor;
             dunMicMapBorderColor.BackgroundColor = DaggerfallUI.DaggerfallDefaultMicMapBorderQoLColor;
         }
-
         private void SaveSettings()
         {
             /* GamePlay */
@@ -502,29 +501,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             if (applyScreenChanges)
             {
-                Resolution selectedResolution = resolutions[resolution.ScrollIndex];
-                DaggerfallUnity.Settings.ResolutionWidth = selectedResolution.width;
-                DaggerfallUnity.Settings.ResolutionHeight = selectedResolution.height;
-                DaggerfallUnity.Settings.Fullscreen = fullscreen.IsChecked;
-                //DaggerfallUnity.Settings.ExclusiveFullscreen = exclusiveFullscreen.IsChecked;
-
-                if (DaggerfallUnity.Settings.ExclusiveFullscreen && DaggerfallUnity.Settings.Fullscreen)
-                {
-                    SettingsManager.SetScreenResolution(
-                        selectedResolution.width,
-                        selectedResolution.height,
-                        FullScreenMode.ExclusiveFullScreen);
-                }
-                else
-                {
-                    SettingsManager.SetScreenResolution(
-                        selectedResolution.width,
-                        selectedResolution.height,
-                        fullscreen.IsChecked);
-                }
-
-                DaggerfallUnity.Settings.QualityLevel = qualityLevel.ScrollIndex;
-                QualitySettings.SetQualityLevel(qualityLevel.ScrollIndex);
+                ApplyScreenChanges(resolutions[resolution.ScrollIndex], fullscreen.IsChecked, qualityLevel.ScrollIndex);
             }
             Application.runInBackground = DaggerfallUnity.Settings.RunInBackground = runInBackground.IsChecked;
             DaggerfallUnity.Settings.MainFilterMode = mainFilterMode.ScrollIndex;
@@ -649,6 +626,32 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         #region Helper Methods
 
+        public static void ApplyScreenChanges(Resolution resolution, bool fullscreen, int qualityLevel)
+        {
+            DaggerfallUnity.Settings.ResolutionWidth = resolution.width;
+            DaggerfallUnity.Settings.ResolutionHeight = resolution.height;
+            DaggerfallUnity.Settings.Fullscreen = fullscreen;
+            //DaggerfallUnity.Settings.ExclusiveFullscreen = exclusiveFullscreen.IsChecked;
+
+            if (DaggerfallUnity.Settings.ExclusiveFullscreen && DaggerfallUnity.Settings.Fullscreen)
+            {
+                SettingsManager.SetScreenResolution(
+                    resolution.width,
+                    resolution.height,
+                    FullScreenMode.ExclusiveFullScreen);
+            }
+            else
+            {
+                SettingsManager.SetScreenResolution(
+                    resolution.width,
+                    resolution.height,
+                    fullscreen);
+            }
+
+            DaggerfallUnity.Settings.QualityLevel = qualityLevel;
+            QualitySettings.SetQualityLevel(qualityLevel);
+        }
+        
         /// <summary>
         /// Add a section title.
         /// </summary>

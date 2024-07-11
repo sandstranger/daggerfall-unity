@@ -282,7 +282,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             browserPanel.Enabled = false;
 
             // Get resolutions
-            initialResolution = Screen.currentResolution;
+            initialResolution = Application.isMobilePlatform || AndroidUtils.IsRunningInSimulator ? Screen.currentResolution : new Resolution() { width = Screen.width, height = Screen.height };
             availableResolutions = DaggerfallUI.GetDistinctResolutions();
 
             // Create backdrop
