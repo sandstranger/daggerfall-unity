@@ -446,11 +446,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 Position = new Vector2(2, 0),
                 VerticalAlignment = VerticalAlignment.Middle,
                 MinTextureDimTextLabel = 16, // important to prevent scaling issues for single text lines
-                TextScale = 0.93f,
-                MaxTextWidth = 87,
+                TextScale = 0.65f,
+                MaxTextWidth = 37,
                 WrapText = true,
                 WrapWords = true,
-                ExtraLeading = 3, // spacing between info panel elements
+                ExtraLeading = 1, // spacing between info panel elements
                 TextColor = DaggerfallUI.DaggerfallInfoPanelTextColor,
                 ShadowPosition = new Vector2(0.5f, 0.5f),
                 ShadowColor = DaggerfallUI.DaggerfallAlternateShadowColor1
