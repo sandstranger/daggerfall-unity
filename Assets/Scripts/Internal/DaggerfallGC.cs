@@ -23,6 +23,7 @@ namespace DaggerfallWorkshop
 
         public static void ThrottledUnloadUnusedAssets()
         {
+            Debug.Log("ThrottleUnloadUnusedAssets");
             if (Time.realtimeSinceStartup >= uuaTimer)
                 ForcedUnloadUnusedAssets();
         }
