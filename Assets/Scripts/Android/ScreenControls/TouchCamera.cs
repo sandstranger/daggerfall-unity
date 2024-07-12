@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using DaggerfallWorkshop.Game.Serialization;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 namespace DaggerfallWorkshop.Game
 {
     sealed class TouchCamera : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
     {
+        private const int DefaultPointerId = -1;
+
         public Vector2 CurrentTouchDelta { get; private set; }
 
         [SerializeField]
@@ -13,10 +15,20 @@ namespace DaggerfallWorkshop.Game
         [SerializeField]
         private bool _resetOnLateUpdate = true;
 
-        private int _pointerId = -1;
+        private int _pointerId = DefaultPointerId;
+
+        private void Start()
+        {
+            SaveLoadManager.OnLoad += _ => _pointerId = DefaultPointerId;
+        }
 
         public void OnDrag(PointerEventData data)
         {
+            if (_pointerId == DefaultPointerId)
+            {
+                _pointerId = data.pointerId;
+            }
+
             if (data.pointerId == _pointerId)
             {
                 CurrentTouchDelta = data.delta / _smoothness;
@@ -38,7 +50,7 @@ namespace DaggerfallWorkshop.Game
         {
             if (data.pointerId == _pointerId)
             {
-                _pointerId = -1;
+                _pointerId = DefaultPointerId;
                 CurrentTouchDelta = Vector2.zero;
             }
         }
