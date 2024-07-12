@@ -406,7 +406,7 @@ namespace DaggerfallWorkshop.Game
             // since new teleporters could have been discovered by pc since last time map was open this must be checked here       
             CreateTeleporterMarkers();
 
-            SetActivationStateOfMapObjects(true);
+            //SetActivationStateOfMapObjects(true);
 
             gameobjectPlayerMarkerArrow.transform.position = gameObjectPlayerAdvanced.transform.position;
             gameobjectPlayerMarkerArrow.transform.rotation = gameObjectPlayerAdvanced.transform.rotation;
@@ -429,12 +429,6 @@ namespace DaggerfallWorkshop.Game
         /// </summary>
         public void UpdateAutomapStateOnWindowPop()
         {
-            // about SetActivationStateOfMapObjects(false):
-            // this will not be enough if we will eventually allow gui windows to be opened while exploring the world
-            // then it will be necessary to either only disable the colliders on the automap level geometry or
-            // make player collision ignore colliders of objects in automap layer - I would clearly prefer this option
-            SetActivationStateOfMapObjects(false);
-
             if ((GameManager.Instance.PlayerEnterExit.IsPlayerInside) && ((GameManager.Instance.PlayerEnterExit.IsPlayerInsideBuilding) || (GameManager.Instance.PlayerEnterExit.IsPlayerInsideDungeon) || (GameManager.Instance.PlayerEnterExit.IsPlayerInsideDungeonCastle)))
             {
                 // and get rid of lights used to light the automap level geometry
@@ -1154,9 +1148,6 @@ namespace DaggerfallWorkshop.Game
 
             if ((gameobjectGeometry != null) && ((GameManager.Instance.IsPlayerInsideBuilding) || (GameManager.Instance.IsPlayerInsideDungeon) || (GameManager.Instance.IsPlayerInsideCastle)))
             {
-                // enable automap level geometry for revealing (so raycasts can hit colliders of automap level geometry)
-                gameobjectGeometry.SetActive(true);
-
                 // reveal geometry right below player - raycast down from player head position
                 Vector3 rayStartPos = gameObjectPlayerAdvanced.transform.position + Camera.main.transform.localPosition;
                 Vector3 rayDirection = Vector3.down;
@@ -1189,9 +1180,6 @@ namespace DaggerfallWorkshop.Game
                         ScanWithRaycastInDirectionAndUpdateMeshesAndMaterials(rayStartPos + stepVector, rayDirection, rayDistance, offsetSecondProtectionRaycast);
                     }
                 }
-
-                // disable gameobjectGeometry so player movement won't be affected by geometry colliders of automap level geometry
-                gameobjectGeometry.SetActive(false);
             }
 
             // entrance marker discovery check - only do as long as undiscovered
@@ -1315,24 +1303,6 @@ namespace DaggerfallWorkshop.Game
         //    material.renderQueue = 3000;
         //}
 
-        /// <summary>
-        /// sets active state of map GameObjects like geometry, beacons, user note markers and teleporter markers
-        /// used on automap open to enable (show) objects and hide them on automap close
-        /// it is important to set them inactive when closing the map - so that ingame raycasts won't hit colliders of map objects
-        /// </summary>
-        /// <param name="active">the desired activation state for the map objects to be set</param>
-        private void SetActivationStateOfMapObjects(bool active)
-        {          
-            gameobjectGeometry.SetActive(active);
-
-            gameobjectBeacons.SetActive(active);
-
-            if (gameObjectUserNoteMarkers != null)
-                gameObjectUserNoteMarkers.SetActive(active);
-
-            if (gameobjectTeleporterMarkers != null)
-                gameobjectTeleporterMarkers.SetActive(active);
-        }
 
         /// <summary>
         /// setup beacons: lazy creation of player marker arrow and beacons including
@@ -1621,8 +1591,6 @@ namespace DaggerfallWorkshop.Game
                 gameobjectTeleporterMarkers.transform.SetParent(gameobjectAutomap.transform);
                 gameobjectTeleporterMarkers.layer = layerAutomap;
             }
-
-            gameobjectTeleporterMarkers.SetActive(false);
 
             string teleporterEntranceName = NameGameobjectTeleporterSubStringStart + dictkey + NameGameobjectTeleporterEntranceSubStringEnd;
             if (gameobjectTeleporterMarkers.transform.Find(teleporterEntranceName) == null)
@@ -2484,16 +2452,12 @@ namespace DaggerfallWorkshop.Game
                 CreateIndoorGeometryForAutomap(door.Value);
                 RestoreStateAutomapDungeon(true);
                 resetAutomapSettingsFromExternalScript = true; // set flag so external script (DaggerfallAutomapWindow) can pull flag and reset automap values on next window push
-
-                SetActivationStateOfMapObjects(false);
             }
             else if ((GameManager.Instance.IsPlayerInsideDungeon) || (GameManager.Instance.IsPlayerInsideCastle))
             {
                 CreateDungeonGeometryForAutomap();
                 RestoreStateAutomapDungeon(!initFromLoadingSave); // if a save game was loaded, do not reset the revisited state (don't set parameter forceNotVisitedInThisRun to true)
                 resetAutomapSettingsFromExternalScript = true; // set flag so external script (DaggerfallAutomapWindow) can pull flag and reset automap values on next window push
-
-                SetActivationStateOfMapObjects(false);
             }
             else
             {
