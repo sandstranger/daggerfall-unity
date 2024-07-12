@@ -66,7 +66,10 @@ namespace DaggerfallWorkshop.Game
             // Remove any deleted gameObjects from the culled objects
             RemoveAnyDeletedObjectsFromCulledDictionary();
             if ((playerPosition - lastPlayerPosition).sqrMagnitude > ScaledBlockRangeSquared / 4) // make sure everything is updated instantly upon teleport
+            {
                 UpdateAllCullableObjects(playerPosition);
+                cullIteration = 10; // jump to iteration 10 so it's a couple frames and then it starts over
+            }
             else
                 UpdateCullableObjectsBasedOnIteration(cullIteration, playerPosition); // otherwise do a new batch of objects every other frame.
             cullIteration++;
@@ -133,20 +136,20 @@ namespace DaggerfallWorkshop.Game
             switch (cullIteration)
             {
                 case 0:
-                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveFoeSpawnerObjects(true)); Debug.Log("Culling foe spawners");
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveFoeSpawnerObjects(true));
                     break;
                 case 2:
-                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveEnemyObjects(true)); Debug.Log("Culling enemies");
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveEnemyObjects(true));
                     CullAndUncullDistantDungeonBlocks(playerPosition, ActiveGameObjectDatabase.GetActiveRDBObjects(true).Where(p => !p.transform.root || p.transform.root.gameObject.name != "Automap"));
                     break;
                 case 4:
-                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveActionDoorObjects(true)); Debug.Log("Culling doors");
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveActionDoorObjects(true));
                     break;
                 case 6:
-                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveStaticNPCObjects(true)); Debug.Log("Culling static npcs");
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveStaticNPCObjects(true));
                     break;
                 case 8:
-                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveLootObjects(true)); Debug.Log("Culling loot");
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveLootObjects(true));
                     break;
                 case 10:
                     break;
