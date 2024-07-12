@@ -152,6 +152,8 @@ namespace DaggerfallWorkshop.Game
                     CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveLootObjects(true));
                     break;
                 case 10:
+                    if(!GameManager.Instance.IsPlayerInside)
+                        CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveBillboardObjects(true), 150*150);
                     break;
                 //disabled since civilian mobile objects already cull themselves.
                 //case 5:
@@ -176,12 +178,12 @@ namespace DaggerfallWorkshop.Game
             }
             keysToRemove.Clear();
         }
-        private void CullAndUncullDistantObjects(Vector3 playerPosition, IEnumerable<GameObject> cullableObjects)
+        private void CullAndUncullDistantObjects(Vector3 playerPosition, IEnumerable<GameObject> cullableObjects, float maxSquaredDistance = ScaledBlockRangeSquared)
         {
             foreach (GameObject obj in cullableObjects)
             {
                 float sqrDistance = (playerPosition - obj.transform.position).sqrMagnitude;
-                if (sqrDistance > ScaledBlockRangeSquared)
+                if (sqrDistance > maxSquaredDistance)
                 {
                     if (!IsObjectCulled(obj))
                     {
