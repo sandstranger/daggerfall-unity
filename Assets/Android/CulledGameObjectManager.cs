@@ -1,5 +1,6 @@
 using DaggerfallWorkshop.Game.Entity;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace DaggerfallWorkshop.Game
@@ -26,8 +27,10 @@ namespace DaggerfallWorkshop.Game
 
         private Dictionary<int, CulledGameObject> culledObjects = new Dictionary<int, CulledGameObject>();
         private List<int> keysToRemove = new List<int>();
-        private List<GameObject> allCullableObjects = new List<GameObject>();
-        List<GameObject> cullableRDBObjects = new List<GameObject>();
+        private int cullIteration = 0;
+
+        private Vector3 lastPlayerPosition = new Vector3(0, 0, 0);
+        private bool wasPlayerInside = false;
 
         private void Awake()
         {
@@ -47,33 +50,28 @@ namespace DaggerfallWorkshop.Game
                 culledObjectsParent.SetActive(false);
             }
         }
-
+        private void Start()
+        {
+            lastPlayerPosition = GameManager.Instance.PlayerMotor.transform.position;
+        }
         private void Update()
         {
-            if (Time.frameCount % 66 == 0)
+            Vector3 playerPosition = GameManager.Instance.PlayerMotor.transform.position;
+            if (GameManager.Instance.IsPlayerInside != wasPlayerInside)
             {
-                // Remove any deleted gameObjects from the culled objects
-                RemoveAnyDeletedObjectsFromCulledDictionary();
-
-                // Get cullable objects, etc
-                Vector3 playerPosition = GameManager.Instance.PlayerMotor.transform.position;
-                allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveActionDoorObjects(true));
-                //allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveCivilianMobileObjects(true)); //disabled since civilian mobile objects already cull themselves.
-                allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveEnemyObjects(true));
-                allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveFoeSpawnerObjects(true));
-                allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveLootObjects(true));
-                allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveStaticNPCObjects(true));
-
-                // Cull and un-cull objects based on range. All objects outside of the ScaledBlockRange distance from player should be culled.
-                CullAndUncullDistantObjects(playerPosition);
-                allCullableObjects.Clear();
-
-                // Cull and un-cull dungeon blocks based on range.
-                cullableRDBObjects.AddRange(ActiveGameObjectDatabase.GetActiveRDBObjects(true));
-                cullableRDBObjects.RemoveAll(p => p.transform.root && p.transform.root.gameObject.name == "Automap");
-                CullAndUncullDistantDungeonBlocks(playerPosition);
-                cullableRDBObjects.Clear();
+                cullIteration = 0;
+                lastPlayerPosition = playerPosition;
+                wasPlayerInside = GameManager.Instance.IsPlayerInside;
             }
+            // Remove any deleted gameObjects from the culled objects
+            RemoveAnyDeletedObjectsFromCulledDictionary();
+            if ((playerPosition - lastPlayerPosition).sqrMagnitude > ScaledBlockRangeSquared / 4) // make sure everything is updated instantly upon teleport
+                UpdateAllCullableObjects(playerPosition);
+            else
+                UpdateCullableObjectsBasedOnIteration(cullIteration, playerPosition); // otherwise do a new batch of objects every other frame.
+            cullIteration++;
+            cullIteration %= 12;
+            lastPlayerPosition = playerPosition;
         }
 
         public bool CullObject(GameObject objectToCull)
@@ -124,6 +122,42 @@ namespace DaggerfallWorkshop.Game
         {
             return obj && culledObjects.ContainsKey(obj.GetInstanceID());
         }
+        private void UpdateAllCullableObjects(Vector3 playerPosition)
+        {
+            for (int i = 0; i <= 10; i+=2)
+                UpdateCullableObjectsBasedOnIteration(i, playerPosition);
+        }
+        private void UpdateCullableObjectsBasedOnIteration(int cullIteration, Vector3 playerPosition)
+        {
+            // Cull and un-cull objects based on range. All objects outside of the ScaledBlockRange distance from player should be culled.
+            switch (cullIteration)
+            {
+                case 0:
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveFoeSpawnerObjects(true)); Debug.Log("Culling foe spawners");
+                    break;
+                case 2:
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveEnemyObjects(true)); Debug.Log("Culling enemies");
+                    CullAndUncullDistantDungeonBlocks(playerPosition, ActiveGameObjectDatabase.GetActiveRDBObjects(true).Where(p => !p.transform.root || p.transform.root.gameObject.name != "Automap"));
+                    break;
+                case 4:
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveActionDoorObjects(true)); Debug.Log("Culling doors");
+                    break;
+                case 6:
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveStaticNPCObjects(true)); Debug.Log("Culling static npcs");
+                    break;
+                case 8:
+                    CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveLootObjects(true)); Debug.Log("Culling loot");
+                    break;
+                case 10:
+                    break;
+                //disabled since civilian mobile objects already cull themselves.
+                //case 5:
+                //    //allCullableObjects.AddRange(ActiveGameObjectDatabase.GetActiveCivilianMobileObjects(true)); 
+                //    break;
+
+            }
+        }
+
         private void RemoveAnyDeletedObjectsFromCulledDictionary()
         {
             foreach (var kvp in culledObjects)
@@ -139,9 +173,9 @@ namespace DaggerfallWorkshop.Game
             }
             keysToRemove.Clear();
         }
-        private void CullAndUncullDistantObjects(Vector3 playerPosition)
+        private void CullAndUncullDistantObjects(Vector3 playerPosition, IEnumerable<GameObject> cullableObjects)
         {
-            foreach (GameObject obj in allCullableObjects)
+            foreach (GameObject obj in cullableObjects)
             {
                 float sqrDistance = (playerPosition - obj.transform.position).sqrMagnitude;
                 if (sqrDistance > ScaledBlockRangeSquared)
@@ -160,7 +194,7 @@ namespace DaggerfallWorkshop.Game
                 }
             }
         }
-        private void CullAndUncullDistantDungeonBlocks(Vector3 playerPosition)
+        private void CullAndUncullDistantDungeonBlocks(Vector3 playerPosition, IEnumerable<GameObject> cullableRDBObjects)
         {
             foreach (GameObject block in cullableRDBObjects)
             {
