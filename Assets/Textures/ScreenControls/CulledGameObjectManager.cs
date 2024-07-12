@@ -136,6 +136,8 @@ namespace DaggerfallWorkshop.Game
             switch (cullIteration)
             {
                 case 0:
+                    if (!GameManager.Instance.IsPlayerInside)
+                        CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveBillboardObjects(true), 150 * 150);
                     CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveFoeSpawnerObjects(true));
                     break;
                 case 2:
@@ -152,8 +154,6 @@ namespace DaggerfallWorkshop.Game
                     CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveLootObjects(true));
                     break;
                 case 10:
-                    if(!GameManager.Instance.IsPlayerInside)
-                        CullAndUncullDistantObjects(playerPosition, ActiveGameObjectDatabase.GetActiveBillboardObjects(true), 150*150);
                     break;
                 //disabled since civilian mobile objects already cull themselves.
                 //case 5:
