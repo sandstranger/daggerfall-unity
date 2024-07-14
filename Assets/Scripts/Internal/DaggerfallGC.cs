@@ -40,17 +40,19 @@ namespace DaggerfallWorkshop
 
         private static IEnumerator ForcedUnloadUnusedAssets_Coroutine()
         {
+            uuaTimer = Time.realtimeSinceStartup + uuaThrottleDelay;
             if (!_defaultAudioMixerGroup)
                 _defaultAudioMixerGroup = Resources.Load<AudioMixer>("MainMixer").FindMatchingGroups("Master")[0];
             _defaultAudioMixerGroup.audioMixer.SetFloat("volume", -80);
             Debug.Log("ThrottleUnloadUnusedAssets: muted volume");
-            yield return null;
+            for(int i =0; i < 6; ++i)
+                yield return new WaitForEndOfFrame();
             Debug.Log("ThrottleUnloadUnusedAssets: UnloadUnusedAssets");
             yield return Resources.UnloadUnusedAssets();
+            for (int i = 0; i < 10; ++i)
+                yield return new WaitForEndOfFrame();
+            _defaultAudioMixerGroup.audioMixer.SetFloat("volume", 0);
             Debug.Log("ThrottleUnloadUnusedAssets: unmuted volume");
-            if (_defaultAudioMixerGroup)
-                _defaultAudioMixerGroup.audioMixer.SetFloat("volume", 0);
-            uuaTimer = Time.realtimeSinceStartup + uuaThrottleDelay;
         }
     }
 }
