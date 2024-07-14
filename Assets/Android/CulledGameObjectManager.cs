@@ -1,4 +1,5 @@
 using DaggerfallWorkshop.Game.Entity;
+using DaggerfallWorkshop.Game.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -53,28 +54,29 @@ namespace DaggerfallWorkshop.Game
         private void Start()
         {
             lastPlayerPosition = GameManager.Instance.PlayerMotor.transform.position;
+            SaveLoadManager.OnLoad += OnLoadEvent;
+        }
+        private void OnDestroy()
+        {
+            SaveLoadManager.OnLoad -= OnLoadEvent;
         }
         private void Update()
         {
             Vector3 playerPosition = GameManager.Instance.PlayerMotor.transform.position;
-            if (GameManager.Instance.IsPlayerInside != wasPlayerInside)
-            {
-                cullIteration = 0;
-                lastPlayerPosition = playerPosition;
-                wasPlayerInside = GameManager.Instance.IsPlayerInside;
-            }
             // Remove any deleted gameObjects from the culled objects
             RemoveAnyDeletedObjectsFromCulledDictionary();
-            if ((playerPosition - lastPlayerPosition).sqrMagnitude > ScaledBlockRangeSquared / 4) // make sure everything is updated instantly upon teleport
+            if (GameManager.Instance.IsPlayerInside != wasPlayerInside
+                || (playerPosition - lastPlayerPosition).sqrMagnitude > ScaledBlockRangeSquared / 4
+                || culledObjects.Count == 0) // make sure everything is updated instantly upon teleport/transition
             {
                 UpdateAllCullableObjects(playerPosition);
-                cullIteration = 10; // jump to iteration 10 so it's a couple frames and then it starts over
             }
             else
                 UpdateCullableObjectsBasedOnIteration(cullIteration, playerPosition); // otherwise do a new batch of objects every other frame.
             cullIteration++;
             cullIteration %= 12;
             lastPlayerPosition = playerPosition;
+            wasPlayerInside = GameManager.Instance.IsPlayerInside;
         }
 
         public bool CullObject(GameObject objectToCull)
@@ -125,10 +127,15 @@ namespace DaggerfallWorkshop.Game
         {
             return obj && culledObjects.ContainsKey(obj.GetInstanceID());
         }
-        private void UpdateAllCullableObjects(Vector3 playerPosition)
+        private void UpdateAllCullableObjects(Vector3 playerPosition, bool skipDoors = true)
         {
-            for (int i = 0; i <= 10; i+=2)
+            for (int i = 0; i <= 10; i += 2)
+            {
+                if (skipDoors && i == 4)
+                    continue; // skip doors
                 UpdateCullableObjectsBasedOnIteration(i, playerPosition);
+            }
+            cullIteration = 10; // jump to iteration 10 so it's a couple frames and then it starts over
         }
         private void UpdateCullableObjectsBasedOnIteration(int cullIteration, Vector3 playerPosition)
         {
@@ -225,6 +232,11 @@ namespace DaggerfallWorkshop.Game
                     }
                 }
             }
+        }
+
+        private void OnLoadEvent(SaveData_v1 saveData)
+        {
+            UpdateAllCullableObjects(GameManager.Instance.PlayerMotor.transform.position);
         }
     }
 }
