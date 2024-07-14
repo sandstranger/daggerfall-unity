@@ -1068,7 +1068,6 @@ namespace DaggerfallWorkshop.Game
             isPlayerInside = false;
             isPlayerInsideDungeon = false;
 
-            DaggerfallUnity.Instance.PruneCache();
             DaggerfallGC.ThrottledUnloadUnusedAssets();
             GameManager.UpdateShadowDistance();
         }
@@ -1088,7 +1087,6 @@ namespace DaggerfallWorkshop.Game
             isPlayerInside = true;
             isPlayerInsideDungeon = false;
 
-            DaggerfallUnity.Instance.PruneCache();
             DaggerfallGC.ThrottledUnloadUnusedAssets();
             GameManager.UpdateShadowDistance();
         }
@@ -1116,7 +1114,6 @@ namespace DaggerfallWorkshop.Game
             IsPlayerInsideTavern = false;
             isPlayerInsideDungeon = true;
 
-            DaggerfallUnity.Instance.PruneCache();
             DaggerfallGC.ThrottledUnloadUnusedAssets();
             GameManager.UpdateShadowDistance();
         }

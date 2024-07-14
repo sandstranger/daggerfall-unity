@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Plugins/Android/AndroidManifest.xml.meta
+guid: 96b8ffe444ece5b4f91b9e5b22969f88
+TextScriptImporter:
+========
+guid: d57d8a425a5808146b8d03ed97fce4d2
+folderAsset: yes
+DefaultImporter:
+>>>>>>>> 286032fd6 (Fixing the repeated sound bug once and for all. Added Unity AudioMixer that all sounds now use.):Assets/Textures/ScreenControls/Audio.meta
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
