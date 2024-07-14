@@ -10,7 +10,9 @@
 //
 
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace DaggerfallWorkshop
 {
@@ -20,17 +22,34 @@ namespace DaggerfallWorkshop
         private const float uuaThrottleDelay = 60f;
 
         private static float uuaTimer = Time.realtimeSinceStartup;
+        private static AudioMixerGroup _defaultAudioMixerGroup;
 
-        public static void ThrottledUnloadUnusedAssets()
+        public static void ThrottledUnloadUnusedAssets(bool pruneCache = true)
         {
             Debug.Log("ThrottleUnloadUnusedAssets");
+            if (pruneCache)
+                DaggerfallUnity.Instance.PruneCache();
             if (Time.realtimeSinceStartup >= uuaTimer)
                 ForcedUnloadUnusedAssets();
         }
 
         public static void ForcedUnloadUnusedAssets()
         {
-            Resources.UnloadUnusedAssets();
+            DaggerfallUnity.Instance.StartCoroutine(ForcedUnloadUnusedAssets_Coroutine());
+        }
+
+        private static IEnumerator ForcedUnloadUnusedAssets_Coroutine()
+        {
+            if (!_defaultAudioMixerGroup)
+                _defaultAudioMixerGroup = Resources.Load<AudioMixer>("MainMixer").FindMatchingGroups("Master")[0];
+            _defaultAudioMixerGroup.audioMixer.SetFloat("volume", -80);
+            Debug.Log("ThrottleUnloadUnusedAssets: muted volume");
+            yield return null;
+            Debug.Log("ThrottleUnloadUnusedAssets: UnloadUnusedAssets");
+            yield return Resources.UnloadUnusedAssets();
+            Debug.Log("ThrottleUnloadUnusedAssets: unmuted volume");
+            if (_defaultAudioMixerGroup)
+                _defaultAudioMixerGroup.audioMixer.SetFloat("volume", 0);
             uuaTimer = Time.realtimeSinceStartup + uuaThrottleDelay;
         }
     }

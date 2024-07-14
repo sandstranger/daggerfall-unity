@@ -678,7 +678,6 @@ namespace DaggerfallWorkshop
             // Keeps memory usage much lower over time
             if (init)
             {
-                DaggerfallUnity.Instance.PruneCache();
                 DaggerfallGC.ThrottledUnloadUnusedAssets();
             }
 
