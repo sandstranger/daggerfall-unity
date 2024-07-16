@@ -64,6 +64,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected Button rotateRightButton;
         protected Button upstairsButton;
         protected Button downstairsButton;
+        protected Button goToNextRenderingModeButton;
 
         // hover text label in status bar
         protected TextLabel labelHoverText;
@@ -154,6 +155,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         bool leftMouseDownOnDownstairsButton = false;
         bool rightMouseDownOnUpstairsButton = false;
         bool rightMouseDownOnDownstairsButton = false;
+        bool leftMouseDownOnNextRenderingModeButton = false;
         bool alreadyInMouseDown = false;
         bool alreadyInRightMouseDown = false;
         bool alreadyInMiddleMouseDown = false;
@@ -269,6 +271,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             upstairsButton.ToolTipText = String.Format(TextManager.Instance.GetLocalizedText("automapToolTipUpstairsButton"), HotkeySequence_Upstairs, HotkeySequence_IncreaseSliceLevel, HotkeySequence_SwitchToAutomapRenderModeCutout, HotkeySequence_SwitchToAutomapRenderModeWireframe, HotkeySequence_SwitchToAutomapRenderModeTransparent);
             downstairsButton.ToolTipText = String.Format(TextManager.Instance.GetLocalizedText("automapToolTipDownstairsButton"), HotkeySequence_Downstairs, HotkeySequence_DecreaseSliceLevel, HotkeySequence_SwitchToAutomapRenderModeCutout, HotkeySequence_SwitchToAutomapRenderModeWireframe, HotkeySequence_SwitchToAutomapRenderModeTransparent);
             dummyPanelCompass.ToolTipText = String.Format(TextManager.Instance.GetLocalizedText("automapToolTipPanelCompass"), HotkeySequence_SwitchFocusToNextBeaconObject, HotkeySequence_ResetView);
+            goToNextRenderingModeButton.ToolTipText = "Toggles the rendering mode between Culled, Transparent, and Wireframe";
         }
 
         /// <summary>
@@ -464,6 +467,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             downstairsButton.OnRightMouseDown += DownstairsButton_OnRightMouseDown;
             downstairsButton.OnRightMouseUp += DownstairsButton_OnRightMouseUp;
             downstairsButton.ToolTip = defaultToolTip;
+
+            // go to next rendering mode button
+            goToNextRenderingModeButton = DaggerfallUI.AddButton(new Rect(258, 150, 21, 19), NativePanel);
+            goToNextRenderingModeButton.OnMouseClick += GoToNextRenderingMode_OnMouseDown;
+            goToNextRenderingModeButton.ToolTip = defaultToolTip;
 
             // Exit button
             Button exitButton = DaggerfallUI.AddButton(new Rect(281, 171, 28, 19), NativePanel);
@@ -2264,6 +2272,14 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             alreadyInMouseDown = false;
         }
 
+        private void GoToNextRenderingMode_OnMouseDown(BaseScreenComponent sender, Vector2 position)
+        {
+            if (inDragMode() || alreadyInMouseDown)
+                return;
+
+            DaggerfallUI.Instance.PlayOneShot(SoundClips.ButtonClick);
+            ActionSwitchToNextAutomapRenderMode();
+        }
 
         private void DownstairsButton_OnMouseDown(BaseScreenComponent sender, Vector2 position)
         {
