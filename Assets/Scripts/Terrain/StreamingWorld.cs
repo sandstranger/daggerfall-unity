@@ -678,7 +678,7 @@ namespace DaggerfallWorkshop
             // Keeps memory usage much lower over time
             if (init)
             {
-                DaggerfallGC.ThrottledUnloadUnusedAssets();
+                DaggerfallGC.ThrottledUnloadUnusedAssets(true, true, 1);
             }
 
             // Set terrain neighbours
