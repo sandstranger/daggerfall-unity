@@ -1068,7 +1068,7 @@ namespace DaggerfallWorkshop.Game
             isPlayerInside = false;
             isPlayerInsideDungeon = false;
 
-            DaggerfallGC.ThrottledUnloadUnusedAssets();
+            DaggerfallGC.ThrottledUnloadUnusedAssets(true, true, 1);
             GameManager.UpdateShadowDistance();
         }
 
@@ -1087,7 +1087,7 @@ namespace DaggerfallWorkshop.Game
             isPlayerInside = true;
             isPlayerInsideDungeon = false;
 
-            DaggerfallGC.ThrottledUnloadUnusedAssets();
+            DaggerfallGC.ThrottledUnloadUnusedAssets(true, true, 1);
             GameManager.UpdateShadowDistance();
         }
 
@@ -1114,7 +1114,7 @@ namespace DaggerfallWorkshop.Game
             IsPlayerInsideTavern = false;
             isPlayerInsideDungeon = true;
 
-            DaggerfallGC.ThrottledUnloadUnusedAssets();
+            DaggerfallGC.ThrottledUnloadUnusedAssets(true, true, 1);
             GameManager.UpdateShadowDistance();
         }
 

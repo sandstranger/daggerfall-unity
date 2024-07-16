@@ -19,27 +19,38 @@ namespace DaggerfallWorkshop
     public static class DaggerfallGC
     {
         // Min time between two unused assets collections
-        private const float uuaThrottleDelay = 60f;
+        // (Unless unused assets collection was 'forced')
+        private const float uuaThrottleDelay = 300f;
 
         private static float uuaTimer = Time.realtimeSinceStartup;
         private static AudioMixerGroup _defaultAudioMixerGroup;
 
-        public static void ThrottledUnloadUnusedAssets(bool pruneCache = true)
+        private static bool isUnloadingAssets;
+
+        public static void ThrottledUnloadUnusedAssets(bool forceUnload = false, bool pruneCache = true, float overridenPruneCacheThreshold = 0)
         {
             Debug.Log("ThrottleUnloadUnusedAssets");
             if (pruneCache)
-                DaggerfallUnity.Instance.PruneCache();
-            if (Time.realtimeSinceStartup >= uuaTimer)
+                DaggerfallUnity.Instance.PruneCache(overridenPruneCacheThreshold);
+            if (forceUnload || Time.realtimeSinceStartup >= uuaTimer)
                 ForcedUnloadUnusedAssets();
         }
 
-        public static void ForcedUnloadUnusedAssets()
+        private static void ForcedUnloadUnusedAssets()
         {
-            DaggerfallUnity.Instance.StartCoroutine(ForcedUnloadUnusedAssets_Coroutine());
+            if(!isUnloadingAssets)
+                DaggerfallUnity.Instance.StartCoroutine(ForcedUnloadUnusedAssets_Coroutine());
         }
 
+        /// <summary>
+        /// Unloads unused assets from Resources
+        /// </summary>
+        /// <remarks>
+        /// The game's sound is muted during this unload, so that the 'repeated sfx bug' doesn't occur
+        /// </remarks>
         private static IEnumerator ForcedUnloadUnusedAssets_Coroutine()
         {
+            isUnloadingAssets = true;
             uuaTimer = Time.realtimeSinceStartup + uuaThrottleDelay;
             if (!_defaultAudioMixerGroup)
                 _defaultAudioMixerGroup = Resources.Load<AudioMixer>("MainMixer").FindMatchingGroups("Master")[0];
@@ -53,6 +64,7 @@ namespace DaggerfallWorkshop
                 yield return new WaitForEndOfFrame();
             _defaultAudioMixerGroup.audioMixer.SetFloat("volume", 0);
             Debug.Log("ThrottleUnloadUnusedAssets: unmuted volume");
+            isUnloadingAssets = false;
         }
     }
 }
