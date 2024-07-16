@@ -49,16 +49,17 @@ namespace DaggerfallWorkshop.Game
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {
                 Destroy(gameObject);
+                return;
             }
 
             if (culledObjectsParent == null)
             {
                 culledObjectsParent = new GameObject("CulledObjectsParent");
+                culledObjectsParent.transform.parent = transform;
                 culledObjectsParent.SetActive(false);
             }
         }
