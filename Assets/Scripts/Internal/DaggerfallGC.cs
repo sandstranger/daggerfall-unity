@@ -9,6 +9,7 @@
 // Notes:
 //
 
+using DaggerfallWorkshop.Game;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -39,7 +40,7 @@ namespace DaggerfallWorkshop
         private static void ForcedUnloadUnusedAssets()
         {
             if(!isUnloadingAssets)
-                DaggerfallUnity.Instance.StartCoroutine(ForcedUnloadUnusedAssets_Coroutine());
+                CoroutineManager.Instance.StartCoroutine(ForcedUnloadUnusedAssets_Coroutine());
         }
 
         /// <summary>
