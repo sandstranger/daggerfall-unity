@@ -1317,7 +1317,7 @@ GameObject:
   - component: {fileID: 571157510}
   - component: {fileID: 571157509}
   m_Layer: 0
-  m_Name: CullGameObjecstManager
+  m_Name: CullGameObjectsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
