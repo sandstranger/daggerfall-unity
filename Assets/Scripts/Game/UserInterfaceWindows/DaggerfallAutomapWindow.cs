@@ -65,6 +65,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected Button upstairsButton;
         protected Button downstairsButton;
         protected Button goToNextRenderingModeButton;
+        protected TextLabel goToNextRenderingModeLabel;
 
         // hover text label in status bar
         protected TextLabel labelHoverText;
@@ -294,7 +295,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             nativeTextureGrid3D = DaggerfallUI.GetTextureFromImg(nativeImgNameGrid3D, TextureFormat.ARGB32, false);
             nativeTextureGrid3D.filterMode = DaggerfallUI.Instance.GlobalFilterMode;
             if (!nativeTextureGrid3D)
-                throw new Exception("DaggerfallAutomapWindow: Could not load native texture (AMAP01I0.IMG).");            
+                throw new Exception("DaggerfallAutomapWindow: Could not load native texture (AMAP01I0.IMG).");
             //pixelsGrid3D = nativeTextureGrid3D.GetPixels((int)(0), (int)((200 - 0 - 19) * (nativeTextureGrid3D.height / 200f)), (int)(27 * (nativeTextureGrid3D.width / 320f)), (int)(19 * (nativeTextureGrid3D.height / 200f)));
 
             // Cut out 2D View Grid graphics from background image            
@@ -469,7 +470,10 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             downstairsButton.ToolTip = defaultToolTip;
 
             // go to next rendering mode button
-            goToNextRenderingModeButton = DaggerfallUI.AddButton(new Rect(258, 150, 21, 19), NativePanel);
+            goToNextRenderingModeLabel = DaggerfallUI.AddDefaultShadowedTextLabel(new Vector2(266, 192), NativePanel);
+            goToNextRenderingModeLabel.Text = "Next Rendering Mode";
+            goToNextRenderingModeLabel.BackgroundColor = Color.black*.66f;
+            goToNextRenderingModeButton = DaggerfallUI.AddButton(new Rect(goToNextRenderingModeLabel.Position.x, goToNextRenderingModeLabel.Position.y, goToNextRenderingModeLabel.Size.x, goToNextRenderingModeLabel.Size.y), NativePanel);
             goToNextRenderingModeButton.OnMouseClick += GoToNextRenderingMode_OnMouseDown;
             goToNextRenderingModeButton.ToolTip = defaultToolTip;
 
