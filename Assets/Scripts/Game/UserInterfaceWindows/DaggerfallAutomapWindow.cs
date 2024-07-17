@@ -1126,7 +1126,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     // Apply zooming effect based on the distance change between touches
                     Vector3 zoomDirection = cameraAutomap.transform.forward;
                     float zoomFactor = distanceChange * 0.05f; // Adjust zoom sensitivity
-                    cameraAutomap.transform.position += zoomDirection * zoomFactor;
+                    cameraAutomap.transform.position += zoomDirection * zoomFactor * (automapViewMode == AutomapViewMode.View2D ? 2f : 1f);
 
                     // Rotating
                     Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
@@ -1143,13 +1143,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                             ActionRotateCamera(-dragRotateSpeedInTopView * angle * 20f, false);
                             break;
                         case AutomapViewMode.View3D:
-                            //Vector3 playerInViewport = cameraAutomap.WorldToViewportPoint(gameObjectPlayerAdvanced.transform.position);
-                            //bool isPlayerVisible = playerInViewport.x > 0 && playerInViewport.x < 1 && playerInViewport.y > 0 && playerInViewport.y < 1;
-                            //if (isPlayerVisible)
-                            //    rotationPivotAxisPositionView3D = gameObjectPlayerAdvanced.transform.position;
-                            //else
                             ActionRotate(dragRotateSpeedInView3D * angle * 20f, false);
-                            //ActionrotateCameraOnCameraYZplaneAroundObject(-dragRotateCameraOnCameraYZplaneAroundObjectSpeedInView3D * angle, false);
                             break;
                     }
 
@@ -1160,8 +1154,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             else if(Input.touchCount == 3)
             {
                 ResetRotationPivotAxisPositionView3D();
-                //automap.SlicingBiasY += Input.touches.Average(s => s.deltaPosition.y);
-                //UpdateAutomapView();
                 if (Input.touches.All(p => p.deltaPosition.y > Time.deltaTime))
                     ActionIncreaseSliceLevel();
                 else if (Input.touches.All(p => p.deltaPosition.y < -Time.deltaTime))
