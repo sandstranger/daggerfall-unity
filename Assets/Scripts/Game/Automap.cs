@@ -198,7 +198,8 @@ namespace DaggerfallWorkshop.Game
         {
             Cutout = 0,
             Wireframe = 1,
-            Transparent = 2
+            Transparent = 2,
+            Solid = 3
         };
 
         AutomapRenderMode currentAutomapRenderMode = AutomapRenderMode.Cutout; // currently selected automap render mode (default value: cutout)        
@@ -309,6 +310,11 @@ namespace DaggerfallWorkshop.Game
             set { slicingBiasY = value; }
         }
 
+        public float SlicingWorldPositionY
+        {
+            get { return Shader.GetGlobalFloat("_SclicingPositionY"); }
+        }
+
         /// <summary>
         /// DaggerfallAutomapWindow script will use this to propagate its rotation pivot axis position (dependent on selected view)
         /// </summary>
@@ -326,7 +332,12 @@ namespace DaggerfallWorkshop.Game
         {
             get { return (gameobjectBeaconRotationPivotAxis.transform.rotation); }
             set { gameobjectBeaconRotationPivotAxis.transform.rotation = value; }
-        }        
+        }
+
+        public AutomapRenderMode CurrentRenderingMode
+        {
+            get { return currentAutomapRenderMode; }
+        }
 
         /// <summary>
         /// DaggerfallAutomapWindow script will use this to propagate if the automap window is open or not
@@ -464,6 +475,7 @@ namespace DaggerfallWorkshop.Game
             switch (currentAutomapRenderMode)
             {
                 default:
+                case AutomapRenderMode.Solid:
                 case AutomapRenderMode.Transparent:
                     Shader.DisableKeyword("AUTOMAP_RENDER_MODE_WIREFRAME");
                     Shader.EnableKeyword("AUTOMAP_RENDER_MODE_TRANSPARENT");
@@ -485,6 +497,15 @@ namespace DaggerfallWorkshop.Game
         public void SwitchToAutomapRenderModeTransparent()
         {
             currentAutomapRenderMode = AutomapRenderMode.Transparent;
+            Shader.DisableKeyword("AUTOMAP_RENDER_MODE_WIREFRAME");
+            Shader.EnableKeyword("AUTOMAP_RENDER_MODE_TRANSPARENT");
+        }
+        /// <summary>
+        /// DaggerfallAutomapWindow script will use this to signal this script to switch to automap rendering mode "solid"
+        /// </summary>
+        public void SwitchToAutomapRenderModeSolid()
+        {
+            currentAutomapRenderMode = AutomapRenderMode.Solid;
             Shader.DisableKeyword("AUTOMAP_RENDER_MODE_WIREFRAME");
             Shader.EnableKeyword("AUTOMAP_RENDER_MODE_TRANSPARENT");
         }
@@ -1149,16 +1170,16 @@ namespace DaggerfallWorkshop.Game
             if ((gameobjectGeometry != null) && ((GameManager.Instance.IsPlayerInsideBuilding) || (GameManager.Instance.IsPlayerInsideDungeon) || (GameManager.Instance.IsPlayerInsideCastle)))
             {
                 // reveal geometry right below player - raycast down from player head position
-                Vector3 rayStartPos = gameObjectPlayerAdvanced.transform.position + Camera.main.transform.localPosition;
+                Vector3 rayStartPos = gameObjectPlayerAdvanced.transform.position + GameManager.Instance.MainCamera.transform.localPosition;
                 Vector3 rayDirection = Vector3.down;
                 float rayDistance = raycastDistanceDown;
                 Vector3 offsetSecondProtectionRaycast = Vector3.left * 0.1f; // will be used for protection raycast with slight offset of 10cm (protection against hole in daggerfall geometry prevention)            
                 ScanWithRaycastInDirectionAndUpdateMeshesAndMaterials(rayStartPos, rayDirection, rayDistance, offsetSecondProtectionRaycast);
 
                 // reveal geometry which player is looking at (and which is near enough)
-                rayDirection = Camera.main.transform.rotation * Vector3.forward;
+                rayDirection = GameManager.Instance.MainCamera.transform.rotation * Vector3.forward;
                 // shift 10cm to the side (computed by normalized cross product of forward vector of view direction and down vector of view direction)
-                offsetSecondProtectionRaycast = Vector3.Normalize(Vector3.Cross(Camera.main.transform.rotation * Vector3.down, rayDirection)) * 0.1f;
+                offsetSecondProtectionRaycast = Vector3.Normalize(Vector3.Cross(GameManager.Instance.MainCamera.transform.rotation * Vector3.down, rayDirection)) * 0.1f;
                 rayDistance = raycastDistanceViewDirection;
                 RaycastHit? hitForward = ScanWithRaycastInDirectionAndUpdateMeshesAndMaterials(rayStartPos, rayDirection, rayDistance, offsetSecondProtectionRaycast);
 
@@ -1168,14 +1189,14 @@ namespace DaggerfallWorkshop.Game
                     Vector3 stepVector = Vector3.zero;
                     while (true)
                     {
-                        stepVector += Vector3.Normalize(Camera.main.transform.rotation * Vector3.forward) * 1.0f; // go 1 meters forward                        
+                        stepVector += Vector3.Normalize(GameManager.Instance.MainCamera.transform.rotation * Vector3.forward) * 1.0f; // go 1 meters forward                        
                         if (Vector3.Magnitude(stepVector) >= hitForward.Value.distance)
                         {
                             break;
                         }
                         rayDirection = Vector3.down;
                         // shift 10cm to the side (computed by normalized cross product of forward vector of view direction and down vector of view direction)
-                        offsetSecondProtectionRaycast = Vector3.Normalize(Vector3.Cross(Camera.main.transform.rotation * Vector3.down, rayDirection)) * 0.1f;
+                        offsetSecondProtectionRaycast = Vector3.Normalize(Vector3.Cross(GameManager.Instance.MainCamera.transform.rotation * Vector3.down, rayDirection)) * 0.1f;
                         rayDistance = raycastDistanceDown;
                         ScanWithRaycastInDirectionAndUpdateMeshesAndMaterials(rayStartPos + stepVector, rayDirection, rayDistance, offsetSecondProtectionRaycast);
                     }
@@ -1200,7 +1221,7 @@ namespace DaggerfallWorkshop.Game
                 int layerMask = (1 << layerPlayer) + 1; // test against player and level geometry (+1... == 1 << 1 == "Default" layer == level geometry)
 
                 Vector3 entranceMarkerPos = gameObjectEntrancePositionCubeMarker.transform.position;
-                Vector3 playerColliderPos = playerCollider.transform.position; //GameManager.Instance.PlayerGPS.transform.position; //Camera.main.transform.position;
+                Vector3 playerColliderPos = playerCollider.transform.position; //GameManager.Instance.PlayerGPS.transform.position; //GameManager.Instance.MainCamera.transform.position;
                 // raycast 1
                 Vector3 rayStartPos = entranceMarkerPos;
                 Vector3 rayToPlayer = playerColliderPos - rayStartPos;                
@@ -1284,10 +1305,10 @@ namespace DaggerfallWorkshop.Game
         private void UpdateSlicingPositionY()
         {
             float slicingPositionY;
-            if (!DaggerfallUnity.Settings.AutomapAlwaysMaxOutSliceLevel)
-                slicingPositionY = gameObjectPlayerAdvanced.transform.position.y + Camera.main.transform.localPosition.y + slicingBiasY;
-            else
+            if (currentAutomapRenderMode == AutomapRenderMode.Solid || DaggerfallUnity.Settings.AutomapAlwaysMaxOutSliceLevel)
                 slicingPositionY = float.MaxValue;
+            else
+                slicingPositionY = gameObjectPlayerAdvanced.transform.position.y + GameManager.Instance.MainCamera.transform.localPosition.y + slicingBiasY;
             Shader.SetGlobalFloat("_SclicingPositionY", slicingPositionY);
         }
 
