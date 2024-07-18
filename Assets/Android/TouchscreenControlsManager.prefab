@@ -172,7 +172,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 2}
-  m_SizeDelta: {x: 0, y: 452.6}
+  m_SizeDelta: {x: 0, y: 350.3}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1295942566213544321
 CanvasRenderer:
@@ -275,7 +275,7 @@ RectTransform:
   m_Father: {fileID: 7064570449209279589}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.000015258789}
   m_SizeDelta: {x: 20, y: 20.000023}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1272,7 +1272,6 @@ GameObject:
   - component: {fileID: 165188597055469074}
   - component: {fileID: 1131898158655259079}
   - component: {fileID: 71924089765068735}
-  - component: {fileID: 9111456785938867731}
   m_Layer: 5
   m_Name: EditButtonActionDropdown
   m_TagString: Untagged
@@ -1401,18 +1400,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
---- !u!210 &9111456785938867731
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 998097370434086851}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortAtRoot: 0
 --- !u!1 &1003235592994221835
 GameObject:
   m_ObjectHideFlags: 0
@@ -2221,7 +2208,7 @@ RectTransform:
   m_Father: {fileID: 511883226797053773}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.000015258789}
   m_SizeDelta: {x: 20, y: 20.000023}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4334,9 +4321,9 @@ RectTransform:
   m_Father: {fileID: 3725655599084686142}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &7466569034894470005
 MonoBehaviour:
@@ -7247,7 +7234,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 2}
-  m_SizeDelta: {x: 0, y: 452.6}
+  m_SizeDelta: {x: 0, y: 407.4}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &5749732572057383186
 CanvasRenderer:
@@ -12118,9 +12105,9 @@ RectTransform:
   m_Father: {fileID: 8497673865989309832}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2916850908608827937
 MonoBehaviour:
@@ -14479,7 +14466,6 @@ GameObject:
   - component: {fileID: 4110725418374263579}
   - component: {fileID: 4275849507465076572}
   - component: {fileID: 2701889145187263299}
-  - component: {fileID: 1890218975612617638}
   m_Layer: 5
   m_Name: EditButtonKeyCodeDropdown
   m_TagString: Untagged
@@ -14608,18 +14594,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
---- !u!210 &1890218975612617638
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9064421678839033338}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortAtRoot: 0
 --- !u!1 &9118178603845187403
 GameObject:
   m_ObjectHideFlags: 0
@@ -15069,12 +15043,12 @@ PrefabInstance:
     - target: {fileID: 6930433440068948349, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -437.9
+      value: -437.89844
       objectReference: {fileID: 0}
     - target: {fileID: 6930433440068948349, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 98.00003
+      value: 98
       objectReference: {fileID: 0}
     - target: {fileID: 6930433440068948349, guid: 2cab95263d5794de0a5c67954d890948,
         type: 3}
