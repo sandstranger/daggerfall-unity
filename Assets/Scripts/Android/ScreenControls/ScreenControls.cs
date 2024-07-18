@@ -46,12 +46,15 @@ namespace DaggerfallWorkshop.Game
             _hideControls = HideControls;
             Instance = this;
 
-            _renderCamera.aspect = Camera.main.aspect;
-            _renderTexture = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32)
+            if(_renderCamera.targetTexture != null)
             {
-                isPowerOfTwo = false
-            };
-
+                Destroy(_renderCamera.targetTexture);
+                _renderCamera.targetTexture = null;
+            }
+            _renderCamera.aspect = Camera.main.aspect;
+            _renderTexture = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+            _renderTexture.depthStencilFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.D24_UNorm_S8_UInt;
+            _renderTexture.isPowerOfTwo = false;
             _renderCamera.targetTexture = _renderTexture;
 
             _btnConsole.onClick.AddListener(() => _console.ToggleConsole());

@@ -4,8 +4,8 @@
 // License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
 // Source Code:     https://github.com/Interkarma/daggerfall-unity
 // Original Author: Michael Rauter (a.k.a. Nystul)
-// Contributors:    
-// 
+// Contributors:
+//
 // Notes:
 //
 
@@ -37,7 +37,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         const float dragSpeedInTopView = 0.0002f; // hold left mouse button down and move mouse to move geometry with this speed) - in top view mode (2D view mode)
         const float dragRotateSpeedInTopView = 5.0f; // hold right mouse button down and move left/right to rotate geometry with this speed - in top view mode (2D view mode)
         const float dragRotateSpeedInView3D = 4.5f; // hold right mouse button down and move left/right to rotate geometry with this speed - in 3D view mode
-        const float dragRotateCameraOnCameraYZplaneAroundObjectSpeedInView3D = 5.0f; // hold right mouse button down and move up/down to rotate camera on camera YZ-plane around object with this speed - in 3D view mode            
+        const float dragRotateCameraOnCameraYZplaneAroundObjectSpeedInView3D = 5.0f; // hold right mouse button down and move up/down to rotate camera on camera YZ-plane around object with this speed - in 3D view mode
 
         const float changeSpeedCameraFieldOfView = 50.0f; // mouse wheel over grid button will change camera field of view in 3D mode with this speed
 
@@ -280,7 +280,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         /// initial window setup of the automap window
         /// </summary>
         protected override void Setup()
-        {           
+        {
             if (isSetup) // don't setup twice!
                 return;
 
@@ -299,7 +299,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 throw new Exception("DaggerfallAutomapWindow: Could not load native texture (AMAP01I0.IMG).");
             //pixelsGrid3D = nativeTextureGrid3D.GetPixels((int)(0), (int)((200 - 0 - 19) * (nativeTextureGrid3D.height / 200f)), (int)(27 * (nativeTextureGrid3D.width / 320f)), (int)(19 * (nativeTextureGrid3D.height / 200f)));
 
-            // Cut out 2D View Grid graphics from background image            
+            // Cut out 2D View Grid graphics from background image
             int width = (int)(27 * (nativeTexture.width / 320f));
             int height = (int)(19 * (nativeTexture.height / 200f));
             pixelsGrid2D = nativeTexture.GetPixels((int)(78 * (nativeTexture.width / 320f)), (int)((200 - 171 - 19) * (nativeTexture.height / 200f)), width, height);
@@ -308,7 +308,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             nativeTextureGrid2D.filterMode = DaggerfallUI.Instance.GlobalFilterMode;
             nativeTextureGrid2D.Apply(false, false);
 
-            // store background graphics from from background image            
+            // store background graphics from from background image
             width = (int)(320 * (nativeTexture.width / 320f));
             height = (int)((200 - 29) * (nativeTexture.height / 200f));
             backgroundOriginal = nativeTexture.GetPixels((int)(0 * (nativeTexture.width / 320f)), (int)(29 * (nativeTexture.height / 200f)), width, height);
@@ -368,10 +368,10 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             dummyPanelAutomap = DaggerfallUI.AddPanel(rectDummyPanelAutomap, NativePanel);
 
             // Setup automap render panel (the level geometry is rendered into this panel) - use dummyPanelAutomap to get size
-            Rect positionPanelRenderAutomap = dummyPanelAutomap.Rectangle;            
+            Rect positionPanelRenderAutomap = dummyPanelAutomap.Rectangle;
             panelRenderAutomap = DaggerfallUI.AddPanel(positionPanelRenderAutomap, ParentPanel);
             panelRenderAutomap.AutoSize = AutoSizeModes.None;
-            
+
             panelRenderAutomap.OnMouseScrollUp += PanelAutomap_OnMouseScrollUp;
             panelRenderAutomap.OnMouseScrollDown += PanelAutomap_OnMouseScrollDown;
             panelRenderAutomap.OnMouseDown += PanelAutomap_OnMouseDown;
@@ -404,7 +404,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             gridButton.OnMouseScrollUp += GridButton_OnMouseScrollUp;
             gridButton.OnMouseScrollDown += GridButton_OnMouseScrollDown;
             gridButton.ToolTip = defaultToolTip;
-            
+
 
             // forward button
             forwardButton = DaggerfallUI.AddButton(new Rect(105, 171, 21, 19), NativePanel);
@@ -513,7 +513,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 dummyPanelCompass.ToolTip.ToolTipDelay = toolTipDelay;
             }
 
-            // compass            
+            // compass
             compass = new HUDCompass();
             Vector2 scale = NativePanel.LocalScale;
             compass.Position = dummyPanelCompass.Rectangle.position;
@@ -536,7 +536,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
                 // reset values to default on first automap window open
                 automap.SlicingBiasY = defaultSlicingBiasY; // reset slicing y-bias
-                //ResetRotationPivotAxisPosition(); // reset rotation pivot axis                
+                //ResetRotationPivotAxisPosition(); // reset rotation pivot axis
             }
 
             // check if global automap open/close hotkey has changed
@@ -550,7 +550,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 UpdateButtonToolTipsText();
             }
 
-            automap.IsOpenAutomap = true; // signal Automap script that automap is open and it should do its stuff in its Update() function            
+            automap.IsOpenAutomap = true; // signal Automap script that automap is open and it should do its stuff in its Update() function
 
             automap.UpdateAutomapStateOnWindowPush(); // signal Automap script that automap window was opened and that it should update its state (updates player marker arrow)
 
@@ -624,7 +624,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 // backup view mode
                 AutomapViewMode backupValueAutomapViewMode = automapViewMode;
 
-                // focus player in 2D view mode - but keep old camera orientation of 2D view mode camera transform                
+                // focus player in 2D view mode - but keep old camera orientation of 2D view mode camera transform
                 automapViewMode = AutomapViewMode.View2D; // need to change view mode so that SwitchFocusToGameObject() does the correct thing
                 RestoreOldCameraTransformViewFromTop();
                 SwitchFocusToGameObject(gameObjectPlayerAdvanced);
@@ -699,7 +699,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             // check if iTween camera animation is running
             if (automap.ITweenCameraAnimationIsRunning)
             {
-                // update oldMousePosition to prevent problems with drag and drog action that starts before animation is over 
+                // update oldMousePosition to prevent problems with drag and drog action that starts before animation is over
                 oldMousePosition = new Vector2(InputManager.Instance.MousePosition.x, Screen.height - InputManager.Instance.MousePosition.y);
 
                 // if so update automap view so animation plays correctly
@@ -883,7 +883,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 ActionDecreaseCameraFieldOfView();
             }
 
-            if((Application.isMobilePlatform || AndroidUtils.IsRunningInSimulator) && inDragMode() && !Input.mousePresent)
+            if((Application.isMobilePlatform ) && inDragMode() && !Input.mousePresent)
             {
                 HandleTouchControls();
             }
@@ -1585,7 +1585,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         private void ActionMoveRotationPivotAxisRight()
         {
             Vector3 translation = cameraAutomap.transform.right * moveRotationPivotAxisMarkerLeftRightSpeed * Time.unscaledDeltaTime;
-            //translation.y = 0.0f; // comment this out for movement perpendicular to camera optical axis and up vector                
+            //translation.y = 0.0f; // comment this out for movement perpendicular to camera optical axis and up vector
             ShiftRotationPivotAxisPosition(translation);
             UpdateAutomapView();
         }
@@ -1676,7 +1676,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     cameraAutomap.transform.RotateAround(rotationPoint, cameraAutomap.transform.right, rotateBack);
                 }
                 if (updateView)
-                    UpdateAutomapView(); 
+                    UpdateAutomapView();
             }
         }
 
@@ -1786,7 +1786,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 cameraAutomap.fieldOfView = fieldOfViewCameraMode3D;
                 cameraAutomap.nearClipPlane = nearClipPlaneCameraMode3D;
                 UpdateAutomapView();
-            }            
+            }
         }
 
         /// <summary>
@@ -1933,14 +1933,14 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 case AutomapViewMode.View2D:
                     cameraAutomap.fieldOfView = fieldOfViewCameraMode2D;
                     cameraAutomap.nearClipPlane = nearClipPlaneCameraMode2D;
-                    ResetRotationPivotAxisPositionViewFromTop(); // reset rotation pivot axis                 
+                    ResetRotationPivotAxisPositionViewFromTop(); // reset rotation pivot axis
                     break;
                 case AutomapViewMode.View3D:
                     cameraAutomap.fieldOfView = fieldOfViewCameraMode3D;
                     cameraAutomap.nearClipPlane = nearClipPlaneCameraMode3D;
                     ResetRotationPivotAxisPositionView3D(); // reset rotation pivot axis
                     break;
-            }            
+            }
             UpdateAutomapView();
         }
 
@@ -1978,7 +1978,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         /// <summary>
         /// switch focus to GameObject gameobjectInFocus
         /// </summary>
-        /// <param name="gameobjectInFocus"> the GameObject to focus at </param>        
+        /// <param name="gameobjectInFocus"> the GameObject to focus at </param>
         private void SwitchFocusToGameObject(GameObject gameobjectInFocus)
         {
             Vector3 newPosition;
@@ -1993,7 +1993,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     break;
                 case AutomapViewMode.View3D:
                     float computedCameraBackwardDistance = Vector3.Magnitude(cameraAutomap.transform.position - gameobjectInFocus.transform.position);
-                    newPosition = gameobjectInFocus.transform.position - cameraAutomap.transform.forward * computedCameraBackwardDistance;                    
+                    newPosition = gameobjectInFocus.transform.position - cameraAutomap.transform.forward * computedCameraBackwardDistance;
                     cameraAutomap.transform.position = newPosition;
                     UpdateAutomapView();
                     break;
@@ -2032,7 +2032,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         }
 
         private void PanelAutomap_OnRightMouseDoubleClick(BaseScreenComponent sender, Vector2 position)
-        {            
+        {
             Vector2 mousePosition = panelRenderAutomap.ScaledMousePosition;
             mousePosition.y = panelRenderAutomap.Size.y - mousePosition.y;
 
