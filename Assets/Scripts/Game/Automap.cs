@@ -2510,12 +2510,22 @@ namespace DaggerfallWorkshop.Game
         {
             SaveStateAutomapInterior();
             DestroyBeacons();
+            if (gameobjectGeometry != null)
+            {
+                UnityEngine.Object.Destroy(gameobjectGeometry);
+                gameobjectGeometry = null;
+            }
         }
 
         private void OnTransitionToDungeonExterior(PlayerEnterExit.TransitionEventArgs args)
         {
             SaveStateAutomapDungeon(true);
             DestroyBeacons();
+            if (gameobjectGeometry != null)
+            {
+                UnityEngine.Object.Destroy(gameobjectGeometry);
+                gameobjectGeometry = null;
+            }
         }
 
         void OnLoadEvent(SaveData_v1 saveData)

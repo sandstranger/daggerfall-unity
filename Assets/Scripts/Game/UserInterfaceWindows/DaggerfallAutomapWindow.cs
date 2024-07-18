@@ -608,7 +608,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
                 else // if inside dungeon or palace
                 {
-                    ActionSwitchToAutomapRenderModeSolid(); // set automap render mode to transparent (since people that don't know the map functionality often think cutout mode is a bug)
+                    ActionSwitchToAutomapRenderModeTransparent(); // set automap render mode to transparent (since people that don't know the map functionality often think cutout mode is a bug)
                 }
 
                 // reset rotation pivot axis position
@@ -1822,7 +1822,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         }
 
         /// <summary>
-        /// action for switching to automap render mode "transparent"
+        /// action for switching to automap render mode "solid"
         /// </summary>
         private void ActionSwitchToAutomapRenderModeSolid()
         {
