@@ -70,16 +70,26 @@ namespace DaggerfallWorkshop.Game
 
             Setup();
         }
+        public void SetupUIRenderTexture()
+        {
+            if(renderCamera.targetTexture != null)
+            {
+                Destroy(renderCamera.targetTexture);
+                renderCamera.targetTexture = null;
+            }
+            renderCamera.aspect = Camera.main.aspect;
+            renderTex = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+            renderTex.depthStencilFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.D24_UNorm_S8_UInt;
+            renderTex.isPowerOfTwo = false;
+            renderCamera.targetTexture = renderTex;
 
+        }
         private void Setup()
         {
             editControlsCanvas.enabled = false;
             selectedButtonOptionsPanel.enabled = false;
 
-            renderCamera.aspect = Camera.main.aspect;
-            renderTex = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
-            renderTex.isPowerOfTwo = false;
-            renderCamera.targetTexture = renderTex;
+            SetupUIRenderTexture();
 
             _debugInEditor = debugInEditor;
             if (!isMobilePlatform)
