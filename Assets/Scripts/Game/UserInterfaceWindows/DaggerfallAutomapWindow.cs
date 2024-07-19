@@ -1045,7 +1045,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         private Vector3 Get3DPivotPointForTouchControls()
         {
             // raycast for the 3D point
-            RaycastHit[] hits = Physics.RaycastAll(cameraAutomap.transform.position, cameraAutomap.transform.forward, 10000f, (1 << LayerMask.NameToLayer("Automap")));
+            RaycastHit[] hits = Physics.SphereCastAll(cameraAutomap.transform.position, 1f, cameraAutomap.transform.forward, 10000f, (1 << LayerMask.NameToLayer("Automap")));
             hits.OrderBy(k => k.distance);
             foreach (var hit in hits)
             {
@@ -1056,10 +1056,18 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
             }
 
-            // raycast didn't hit anything, so try projecting camera's viewpoint to player's plane
+            // raycast didn't hit anything, so try projecting camera's viewpoint to player's plane or minimum y of dungeon or 20 meters below camera
             try
             {
                 float planeY = gameObjectPlayerAdvanced.transform.position.y;
+                float minDungeonY = automap.GameObjectGeometry.GetComponentsInChildren<MeshRenderer>().Min(s => s.transform.position.y);
+                if (minDungeonY >= cameraAutomap.transform.position.y)
+                    planeY = cameraAutomap.transform.position.y - 20f;
+                else if (gameObjectPlayerAdvanced.transform.position.y >= cameraAutomap.transform.position.y)
+                    planeY = minDungeonY;
+                else
+                    planeY = gameObjectPlayerAdvanced.transform.position.y;
+
                 Vector3 cameraForward = cameraAutomap.transform.forward;
                 Vector3 cameraPosition = cameraAutomap.transform.position;
                 float distanceToPlane = (planeY - cameraPosition.y) / cameraForward.y;

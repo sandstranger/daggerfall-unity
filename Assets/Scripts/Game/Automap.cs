@@ -293,6 +293,14 @@ namespace DaggerfallWorkshop.Game
         }
 
         /// <summary>
+        /// DaggerfallAutomapWindow script will use this to get gameobject geometry (may be null if destroyed or not yet created)
+        /// </summary>
+        public GameObject GameObjectGeometry
+        {
+            get { return gameobjectGeometry; }
+        }
+
+        /// <summary>
         /// DaggerfallAutomapWindow script will use this to check if it should reset automap settings (and if it does it will erase flag)
         /// </summary>
         public bool ResetAutomapSettingsSignalForExternalScript
